@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://security.tencent.com/index.php/blog/msg/79 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<base href="."> 
+<!--[if lte IE 6]></base><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="description" content="腾讯安全应急响应中心,Tencent Security Response Center,TSRC">
+<meta property="qc:admins" content="725656125352141645635646375">
+<meta name="keywords" content="腾讯,Tencent,安全团队,应急响应,腾讯安全应急响应中心,Tencent Security Response Center,TSRC">
+
+<link rel="stylesheet" rev="stylesheet" href="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/global.css" type="text/css">
+<link rel="stylesheet" rev="stylesheet" href="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/report.css" type="text/css">
+<title>一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心</title>
+<style type="text/css"></style>
+
+</head>
+<body>
+
+<style type="text/css">
+<!--
+/* 为了显示提交中加入的代码 */
+pre{margin-left:2em;border-left:3px solid #CCC;padding:0 1em;font-size:12px;line-height:14px;word-wrap:break-word;word-break:break-all;}
+-->
+    .comments-title{
+        border-bottom: 2px solid #0044cc;
+    }
+    .comments-title>span:first-of-type{
+        font-size: 120%;
+        line-height: 35px;
+        background-color: #0044cc;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 0 10px;
+    }
+    .comments-title>span:last-of-type{
+        margin-bottom: 5px;
+    }
+    .comment {
+        width: 100%;
+        padding: 10px 0;
+    }
+    .comment>a{
+        float: left;
+    }
+    .comment>a>img{
+        width: 100px;
+        height: 100px;
+    }
+    .comment-info{
+        float: left;
+        width: 754px;
+    }
+
+.comment-detail {
+    position:relative;
+    padding:5px;
+    border:3px solid #0044cc;
+    color:#333;
+    word-wrap:break-word;word-break:break-all;
+    background:#fff;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+}
+.comment-detail>p {
+    line-height: 18px;
+}
+.comment-detail.left {
+    width: 718px;
+    margin-left:20px;
+}
+
+div.comment-detail div.user-info{
+    border-bottom: 1px dashed #000000;
+    margin-bottom: 10px;
+}
+.comment-time{
+    margin-left: 15px;
+    font-size: 12px;
+    margin-top: 10px;
+    line-height: 12px;
+    color: #888;
+    float: left;
+}
+form textarea{
+    width: 100%;
+}
+</style>
+<link rel="stylesheet" rev="stylesheet" href="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/blog.css" type="text/css">
+
+
+
+
+
+<!--Header-->
+
+<div id="headerAll">
+
+    
+    <div id="header">
+        <div id="top">
+            <a class="logo" href="javascript:;"><cite>QQ安全中心<br>在线生活安全护航</cite></a>
+        </div>
+
+        <div id="menu">
+            <ul class="tsrc_top_menu">
+                <li class="tsrc_home"><a href="http://security.tencent.com/index.php"><span>&nbsp;首页&nbsp;</span></a></li>
+                <li class="tsrc_anno"><a href="http://security.tencent.com/index.php/announcement"><span>公告</span></a></li>
+                <li class="tsrc_blog selected"><a href="http://security.tencent.com/index.php/blog"><span>博客</span></a></li>
+                <li class="tsrc_report"><a href="http://security.tencent.com/index.php/report"><span>报告漏洞</span></a></li>
+                <li class="tsrc_lib"><a href="http://security.tencent.com/index.php/opensource/all"><span>实验室</span></a></li>
+                                <li class="tsrc_thanks"><a href="http://security.tencent.com/index.php/thanks/index/2015/7"><span>名人榜</span></a></li>
+                <li><a href="http://security.tencent.com/index.php/shop"><span>礼品兑换</span></a></li>
+                <li><a href="http://quan.security.tencent.com/" target="_blank"><span>安全圈</span></a></li>
+                <li class="tsrc_aixin"><a href="http://security.tencent.com/index.php/aixin"><span>爱心公益</span></a></li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!--Header End-->
+
+
+
+<div id="wrapper">
+	<div class="top_nosider"></div>
+
+	<div id="center_nosider" class="center_nosider">
+		<!--Content-->
+		<div class="title title_jobs"><h3><a href="http://security.tencent.com/index.php/blog" target="_self">返回博客主页</a></h3><span class="gray">记录腾讯的安全经验&nbsp;</span>
+		</div>
+		<div class="safe_school_topics_cont">
+			<br>
+			<p style="font-size:25px" align="center">一条短信控制你的手机！ Android平台的SQL注入漏洞浅析</p>
+			<br>
+			<p class=""><strong>博文作者：Gmxp</strong></p>
+			<p class=""><strong>发布日期：2015-03-23</strong></p>
+            <p class=""><strong>阅读次数：28296</strong></p>
+			<p class=""><strong>博文内容：</strong></p>
+			<br>
+			<p><span style="font-size:16px;"><strong><span style="font-family: 微软雅黑, sans-serif;">0x0</span><span style="font-family: 微软雅黑, sans-serif;">前言<br><br></span></strong></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14</span><span style="font-family:'微软雅黑','sans-serif';">年11月笔者在百度xteam博客中看到其公开了此前报告给Google的CVE-2014-8507漏洞细节——系统代码在处理经由短信承载的WAP推送内容时产生的经典SQL注入漏洞，影响Android 5.0以下的系统。于是对这个漏洞产生了兴趣，想深入分析看看该漏洞的危害，以及是否能够通过一条短信来制作攻击PoC。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; 在断断续续的研究过程中，笔者发现了SQLite的一些安全特性演变和短信漏洞利用细节，本着技术探讨和共同进步的原则，结合以前掌握的SQLite安全知识一同整理分享出来，同各位安全专家一起探讨Android平台中SQLite的安全性，如有错误之处，也请大家斧正。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x1</span><span style="font-family:'微软雅黑','sans-serif';">起：食之无味，弃之可惜<br><br></span></span></strong></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-family:'微软雅黑','sans-serif';">鼎鼎大名的SQL注入漏洞在服务器上的杀伤力不用多说，可惜虎落平阳被犬欺，SQL注入漏洞在Android平台长期处于比较鸡肋的状态。比较典型的漏洞例子可以参考：<a href="http://www.wooyun.org/bugs/wooyun-2014-086899" target="_blank">http://www.wooyun.org/bugs/wooyun-2014-086899</a>。<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-family:'微软雅黑','sans-serif';">虽然Android平台大量使用SQLite存储数据导致SQL注入很常见，而SQL注入的发现也相对简单，但其危害十分有限：在无其他漏洞辅助的情况下，需要在受害者的手机上先安装一个恶意APP，通过这个恶意载体才可能盗取有SQL注入漏洞的APP的隐私数据（如图1）。很多人会说，都能够安装恶意APP了，可以利用的漏洞多了，还要你SQL注入干嘛。正是因为这个原因，导致SQL注入漏洞一直不被大家所关注。<br><br></span></span></p><p style="text-align:center;"><span style="font-family:微软雅黑, sans-serif;color:windowtext;"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/750706dc5509fbb93a30825e6fd1ca7d.png" alt="" style="max-width: 854px;"><br>图1 通过SQL注入漏洞获取某APP的敏感信息<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x2</span><span style="font-family:'微软雅黑','sans-serif';">承：远程攻击的大杀器<br><br></span></span></strong></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14</span><span style="font-family:'微软雅黑','sans-serif';">年TSRC平台的白帽子雪人提出了一种存在已久，在Android平台却鲜未被提起的SQL注入利用方式：load_extension。通过一些简单漏洞的配合，SQL注入漏洞可以达到远程代码执行的可怕威力。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp;简单来说，为了方便开发者可以很轻便的扩展功能，SQLite从3.3.6版本（http://www.sqlite.org/cgi/src/artifact/71405a8f9fedc0c2）开始提供了支持扩展的能力，通过sqlite_load_extension API（或者load_extensionSQL语句），开发者可以在不改动SQLite源码的情况下，通过动态加载的库（so/dll/dylib）来扩展SQLite的能力。<br><br></span></span></p><p style="text-align:center;"><span style="font-size:16px;"><span style="font-family: 微软雅黑, sans-serif; color: windowtext;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/4031b572c7d50db8d358cd884af0161a.png" alt="" style="max-width: 854px;"><br>图2 SQLite从</span><span style="font-family: 微软雅黑, sans-serif;">3.3.6</span><span style="font-family: 微软雅黑, sans-serif;">版本开始支持动态加载扩展<br><br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp;便利的功能总是最先被黑客利用来实施攻击。借助SQLite动态加载的这个特性，我们仅需要在可以预测的存储路径中预先放置一个覆盖SQLite扩展规范的动态库（Android平台的so库），然后通过SQL注入漏洞调用load_extension，就可以很轻松的激活这个库中的代码，直接形成了远程代码执行漏洞。而在Android平台中有漏洞利用经验的同学应该都很清楚，想要把一个恶意文件下载到手机存储中，有许多实际可操作的方式，例如收到的图片、音频或者视频，网页的图片缓存等。类似的案例笔者也见到过，如下图远程利用SQL注入load_extension在某APP中执行了恶意的SQLite扩展。<br><br><br></span></span></p><p style="text-align:center;"><span style="font-family:微软雅黑, sans-serif;color:windowtext;"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/7ef3bac5eb08bb9e289fd008afe6a2b0.png" alt="" style="max-width: 854px;"><br>图3 Android&nbsp; APP中SQL注入导致的远程代码执行<br><br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x3</span><span style="font-family:'微软雅黑','sans-serif';">转：攻与防的对立统一<br><br></span></span></strong></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">也许是SQLite官方也意识到了load_extension API的能力过于强大，在放出load_extension功能后仅20天，就在代码中（http://www.sqlite.org/cgi/src/info/4692319ccf28b0eb）将load_extension的功能设置为默认关闭，需要在代码中通过sqlite3_enable_load_extensionAPI显式打开后方可使用，而此API无法在SQL语句中调用，断绝了利用SQL注入打开的可能性。<br><br><br></span></span></p><p style="text-align:center;"><span style="font-family:微软雅黑, sans-serif;color:windowtext;"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/389bc70e2338354bc8e7b89e05b37b37.png" alt="" style="max-width: 854px;"><br>图4 SQLite默认关闭了load_extension能力<br><br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">凑巧的是，出于功能和优化的原因，Google从 Android 4.1.2开始通过预编译宏SQLITE_OMIT_LOAD_EXTENSION，从代码上直接移除了SQLite动态加载扩展的能力（如图4）。<br><br></span></span></p><p style="text-align:center;"><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/61b1056c8cfde9bbf2cc46e0cd13afce.png" alt="" style="max-width: 854px;"><br>图5 Google在Android 4.1中禁用了load_extension<br><br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">虽然有了以上两层安全加固，但Android平台的安全问题往往不是这么容易就能够解决的。和Android平台五花八门的机型和系统版本一样，部分手机生厂商和第三方数据库组件并未跟随官方代码来关闭自身代码中SQLite动态加载扩展的能力，默认便可以直接使用SQL注入load_extension，导致这些手机或者APP极易被远程攻击。<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">总结来说，利用SQLite的load_extension远程实施攻击，适用于4.1.2以前的官方Android版本，或者是部分手机厂商的机器，又或者是使用到某些第三方数据库组件的APP。客观来看，这种攻击手法的攻击面并不算宽，并会随着高版本Android的普及和手机厂商的代码跟进而越来越窄。<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">那么除了最直接最暴力的load_extension攻击方式之外，SQL注入是不是又变得一无是处了？在魔术师一般的安全人员手里，不管多么不起眼的攻击方式都可能被用到极致。百度xteam的CVE-2014-8507就是一个很好的例子。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x4</span><span style="font-family:'微软雅黑','sans-serif';">合：一条短信就控制你的手机<br><br></span></span></strong></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">接下来，我们回到最开始的问题，如何通过一条短信来控制手机？<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp; 事实上在看到CVE-2014-8507后，笔者花费了大量时间尝试在标准Android机器中，通过彩信发送恶意so库，随后通过短信激活恶意so库的方式，来实现控制手机。最终由于SQLite自身的sqlite3_enable_load_extension保护和系统代码其他若干个方面的限制，成功在smspush进程完成SQL注入后，却没有办法进一步利用恶意so库，无法完成正在意义上的控制手机。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp;另外一方面，百度xteam对CVE-2014-8507的利用已经很精彩，结合WAP推送处理代码的特点利用SQL注入提供数据，完成了打开通过短信任意APP的导出Activity的攻击，结合上其他的系统或者APP漏洞，不难达到真正意义上控制手机的效果。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp;作为狗尾续貂的补充，接下来和大家探讨一下如何在真实手机中通过自行构造PDU给任何Android 5.0以下机器发送含有SQL注入代码的WAP推送消息。<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">承载攻击的是WAP推送功能，而正常的短信APP无法通过短信发出WAP推送，通过短信群发等其他运营商提供的短信接口，也无法发出WAP推送消息。笔者通过一段时间对短信PDU格式的研究后发现，在Android vendor RIL之上进行一些修改，普通的手机也能够发出WAP推送消息。下图6的sendSMS函数（<a href="http://androidxref.com/4.4.4_r1/xref/frameworks/opt/telephony/src/java/com/android/internal/telephony/RIL.java" target="_blank">http://androidxref.com/4.4.4_r1/xref/frameworks/opt/telephony/src/java/com/android/internal/telephony/RIL.java</a>）在每次发送短信前都会被系统调用，其中的第二个参数我们可以得到完整的原始PDU，通过对PDU内容进行一些修改，我们可以把普通的短信变成WAP推送消息。在此位置进行改动，随后PDU在替换后向底层传之后，也能成功的被基带解析并发送，接收方也能成功的接受并处理。<br><br><br></span></span></p><p style="text-align:center;"><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/7800a12f2b80b66fabe5634000a84c3b.png" alt="" style="max-width: 854px;"><br>图6 Android vendor RIL中的短信发送函数<br><br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">&nbsp; &nbsp; &nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-family:'微软雅黑','sans-serif';">普通短信的PDU中，包含了信息中心的号码，发送方的号码，接收方的号码，时间戳以及短信内容文本（如下图7）。而WAP推送和普通短信的最重要区别，就是WAP推送承载的是WBXML格式的多媒体消息而不是普通文本，通过修改PDU中的类型标志位并附加上WBXML格式的内容，一条合法的WAP推送消息就能成功的从手机中发出。<br><br></span></span></p><p style="text-align:center;"><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/7a6158364eb890cb380db09735efa775.jpg" alt="" style="max-width: 854px;"><br>图7 典型的短信PDU格式<br><br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp;为了方便测试和演示，笔者写了一个转换WAP推送的Xposed模块（如下图）。激活后，通过短信APP中发送给任何人的普通短信都会自动转换成包含CVE-2014-8507 SQL注入漏洞的WAP推送，自动打开对方手机的设置界面。关键的PDU处理代码请点击<span style="color:red;"><a href="http://security.tencent.com/uploadimg_dir/other/tsrc-Hook.zip" target="_blank">这里下载</a></span>，请勿用于任何非测试用途。<br><br></span></span></p><p style="text-align:center;"><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/2de199efb55bbae165c2133fb1118e13.png" alt="" style="max-width: 854px;"><br>图8 转换普通短信为WAP推送的Xposed模块代码<br><br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x5</span><span style="font-family:'微软雅黑','sans-serif';">后记：如何使APP的数据库使用更安全<br><br></span></span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp; &nbsp; &nbsp; &nbsp;从2014年腾讯整体漏洞的数据来看，跟数据库安全相关的全部都跟SQL注入漏洞有关。因此，能够封堵SQL注入漏洞，基本上就能安全的使用数据库了。下面结合历史漏洞给出以下几点安全建议供大家参考（如果是腾讯的同学就方便多了，我们终端安全团队为业务定制了数据库安全组件）：<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">1.<span style="font-family: 'Times New Roman';">&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">不直接使用原始SQL语句，而是使用具备预编译参数能力的SQL API；<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">2.<span style="font-family: 'Times New Roman';">&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">如果一定要使用原始SQL语句，语句中不应有进行任何字符串拼接的操作；<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">3.<span style="font-family: 'Times New Roman';">&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">如非必要，记得主动调用SQL API关闭动态加载扩展的能力；<br><br></span></span></p><p><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">4.<span style="font-family: 'Times New Roman';">&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">使用数据加密（如SqlCipher）扩展SQLite数据存储的安全性。<br><br></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">&nbsp;</span></span></p><p><strong><span style="font-size:16px;"><span style="font-family:'微软雅黑','sans-serif';">0x6</span><span style="font-family:'微软雅黑','sans-serif';">相关链接</span></span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[1] <a href="http://lcx.cc/?i=4428">http://lcx.cc/?i=4428</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[2] <a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2014-8507">https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2014-8507</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[3] <a href="http://xteam.baidu.com/?p=167">http://xteam.baidu.com/?p=167</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[4] <a href="http://www.sqlite.org/cgi/src/tree?ci=trunk">http://www.sqlite.org/cgi/src/tree?ci=trunk</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[5] <a href="https://android.googlesource.com/platform/external/sqlite/">https://android.googlesource.com/platform/external/sqlite/</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[6] <a href="https://android.googlesource.com/platform/frameworks/base/+/android-4.4.4_r2.0.1/packages/WAPPushManager/">https://android.googlesource.com/platform/frameworks/base/+/android-4.4.4_r2.0.1/packages/WAPPushManager/</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[7] <a href="http://androidxref.com/">http://androidxref.com</a></span></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><span style="font-size:16px;">[8] <a href="http://www.gsm-modem.de/sms-pdu-mode.html">http://www.gsm-modem.de/sms-pdu-mode.html</a></span></span></p>			<br>
+            <div>
+                <img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/blogmsg-79.png" style="max-width: 854px;"><strong style="font-size:15px;">本文专属二维码，扫一扫还能分享朋友圈</strong>            </div>
+			<div class="row">
+				<div class="pull-left"><a href="http://security.tencent.com/index.php/blog/msg/79#commentEditor">[共有<font color="red">3条</font>评论]</a></div>
+				<div class="pull-right"><a href="javascript:void(0);" onclick="qqWb();" style="background:url(/images/QQ_w.gif) no-repeat; padding:0 0 0 20px;  text-decoration:none; ">转发至腾讯微博</a>
+<a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://v.t.sina.com.cn/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey='].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" style="background:url(/images/sina_w.gif) no-repeat; padding:0 0 0 20px; text-decoration:none; ">转发至新浪微博</a>
+</div>
+			</div>
+			<hr>
+            <div class="row comments-title">
+                <span class="pull-left">评论列表</span>
+                <span class="pull-right"><a href="http://security.tencent.com/index.php/blog/msg/79#xhe0_iframe" class="btn btn-primary">发表评论</a> </span>
+            </div>
+            <div class="row">
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/18CF4D42C9BD7EA29D36E4D031F67A8E"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/100" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/18CF4D42C9BD7EA29D36E4D031F67A8E">·KidultBD7(新手上路)</a></span>
+                                <span class="comment-time">2015-03-27 18:17:34</span>
+                                                            </div>
+                            <p>您好~ 我对 WAP PUSH 这一块比较感兴趣，最近在做相关的学习，我有听说运营商在几年前就禁止了这个业务，个人是没有办法发送wap push消息的，貌似是短消息中心不再支持这个业务<a href="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/9.gif" target="_blank"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/9.gif" style="max-width: 854px;"></a><a href="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/9.gif" target="_blank"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/9.gif" style="max-width: 854px;"></a>请问这个说法对么？您发送的是怎样的push消息吖？</p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/634BF9D914D0C214B3C89ADB6C76CA9B"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/100(1)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/634BF9D914D0C214B3C89ADB6C76CA9B">\\Mango\\(安全研究员)</a></span>
+                                <span class="comment-time">2015-04-19 14:25:48</span>
+                                                            </div>
+                            <p>"我们可以把普通的短信变成WAP推送消息。在此位置进行改动，随后PDU在替换后向底层传之后，也能成功的被基带解析并发送，接收方也能成功的接受并处理。"&nbsp;&nbsp; 回答楼上的<br>&nbsp;<br>对于怎么发送&nbsp; 他也说了&nbsp; 自己还原源码加入模版,但是有个问题- -&nbsp;&nbsp;&nbsp; 源码中“800B05040B84C0020003F001010A065603B081EAAF2720756e696f6e2073656c65637420302c27636f6d2e616e64726f69642e73657474696e6773272c27636f6d2e616e64726f69642e73657474696e67732e53657474696e6773272c302c302c302d2d200002066A008509036D6F62696C65746964696E67732E636F6D2F0001”<br>&nbsp;这个，不知道怎么解密，而且这个不是通用的哦,要自己修改里面的代码,不过他这个好长。。。我都没办法还原啊、、、<br><br></p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/56E0D9D2232BDCBDDD0E2A3418885E14"><img src="一条短信控制你的手机！ Android平台的SQL注入漏洞浅析 - 博客内容 - 腾讯安全应急响应中心_files/100(2)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/56E0D9D2232BDCBDDD0E2A3418885E14">云淡风轻2BD(新手上路)</a></span>
+                                <span class="comment-time">2015-07-13 22:15:01</span>
+                                                            </div>
+                            <p>【招聘全职/兼职】渗透测试技术、数据挖掘工程师<br>​‌‌岗位描述<br>负责为客户提供信息安全服务，包括安全评估渗透测试获权、下载某网站数据库、漏洞挖掘检测、安全加固、应急响应等；<br><br>【招聘】渗透测试工程师（招聘人数1人）<br>技能要求<br>要求投职人员具有至少1年以上的职业黑客攻击经验，并实际操作过各类项目，拒绝理论派、学术派、证书派。学历要求可以适当降低，但必须能看写适当的英文资料。<br>1、掌握MySQL、MSSQL、Oracle、PostgreSQL等一种或多种主流数据库结构以及特殊性。<br>2、熟悉渗透测试的步骤、方法、流程、熟练掌握各种渗透测试工具。<br>3、有主机、网络或Web安全渗透测试相关项目实施经验&amp;。<br>4、掌握JavaScript及IE、Safari、Chrome、FireFox、Thunder&amp;Bird、Opera等主流浏览器，能够有针对性的进行XSS、ClickJacking和CSRF。<br>5、对网站/服务器的结构有敏锐的洞察力，能够根据网站的结构推测出大概的网站原始代码或服务器环境架设方案，从而找到入手点。<br>6、基本的Webshell获取，掌握主流CMS漏洞利用以及如WP、Joomla、DZ等含漏洞插件找寻。<br>7、基本服务器提权，懂得基本溢出，以及系统运行的system/root权限程序利用。<br>8、掌握安全漏洞发现和利用方法，具备一定的实战经验&amp;，有丰富渗透测试实战经验者优先。<br>9、熟悉各类主流、非主流WAF或防火墙，并能够有针对性的绕过安全防护类防护软件。<br>10、熟悉主流网络协议TCP/IP、HTTP协议等，精通Windows/Linux/Unix操作系统,，精通WEB渗透技能，至少熟悉一种web服务器端开发语言。<br>11、具有较好的口头表达能力和文字表达能力。<br><br>【招聘】数据挖掘工程师DBA（招聘人数1人）<br>技能要求<br>1、熟悉数据仓库的ETL的开发和数据建模，具有数据仓库实施经验优先；<br>2、有海量数据分析，数据挖掘和统计相关经验，熟悉常用的数据挖掘算法；<br>3、对hadoop/hive,hbase,MapReduce,flume-ng,kafka,storm&amp;一种或者几种有一定的理解；<br>4、精通Oracle、SQL&amp;server，有较好的存储过程开发、SQL性能调优经验；<br>5、熟悉java&amp;web编程，熟悉mvc架构；<br>6、熟悉SAP&amp;BO软件者优先；<br>7、熟悉数据仓库各类建模理论，以及数据仓库数据层级关系，精通3NF和多维数据模型设计，具备大型数据仓库架构设计、模型设计和处理性能调优等相关经验者优先；<br>8、有元数据管理、数据质量管理、主数据管理经验者优先；<br>9、有DBA经验、Hadoop等分布式计算平台使用经验者优先；<br>10、具有数据挖掘、分析经验者优先；<br>11、熟悉shell/perl/python脚本编程语言优先；有互联网行业数据挖掘从业经历者优先&amp;<br><br><br>全职与兼职待遇：<br>招聘人数：2<br>公司福利：双休，五险一金<br>工作地点：全职或者兼职.<br>月薪概述：30K~60k<br>兼职酬劳：每单日结,态度认真、中介勿扰,请实力说话<br>具有3年以上的渗透测试或数据挖掘经验的薪资（年薪60W以上,以能力而定）<br>长期招聘兼职,长期有效，<br>联系QQ：1575956178<br>联系邮箱：1575956178@qq.com</p>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+            <hr>
+                            <div class="hero-unit">
+                    <h1>哇，你还没有登录！</h1>
+                    <p>目前TSRC博客评论之前必须先要登录，请点击下面的按钮登录。</p>
+                    <p><a class="btn btn-primary btn-large" href="http://security.tencent.com/index.php/sign/login">点击登录</a></p>
+                </div>
+            			<p class="indent">腾讯公司欢迎社会各界向我们反馈腾讯的安全问题，更多信息可见<a href="http://security.tencent.com/index.php/report">报告漏洞</a>。</p>
+
+			<p class="postmeta"></p>
+		</div>
+		<!--Content End-->
+
+	</div>
+
+	<div class="bottom_nosider"></div>
+
+</div>
+<!--Footer-->
+<div id="footer">
+    <p>
+				<a href="http://www.tencent.com/" target="_blank">关于腾讯</a>|<a href="http://www.tencent.com/index_e.shtml" target="_blank">About Tencent</a>|<a href="http://www.qq.com/contract.shtml" target="_blank">服务条款</a>|<a href="http://security.tencent.com/index.php/jobs" target="_blank">加入我们</a>|<a href="http://security.tencent.com/index.php/report" target="_self">报告漏洞</a>|<a href="http://security.tencent.com/index.php/friends">合作伙伴</a>|<a href="http://service.qq.com/" target="_blank">腾讯客服</a>
+	</p>
+    <p>
+        Copyright © 1998 - 2015 Tencent. All Rights Reserved
+    </p>
+    <p>腾讯公司 版权所有</p>
+</div>
+<!--Footer End-->
+
+    
+
+
+
+
+</body></html>

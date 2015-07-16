@@ -1,0 +1,781 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0057)http://www.droidsec.cn/android-content-provider-security/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android Content Provider Security  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android Content Provider Security评论Feed" href="http://www.droidsec.cn/android-content-provider-security/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android Content Provider Security _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android Content Provider Security _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android Content Provider Security _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android Content Provider Security _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android Content Provider Security _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android Content Provider Security _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android Content Provider Security _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android Content Provider Security _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android Content Provider Security _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android Content Provider Security _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android Content Provider Security _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android Content Provider Security _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android Content Provider Security _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Android Activtity Security" href="http://www.droidsec.cn/android-activtity-security/">
+<link rel="next" title="Android Broadcast Security" href="http://www.droidsec.cn/android-broadcast-security/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Android Content Provider Security _ DroidSec.cn_files/Android Content Provider Security _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=18">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-18 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android Content Provider Security _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android Content Provider Security              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android Content Provider Security            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-18" class="uazoh7-post post-18 post type-post status-publish format-standard hentry category-4 tag-android-override tag-api tag-content-provider-helper tag-uri">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android Content Provider Security</span></h3>
+<p> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" rel="category tag">安卓漏洞攻防</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<p>点评：文章亮点在在Content Provider组件可导出与权限配置不当时使用ADBDrozer获取与修改敏感数据的方法与总结的经典案例。Content Provider Helper这个小工具在真机测试过程中还是挺方便的，分享给大家：<a href="https://github.com/jenzz/ContentProviderHelper">点击下载</a></p>
+<h2>0x00 科普</h2>
+<hr>
+<p>内容提供器用来存放和获取数据并使这些数据可以被所有的应用程序访问。它们是应用程序之间共享数据的唯一方法；不包括所有Android软件包都能访问的公共储存区域。Android为常见数据类型（音频，视频，图像，个人联系人信息，等等）装载了很多内容提供器。你可以看到在android.provider包里列举了一些。你还能查询这些提供器包含了什么数据。当然，对某些敏感内容提供器，必须获取对应的权限来读取这些数据。<span id="more-18"></span></p>
+<p>如果你想公开你自己的数据，你有两个选择：你可以创建你自己的内容提供器（一个ContentProvider子类）或者你可以给已有的提供器添加数据，前提是存在一个控制同样类型数据的内容提供器且你拥有读写权限。</p>
+<p>&nbsp;</p>
+<p><img src="Android Content Provider Security _ DroidSec.cn_files/2014121202372462932.jpg" alt=""></p>
+<h2>0x01 知识要点</h2>
+<hr>
+<p>参考：<a href="http://developer.android.com/guide/topics/providers/content-providers.html">http://developer.android.com/guide/topics/providers/content-providers.html</a></p>
+<p><strong>Content URIs</strong></p>
+<p>content <a href="http://www.droidsec.cn/tag/uri/" class="st_tag internal_tag" rel="tag" title="Posts tagged with URI">URI</a> 是一个标志provider中的数据的URI．Content URI中包含了整个provider的以符号表示的名字(它的authority) 和指向一个表的名字(一个路径)．当你调用一个客户端的方法来操作一个provider中的一个表，指向表的content URI是参数之一．</p>
+<p><img src="Android Content Provider Security _ DroidSec.cn_files/2014121202373074404.jpg" alt=""></p>
+<p>A. 标准前缀表明这个数据被一个内容提供器所控制。它不会被修改。</p>
+<p>B. URI的权限部分；它标识这个内容提供器。对于第三方应用程序，这应该是一个全称类名（小写）以确保唯一性。权限在&nbsp;元素的权限属性中进行声明：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9a24dd87923777767" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;provider name=".TransportationProvider" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;authorities="com.example.transportationprovider" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. . .&nbsp;&nbsp;&gt; </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9a24dd87923777767-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9a24dd87923777767-1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-o">&lt;</span><span class="crayon-e">provider </span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">".TransportationProvider"</span><span class="crayon-h"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-v">authorities</span><span class="crayon-o">=</span><span class="crayon-s">"com.example.transportationprovider"</span><span class="crayon-h"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-sy">.</span><span class="crayon-h"> </span><span class="crayon-sy">.</span><span class="crayon-h"> </span><span class="crayon-sy">.</span>&nbsp;&nbsp;<span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0043 seconds] -->
+<p>C. 用来判断请求数据类型的路径。这可以是0或多个段长。如果内容提供器只暴露了一种数据类型（比如，只有火车），这个分段可以没有。如果提供器暴露若干类型，包括子类型，那它可以是多个分段长-例如，提供”land/bus”, “land/train”, “sea/ship”, 和”sea/submarine”这4个可能的值。</p>
+<p>D. 被请求的特定记录的ID，如果有的话。这是被请求记录的_ID数值。如果这个请求不局限于单个记录， 这个分段和尾部的斜线会被忽略：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9a24ddc0270108253" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&nbsp;&nbsp;&nbsp;&nbsp;content://com.example.transportationprovider/trains </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9a24ddc0270108253-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9a24ddc0270108253-1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="crayon-v">content</span><span class="crayon-o">:</span><span class="crayon-c">//com.example.transportationprovider/trains </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0005 seconds] -->
+<p><strong>ContentResolver</strong></p>
+<p>ContentResolver的方法们提供了对存储数据的基本的”CRUD” (增删改查)功能</p>
+<div>
+<div id="highlighter_868028">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+</td>
+<td>
+<div>
+<div><code>getIContentProvider() </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Returns the Binder object </code><code>for</code> <code>this</code> <code>provider.</code></div>
+<div></div>
+<div><code>delete(Uri uri, String selection, String[] selectionArgs) -----</code><code>abstract</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>A request to delete one or more rows.</code></div>
+<div></div>
+<div><code>insert(Uri uri, ContentValues values) </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Implement </code><code>this</code> <code>to insert a </code><code>new</code> <code>row.</code></div>
+<div></div>
+<div><code>query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Receives a query request from a client in a local process, and returns a Cursor.</code></div>
+<div></div>
+<div><code>update(Uri uri, ContentValues values, String selection, String[] selectionArgs) </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Update a content URI.</code></div>
+<div></div>
+<div><code>openFile(Uri uri, String mode) </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Open a file blob associated with a content URI.</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Sql注入</strong></p>
+<p>sql语句拼接</p>
+<div>
+<div id="highlighter_628909">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>// 通过连接用户输入到列名来构造一个选择条款</code></div>
+<div><code>String mSelectionClause =&nbsp;&nbsp;</code><code>"var = "</code> <code>+ mUserInput;</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>参数化查询</p>
+<div>
+<div id="highlighter_245937">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>// 构造一个带有占位符的选择条款</code></div>
+<div><code>String mSelectionClause =&nbsp;&nbsp;</code><code>"var = ?"</code><code>;</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>权限</strong></p>
+<p>下面的&nbsp;元素请求对用户词典的读权限：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9a24ddcb522596130" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;uses-permission android:name="android.permission.READ_USER_DICTIONARY"&gt; </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9a24ddcb522596130-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9a24ddcb522596130-1"><span class="crayon-o">&lt;</span><span class="crayon-v">uses</span><span class="crayon-o">-</span><span class="crayon-e">permission </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"android.permission.READ_USER_DICTIONARY"</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0007 seconds] -->
+<p>申请某些protectionLevel=”dangerous”的权限</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9a24ddd1533659718" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;uses-permission android:name="com.huawei.dbank.v7.provider.DBank.READ_DATABASE"/&gt; &lt;permission android:name="com.huawei.dbank.v7.provider.DBank.READ_DATABASE" android:protectionLevel="dangerous"&gt;&lt;/permission&gt; </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9a24ddd1533659718-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9a24ddd1533659718-1"><span class="crayon-o">&lt;</span><span class="crayon-v">uses</span><span class="crayon-o">-</span><span class="crayon-e">permission </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"com.huawei.dbank.v7.provider.DBank.READ_DATABASE"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-o">&lt;</span><span class="crayon-e">permission </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"com.huawei.dbank.v7.provider.DBank.READ_DATABASE"</span><span class="crayon-h"> </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">protectionLevel</span><span class="crayon-o">=</span><span class="crayon-s">"dangerous"</span><span class="crayon-o">&gt;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">permission</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0015 seconds] -->
+<p>android:protectionLevel</p>
+<p>normal:默认值。低风险权限，只要申请了就可以使用，安装时不需要用户确认。</p>
+<p>dangerous：像WRITE_SETTING和SEND_SMS等权限是有风险的，因为这些权限能够用来重新配置设备或者导致话费。使用此protectionLevel来标识用户可能关注的一些权限。Android将会在安装程序时，警示用户关于这些权限的需求，具体的行为可能依据Android版本或者所安装的移动设备而有所变化。</p>
+<p>signature：这些权限仅授予那些和本程序应用了相同密钥来签名的程序。</p>
+<p>signatureOrSystem:与signature类似，除了一点，系统中的程序也需要有资格来访问。这样允许定制Android系统应用也能获得权限，这种保护等级有助于集成系统编译过程。</p>
+<p><strong><a href="http://www.droidsec.cn/tag/api/" class="st_tag internal_tag" rel="tag" title="Posts tagged with API">API</a></strong></p>
+<p>Contentprovider组件在API-17（android4.2）及以上版本由以前的exported属性默认ture改为默认false。</p>
+<p>Contentprovider无法在android2.2（API-8）申明为私有。</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9a24ddd9637984942" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;!-- *** POINT 1 *** Do not (Cannot) implement Private Content Provider in Android 2.2 (API Level 8) or earlier. --&gt; &lt;uses-sdk android:minSdkVersion="9" android:targetSdkVersion="17" /&gt; </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9a24ddd9637984942-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9a24ddd9637984942-1"><span class="crayon-o">&lt;</span><span class="crayon-o">!</span><span class="crayon-o">--</span><span class="crayon-h"> </span><span class="crayon-o">*</span><span class="crayon-o">*</span><span class="crayon-o">*</span><span class="crayon-h"> </span><span class="crayon-i">POINT</span><span class="crayon-h"> </span><span class="crayon-cn">1</span><span class="crayon-h"> </span><span class="crayon-o">*</span><span class="crayon-o">*</span><span class="crayon-o">*</span><span class="crayon-h"> </span><span class="crayon-st">Do</span><span class="crayon-h"> </span><span class="crayon-st">not</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">Cannot</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-e">implement </span><span class="crayon-m">Private</span><span class="crayon-h"> </span><span class="crayon-e">Content </span><span class="crayon-e">Provider </span><span class="crayon-st">in</span><span class="crayon-h"> </span><span class="crayon-i">Android</span><span class="crayon-h"> </span><span class="crayon-cn">2.2</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-e">API </span><span class="crayon-i">Level</span><span class="crayon-h"> </span><span class="crayon-cn">8</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-st">or</span><span class="crayon-h"> </span><span class="crayon-v">earlier</span><span class="crayon-sy">.</span><span class="crayon-h"> </span><span class="crayon-o">--</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-o">&lt;</span><span class="crayon-v">uses</span><span class="crayon-o">-</span><span class="crayon-e">sdk </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">minSdkVersion</span><span class="crayon-o">=</span><span class="crayon-s">"9"</span><span class="crayon-h"> </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">targetSdkVersion</span><span class="crayon-o">=</span><span class="crayon-s">"17"</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0030 seconds] -->
+<p><strong>关键方法</strong></p>
+<ul>
+<li>public void addURI (String authority, String path, int code)</li>
+<li>public static String decode (String s)</li>
+<li>public ContentResolver getContentResolver()</li>
+<li>public static Uri parse(String uriString)</li>
+<li>public ParcelFileDescriptor openFile (Uri uri, String mode)</li>
+<li>public final Cursor query(Uri uri, String[] projection,String selection, String[] selectionArgs, String sortOrder)</li>
+<li>public final int update(Uri uri, ContentValues values, String where,String[] selectionArgs)</li>
+<li>public final int delete(Uri url, String where, String[] selectionArgs)</li>
+<li>public final Uri insert(Uri url, ContentValues values)</li>
+</ul>
+<h2>0x02 content provider 分类</h2>
+<hr>
+<p><img src="Android Content Provider Security _ DroidSec.cn_files/2014121202373078881.jpg" alt=""></p>
+<p><img src="Android Content Provider Security _ DroidSec.cn_files/2014121202373089005.jpg" alt=""></p>
+<p>这个老外分的特别细，个人认为就分private、public、in-house差不多够用。</p>
+<h2>0x03 安全建议</h2>
+<hr>
+<ol>
+<li>minSdkVersion不低于9</li>
+<li>不向外部app提供的数据的私有content provider设置exported=“false”避免组件暴露(编译api小于17时更应注意此点)</li>
+<li>使用参数化查询避免注入</li>
+<li>内部app通过content provid交换数据设置protectionLevel=“signature”验证签名</li>
+<li>公开的content provider确保不存储敏感数据</li>
+<li>Uri.decode() before use ContentProvider.openFile()</li>
+<li>提供asset文件时注意权限保护</li>
+</ol>
+<h2>0x04 测试方法</h2>
+<hr>
+<p>1、反编译查看AndroidManifest.xml（drozer扫描）文件定位content provider是否导出，是否配置权限，确定authority</p>
+<div>
+<div id="highlighter_979394">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>drozer:</code></div>
+<div><code>run app.provider.info -a cn.etouch.ecalendar</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2、反编译查找path，关键字<code>addURI</code>、hook api 动态监测推荐使用zjdroid</p>
+<p>3、确定authority和path后根据业务编写POC、使用drozer、使用小工具Content Provider Helper、adb shell // 没有对应权限会提示错误</p>
+<div>
+<div id="highlighter_377540">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+</td>
+<td>
+<div>
+<div><code>adb shell：</code></div>
+<div><code>adb shell content query --uri &lt;URI&gt; [--user &lt;USER_ID&gt;] [--projection &lt;PROJECTION&gt;] [--where &lt;WHERE&gt;] [--</code><code>sort</code> <code>&lt;SORT_ORDER&gt;]</code></div>
+<div><code>content query --uri content:</code><code>//settings/secure</code> <code>--projection name:value --where </code><code>"name='new_setting'"</code> <code>--</code><code>sort</code> <code>"name ASC"</code></div>
+<div><code>adb shell content insert --uri content:</code><code>//settings/secure</code> <code>--bind name:s:new_setting --bind value:s:new_value</code></div>
+<div><code>adb shell content update --uri content:</code><code>//settings/secure</code> <code>--bind value:s:newer_value --where </code><code>"name='new_setting'"</code></div>
+<div><code>adb shell content delete --uri content:</code><code>//settings/secure</code> <code>--where </code><code>"name='new_setting'"</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>&nbsp;</p>
+<div>
+<div id="highlighter_932843">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>drozer：</code></div>
+<div><code>run app.provider.query content:</code><code>//telephony/carriers/preferapn</code> <code>--vertical</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h2>0x05 案例</h2>
+<hr>
+<p><strong>案例1：直接暴露</strong></p>
+<ul>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-041595" target="_blank">WooYun: 盛大Youni有你Android版敏感信息泄露(可读用户本地消息)</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-016854" target="_blank">WooYun: 新浪微博Android应用本地信息泄露</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-021089" target="_blank">WooYun: 盛大起点读书Android客户端token等用户敏感信息泄露</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-039290" target="_blank">WooYun: 傲游浏览器限制不严格可导致网页欺诈攻击</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-042609" target="_blank">WooYun: 搜狗手机浏览器隐私泄露和主页篡改漏洞二合一（需要手机里有恶意应用）</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-085432" target="_blank">WooYun: 酷派S6流量监控绕过（偷跑流量不是事儿）</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-084500" target="_blank">WooYun: 酷派最安全手机s6通知栏管理权限绕过</a></li>
+</ul>
+<p><strong>案例2：需权限访问</strong></p>
+<ul>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-041521" target="_blank">WooYun: 米聊Android版敏感信息泄露(可读用户本地消息)</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-057590" target="_blank">WooYun: 华为网盘content provider组件可能泄漏用户信息</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-039697" target="_blank">WooYun: 人人客户端权限问题导致隐私泄露</a></li>
+</ul>
+<p><strong>案例3：openFile文件遍历</strong></p>
+<ul>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-044407" target="_blank">WooYun: 赶集网Android客户端Content Provider组件任意文件读取漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-047098" target="_blank">WooYun: 猎豹浏览器（Android版）任意私有文件数据可被本地第三方窃取漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-044411" target="_blank">WooYun: 58同城Android客户端远程文件写入漏洞</a></li>
+</ul>
+<p>Override openFile method</p>
+<p>错误写法1：</p>
+<div>
+<div id="highlighter_722667">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+</td>
+<td>
+<div>
+<div><code>private</code> <code>static</code> <code>String IMAGE_DIRECTORY = localFile.getAbsolutePath();</code></div>
+<div><code>public</code> <code>ParcelFileDescriptor openFile(Uri paramUri, String paramString)</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>throws</code> <code>FileNotFoundException {</code></div>
+<div><code>&nbsp;&nbsp;</code><code>File file = </code><code>new</code> <code>File(IMAGE_DIRECTORY, paramUri.getLastPathSegment());</code></div>
+<div><code>&nbsp;&nbsp;</code><code>return</code> <code>ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>错误写法2：URI.parse()</p>
+<div>
+<div id="highlighter_357746">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+</td>
+<td>
+<div>
+<div><code>private</code> <code>static</code> <code>String IMAGE_DIRECTORY = localFile.getAbsolutePath();</code></div>
+<div><code>public</code> <code>ParcelFileDescriptor openFile(Uri paramUri, String paramString)</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>throws</code> <code>FileNotFoundException {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>File file = </code><code>new</code> <code>File(IMAGE_DIRECTORY, Uri.parse(paramUri.getLastPathSegment()).getLastPathSegment());</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>return</code> <code>ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>POC1：</p>
+<div>
+<div id="highlighter_226729">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+</td>
+<td>
+<div>
+<div><code>String target = </code><code>"content://com.example.android.sdk.imageprovider/data/"</code> <code>+ </code><code>"..%2F..%2F..%2Fdata%2Fdata%2Fcom.example.android.app%2Fshared_prefs%2FExample.xml"</code><code>;</code></div>
+<div></div>
+<div><code>ContentResolver cr = </code><code>this</code><code>.getContentResolver();</code></div>
+<div><code>FileInputStream fis = (FileInputStream)cr.openInputStream(Uri.parse(target));</code></div>
+<div></div>
+<div><code>byte</code><code>[] buff = </code><code>new</code> <code>byte</code><code>[fis.available()];</code></div>
+<div><code>in.read(buff);</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>POC2：double encode</p>
+<div>
+<div id="highlighter_864558">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+</td>
+<td>
+<div>
+<div><code>String target = </code><code>"content://com.example.android.sdk.imageprovider/data/"</code> <code>+ </code><code>"%252E%252E%252F%252E%252E%252F%252E%252E%252Fdata%252Fdata%252Fcom.example.android.app%252Fshared_prefs%252FExample.xml"</code><code>;</code></div>
+<div></div>
+<div><code>ContentResolver cr = </code><code>this</code><code>.getContentResolver();</code></div>
+<div><code>FileInputStream fis = (FileInputStream)cr.openInputStream(Uri.parse(target));</code></div>
+<div></div>
+<div><code>byte</code><code>[] buff = </code><code>new</code> <code>byte</code><code>[fis.available()];</code></div>
+<div><code>in.read(buff);</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>解决方法Uri.decode()</p>
+<div>
+<div id="highlighter_943872">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+</td>
+<td>
+<div>
+<div><code>private</code> <code>static</code> <code>String IMAGE_DIRECTORY = localFile.getAbsolutePath();</code></div>
+<div><code>&nbsp;&nbsp;</code><code>public</code> <code>ParcelFileDescriptor openFile(Uri paramUri, String paramString)</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>throws</code> <code>FileNotFoundException {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String decodedUriString = Uri.decode(paramUri.toString());</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>File file = </code><code>new</code> <code>File(IMAGE_DIRECTORY, Uri.parse(decodedUriString).getLastPathSegment());</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>if</code> <code>(file.getCanonicalPath().indexOf(localFile.getCanonicalPath()) != </code><code>0</code><code>) {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>throw</code> <code>new</code> <code>IllegalArgumentException();</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>return</code> <code>ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);</code></div>
+<div><code>&nbsp;&nbsp;</code><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h2>0x06 参考</h2>
+<hr>
+<p><a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=111509535">https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=111509535</a></p>
+<p><a href="http://www.jssec.org/dl/android_securecoding_en.pdf">http://www.jssec.org/dl/android_securecoding_en.pdf</a></p>
+<p><a href="http://developer.android.com/intl/zh-cn/reference/android/content/ContentProvider.html">http://developer.android.com/intl/zh-cn/reference/android/content/ContentProvider.html</a></p>
+<h2>0x07 相关阅读</h2>
+<p><a href="http://zone.wooyun.org/content/15097">http://zone.wooyun.org/content/15097</a></p>
+<p><a href="http://drops.wooyun.org/tips/2997">http://drops.wooyun.org/tips/2997</a></p>
+<p>转载自：<a href="http://drops.wooyun.org/tips/3812">乌云知识库</a>&nbsp;作者：<a title="由 瘦蛟舞 发布" href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" rel="author">瘦蛟舞</a>&nbsp; &nbsp; 感谢原文作者授权转载</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/android-override/" rel="tag">Android Override</a> <a href="http://www.droidsec.cn/tag/api/" rel="tag">API</a> <a href="http://www.droidsec.cn/tag/content-provider-helper/" rel="tag">Content Provider Helper</a> <a href="http://www.droidsec.cn/tag/uri/" rel="tag">URI</a></p>
+
+<div class="date">
+  <span class="day">11</span>
+  <span class="month">2015-02</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default5313_provider" id="easyXDM_default5313_provider" frameborder="0" src="Android Content Provider Security _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/%e4%bd%bf%e7%94%a8drozer%e5%af%b9android%e5%ba%94%e7%94%a8%e8%bf%9b%e8%a1%8c%e5%ae%89%e5%85%a8%e8%af%84%e4%bc%b0/" rel="bookmark" title="使用drozer对Android应用进行安全评估">使用drozer对Android应用进行安全评估</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-webview-%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e4%b8%8e%e6%a3%80%e6%b5%8b/" rel="bookmark" title="Android WebView 远程代码执行漏洞简析">Android WebView 远程代码执行漏洞简析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93app%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e6%8a%80%e6%9c%af/" rel="bookmark" title="安卓APP动态调试技术">安卓APP动态调试技术</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%b8%b8%e8%a7%81android-native%e5%b4%a9%e6%ba%83%e5%8f%8a%e9%94%99%e8%af%af%e5%8e%9f%e5%9b%a0/" rel="bookmark" title="常见Android Native崩溃及错误原因">常见Android Native崩溃及错误原因</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e9%95%bf%e7%94%9f%e5%89%91-smali-instrumentation/" rel="bookmark" title="安卓动态调试七种武器之长生剑 – Smali Instrumentation">安卓动态调试七种武器之长生剑 – Smali Instrumentation</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%af%a6%e8%a7%a3android-app-allowbackup%e9%85%8d%e7%bd%ae%e5%b8%a6%e6%9d%a5%e7%9a%84%e9%a3%8e%e9%99%a9/" rel="bookmark" title="两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险">两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%87%aa%e5%b7%b1%e5%8a%a8%e6%89%8b%e5%bc%80%e5%8f%91drozer%e6%8f%92%e4%bb%b6%e4%b9%8b%e8%bf%9b%e9%98%b6%e7%af%87/" rel="bookmark" title="自己动手开发Drozer插件之进阶篇">自己动手开发Drozer插件之进阶篇</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-hackers-handbook%e4%b8%ad%e6%96%87%e7%89%88%e5%8d%b3%e5%b0%86%e4%b8%8a%e5%b8%82/" rel="bookmark" title="Android Hacker’s Handbook中文版即将上市">Android Hacker’s Handbook中文版即将上市</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/google_android_security_2014_report_final/" rel="bookmark" title="谷歌发布2014年Android系统安全回顾报告">谷歌发布2014年Android系统安全回顾报告</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android Content Provider Security _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

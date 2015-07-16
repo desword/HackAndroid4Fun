@@ -1,0 +1,38 @@
+.uazoh7-header-1 .uazoh7-top-bar{width:100%;max-height:40px;text-align:left}
+.uazoh7-header-1 .uazoh7-top-bar p.contacts{width:auto;line-height:40px;margin:0;margin-right:40px;display:inline-block}
+.uazoh7-header-1 .uazoh7-top-bar p.contacts i{border-radius:100px;width:20px;line-height:20px;height:20px;text-align:center;font-size:10px;color:#fff;display:inline-block;margin:10px 0;margin-right:5px}
+.uazoh7-header-1 .uazoh7-top-bar p.contacts a{color:#fff}
+.uazoh7-header-1 .uazoh7-top-bar ul.social-btns{width:auto;float:right;margin:0;padding:0}
+.uazoh7-header-1 .uazoh7-top-bar ul.social-btns li{width:auto;float:left;width:40px;height:40px;margin:0;padding:0;position:relative;overflow:hidden;margin-left:1px}
+.uazoh7-header-1 .uazoh7-top-bar ul.social-btns li a{position:absolute;left:0;top:0;width:100%;line-height:40px;height:40px;float:left;color:#fff;background-color:rgba(000,000,000,0.2);text-align:center;transition-style:linear;transition-duration:0s}
+.uazoh7-header-1 .uazoh7-top-bar ul.social-btns li a.hover{top:40px}
+.uazoh7-header-1 .uazoh7-header-bg{background-color:#fff;width:100%;float:left;border:0 solid #e5e5e5;border-bottom-width:1px;height:102px}
+.uazoh7-header-1 .uazoh7-header-bg .uazoh7-logo{position:absolute;left:0;top:0;height:100px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;padding:30px 0;border:0 solid #f00}
+.uazoh7-header-1 .uazoh7-header-bg .uazoh7-logo img{max-height:40px;float:left;margin-right:10px}
+.uazoh7-header-1 .uazoh7-header-bg .uazoh7-logo p.logo{margin:0;padding:0;line-height:26px;font-size:24px;font-weight:bold;text-transform:uppercase;color:#333;position:absolute;left:50px;top:30px;width:250px;max-width:250px}
+.uazoh7-header-1 .uazoh7-header-bg .uazoh7-logo p.tagline{position:absolute;left:50px;top:56px;margin:0;padding:0;line-height:14px;color:#999;width:250px;display:block;border:0 solid #f00}
+.uazoh7-header-1 .uazoh7-header-bg nav{width:auto;float:right}
+.uazoh7-header-1 .uazoh7-header-bg nav ul,.uazoh7-header-1 .uazoh7-header-bg nav li{width:100%;float:left;margin:0;padding:0;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+.uazoh7-header-1 .uazoh7-header-bg nav ul>li{position:relative}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li{width:auto;padding:0 20px;line-height:100px;border:0 solid #fff;border-left-width:1px;border-right-width:1px}
+.uazoh7-header-1 .uazoh7-header-bg nav .hover{background-color:#f2f2f2;border:0 solid #e5e5e5;border-left-width:1px;border-right-width:1px;width:100%;height:100%;position:absolute;left:0;top:0;display:none;z-index:1}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul>li .hover{border-left-width:0;border-right-width:0}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li>a{font-size:110%}
+.uazoh7-header-1 .uazoh7-header-bg nav a{text-transform:capitalize;position:relative;z-index:10}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul{display:none;position:absolute;left:198px;top:-1px;width:200px;background-color:#fff;border:1px solid #e5e5e5;z-index:10;border-bottom-width:0}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li>ul{left:0;top:101px}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul.left{left:auto;right:0;top:101px}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul.left ul{left:-200px;top:-1px}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul>li{line-height:40px;border:0 solid #e5e5e5;border-top-width:0;border-bottom-width:1px;padding-left:20px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+.uazoh7-header-1 .uazoh7-header-bg nav>ul>li ul>li>a{text-transform:capitalize}
+.uazoh7-header-1 .uazoh7-mega{top:101px;right:0}
+.uazoh7-header-1 .uazoh7-light-top-bar{background-color:transparent!important;border:0 solid #e5e5e5;border-bottom-width:1px}
+.uazoh7-header-1 .uazoh7-light-top-bar p.contacts a{color:#333}
+.uazoh7-header-1 .uazoh7-light-top-bar ul.social-btns li{margin-left:0}
+.uazoh7-header-1 .uazoh7-light-top-bar ul.social-btns li a{background-color:rgba(000,000,000,0);color:#333}
+.uazoh7-header-1 .uazoh7-light-top-bar ul.social-btns li a.hover{color:#fff}
+.uazoh7-header-1 .uazoh7-dark-header-bg nav>ul>li{border-left-width:1px;border-left-style:solid;border-right-width:1px;border-right-style:solid}
+.uazoh7-header-1 .uazoh7-dark-header-bg nav>ul>li>a{color:#fff}
+.uazoh7-header-1 .uazoh7-dark-header-bg nav>ul>li:hover>a{color:#333}
+.uazoh7-header-1 .uazoh7-dark-header-bg .uazoh7-logo p.logo{color:#fff}
+.uazoh7-header-1 .uazoh7-dark-header-bg{border-bottom-width:1px;border-bottom-style:solid}

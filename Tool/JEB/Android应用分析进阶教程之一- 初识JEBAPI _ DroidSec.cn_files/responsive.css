@@ -1,0 +1,66 @@
+@media(max-width:480px){.uazoh7-header-1 .uazoh7-top-bar ul.social-btns,.uazoh7-header-1 .uazoh7-top-bar .shopping-cart,.uazoh7-header-1 .uazoh7-top-bar p.contacts i,.uazoh7-header-1 .uazoh7-header-bg nav,.uazoh7-header-2 .uazoh7-header-bg .social-buttons,.uazoh7-header-2 .uazoh7-header-bg .header-search,.uazoh7-header-2 .uazoh7-desktop-menu-bg,.uazoh7-header-3 .uazoh7-header-bg .contact-info,.uazoh7-header-3 .uazoh7-desktop-menu-bg,img.shadow,.uazoh7-desktop-breadscrubs{display:none}
+.uazoh7-header-3 .uazoh7-header-bg .uazoh7-logo{float:left}
+.container{max-width:350px}
+.uazoh7-boxed{max-width:100%}
+.uazoh7-header-1 .uazoh7-top-bar p.contacts{width:50%;text-align:center;margin:0;float:left}
+#uazoh7-mobile-menu-btn,#uazoh7-mobile-cart-btn,.uazoh7-mobile-menu,.uazoh7-mobile-breadscrubs{display:block}
+.uazoh7-feature,.uazoh7-feature-2{margin-bottom:60px}
+.uazoh7-section-cta2 p span,.uazoh7-feature-store{width:100%;margin-bottom:20px}
+.uazoh7-page-title-1 .search{margin-top:20px}
+.uazoh7-partner-1 figure{width:100px}
+.uazoh7-partner-1{padding-left:130px}
+.riva-countdown .riva-countdown-item{width:60px}
+.uazoh7-content-404-inner p.coming{font-size:300%}
+ul.uazoh7-property-options li{width:50%}
+.uazoh7-f1 input.sec{margin-left:0}
+.uazoh7-f1 input.wide,.uazoh7-f1 textarea{min-width:100%}
+.payment-option{margin-bottom:15px;width:100%}
+.uazoh7-post-2{padding-left:75px}
+.uazoh7-post-2 figure{position:relative;max-width:100%;left:0}
+.uazoh7-comment .uazoh7-comment{padding-left:30px}
+.uazoh7-comment p.meta .date{float:left;margin-top:10px}
+.mobeleout,.suspend{display:none;height:1px;width:1px}
+.uazoh7-post .date{display:none}
+.uazoh7-post{padding-left:0}
+.uazoh7-header-3 .uazoh7-header-bg .social-buttons{display:none}
+}
+@media(min-width:480px) and (max-width:768px){.uazoh7-comment .uazoh7-comment{padding-left:30px}
+.uazoh7-comment p.meta .date{float:left;margin-top:10px}
+.payment-option{margin-bottom:15px;width:100%}
+.uazoh7-header-1 .uazoh7-top-bar ul.social-btns,.uazoh7-header-1 .uazoh7-top-bar .shopping-cart,.uazoh7-header-1 .uazoh7-header-bg nav,.uazoh7-header-2 .uazoh7-header-bg .social-buttons,.uazoh7-header-2 .uazoh7-desktop-menu-bg,.uazoh7-header-3 .uazoh7-header-bg .contact-info p.phone,.uazoh7-header-3 .uazoh7-desktop-menu-bg,img.shadow,.uazoh7-desktop-breadscrubs{display:none}
+.container{max-width:420px}
+.uazoh7-boxed{max-width:480px}
+.uazoh7-header-1 .uazoh7-top-bar p.contacts{text-align:left;float:left}
+#uazoh7-mobile-menu-btn,#uazoh7-mobile-cart-btn,.uazoh7-mobile-menu,.uazoh7-mobile-breadscrubs{display:block}
+.uazoh7-feature,.uazoh7-feature-2{margin-bottom:60px}
+.uazoh7-section-cta2 p span,.uazoh7-feature-store{width:100%;margin-bottom:20px}
+.uazoh7-page-title-1 .search{margin-top:20px}
+ul.uazoh7-property-options li{width:50%}
+.uazoh7-f1 input.sec{margin-left:0}
+.uazoh7-f1 input.wide,.uazoh7-f1 textarea{min-width:100%}
+.uazoh7-post-2{padding-left:75px}
+.uazoh7-post-2 figure{position:relative;max-width:100%;left:0}
+.mobeleout,.suspend{display:none;height:1px;width:1px}
+.uazoh7-post .date{display:none}
+.uazoh7-post{padding-left:0}
+.uazoh7-header-3 .uazoh7-header-bg .social-buttons{display:none}
+}
+@media(min-width:768px) and (max-width:992px){.uazoh7-header-1 .uazoh7-header-bg .uazoh7-logo p.tagline{width:160px}
+.uazoh7-header-1 .uazoh7-header-bg nav ul li,.uazoh7-header-2 .uazoh7-desktop-menu-bg nav>ul>li,.uazoh7-header-3 .uazoh7-desktop-menu-bg nav>ul>li{padding:0 8px}
+.uazoh7-section-cta2 p span{width:100%;margin-bottom:20px}
+.uazoh7-partner-logo .inner{padding:0 10px}
+.uazoh7-property-1 ul li span{display:none}
+.uazoh7-property-1 p.title{min-height:96px}
+.uazoh7-boxed{max-width:790px}
+.mobeleout,.suspend{display:none;height:1px;width:1px}
+.uazoh7-post .date{display:none}
+.uazoh7-post{padding-left:0}
+}
+@media(min-width:992px) and (max-width:1200px){.uazoh7-partner-logo .inner{padding:0 20px}
+.uazoh7-header-1 .uazoh7-header-bg nav ul li,.uazoh7-header-3 .uazoh7-desktop-menu-bg nav>ul>li{padding:0 15px}
+.uazoh7-property-1 ul li span{display:none}
+.uazoh7-f1 input[type=submit],.uazoh7-f1 button{margin-left:0!important}
+.uazoh7-boxed{max-width:1020px}
+}
+@media(min-width:1200px){.uazoh7-boxed{max-width:1250px}
+}

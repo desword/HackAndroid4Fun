@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://security.tencent.com/index.php/blog/msg/73 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<base href="."> 
+<!--[if lte IE 6]></base><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="description" content="腾讯安全应急响应中心,Tencent Security Response Center,TSRC">
+<meta property="qc:admins" content="725656125352141645635646375">
+<meta name="keywords" content="腾讯,Tencent,安全团队,应急响应,腾讯安全应急响应中心,Tencent Security Response Center,TSRC">
+
+<link rel="stylesheet" rev="stylesheet" href="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/global.css" type="text/css">
+<link rel="stylesheet" rev="stylesheet" href="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/report.css" type="text/css">
+<title>窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心</title>
+<style type="text/css"></style>
+
+</head>
+<body>
+
+<style type="text/css">
+<!--
+/* 为了显示提交中加入的代码 */
+pre{margin-left:2em;border-left:3px solid #CCC;padding:0 1em;font-size:12px;line-height:14px;word-wrap:break-word;word-break:break-all;}
+-->
+    .comments-title{
+        border-bottom: 2px solid #0044cc;
+    }
+    .comments-title>span:first-of-type{
+        font-size: 120%;
+        line-height: 35px;
+        background-color: #0044cc;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 0 10px;
+    }
+    .comments-title>span:last-of-type{
+        margin-bottom: 5px;
+    }
+    .comment {
+        width: 100%;
+        padding: 10px 0;
+    }
+    .comment>a{
+        float: left;
+    }
+    .comment>a>img{
+        width: 100px;
+        height: 100px;
+    }
+    .comment-info{
+        float: left;
+        width: 754px;
+    }
+
+.comment-detail {
+    position:relative;
+    padding:5px;
+    border:3px solid #0044cc;
+    color:#333;
+    word-wrap:break-word;word-break:break-all;
+    background:#fff;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+}
+.comment-detail>p {
+    line-height: 18px;
+}
+.comment-detail.left {
+    width: 718px;
+    margin-left:20px;
+}
+
+div.comment-detail div.user-info{
+    border-bottom: 1px dashed #000000;
+    margin-bottom: 10px;
+}
+.comment-time{
+    margin-left: 15px;
+    font-size: 12px;
+    margin-top: 10px;
+    line-height: 12px;
+    color: #888;
+    float: left;
+}
+form textarea{
+    width: 100%;
+}
+</style>
+<link rel="stylesheet" rev="stylesheet" href="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/blog.css" type="text/css">
+
+
+
+
+
+<!--Header-->
+
+<div id="headerAll">
+
+    
+    <div id="header">
+        <div id="top">
+            <a class="logo" href="javascript:;"><cite>QQ安全中心<br>在线生活安全护航</cite></a>
+        </div>
+
+        <div id="menu">
+            <ul class="tsrc_top_menu">
+                <li class="tsrc_home"><a href="http://security.tencent.com/index.php"><span>&nbsp;首页&nbsp;</span></a></li>
+                <li class="tsrc_anno"><a href="http://security.tencent.com/index.php/announcement"><span>公告</span></a></li>
+                <li class="tsrc_blog selected"><a href="http://security.tencent.com/index.php/blog"><span>博客</span></a></li>
+                <li class="tsrc_report"><a href="http://security.tencent.com/index.php/report"><span>报告漏洞</span></a></li>
+                <li class="tsrc_lib"><a href="http://security.tencent.com/index.php/opensource/all"><span>实验室</span></a></li>
+                                <li class="tsrc_thanks"><a href="http://security.tencent.com/index.php/thanks/index/2015/7"><span>名人榜</span></a></li>
+                <li><a href="http://security.tencent.com/index.php/shop"><span>礼品兑换</span></a></li>
+                <li><a href="http://quan.security.tencent.com/" target="_blank"><span>安全圈</span></a></li>
+                <li class="tsrc_aixin"><a href="http://security.tencent.com/index.php/aixin"><span>爱心公益</span></a></li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!--Header End-->
+
+
+
+<div id="wrapper">
+	<div class="top_nosider"></div>
+
+	<div id="center_nosider" class="center_nosider">
+		<!--Content-->
+		<div class="title title_jobs"><h3><a href="http://security.tencent.com/index.php/blog" target="_self">返回博客主页</a></h3><span class="gray">记录腾讯的安全经验&nbsp;</span>
+		</div>
+		<div class="safe_school_topics_cont">
+			<br>
+			<p style="font-size:25px" align="center">窃听风云——关机窃听原理与实现</p>
+			<br>
+			<p class=""><strong>博文作者：monster</strong></p>
+			<p class=""><strong>发布日期：2014-11-26</strong></p>
+            <p class=""><strong>阅读次数：55344</strong></p>
+			<p class=""><strong>博文内容：</strong></p>
+			<br>
+			<p style="text-align: left;"><span style="font-family: 微软雅黑, sans-serif; font-size: 14pt;  background-color: initial;"><strong>前言<br></strong></span><br></p><p><span style="font-family: 微软雅黑, sans-serif;">斯诺登此前在接受采访时曾指出美国国家安全局（NSA）可以对手机进行窃听，即使是在关机的情况下也不能幸免。<br><br></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/c698017cdb21dcd1566faeac70cec7c3.png" alt="" style="max-width: 854px;"><br></span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>就在不久前的GeekPwn大赛（一个旨在演示智能设备安全漏洞利用、宣传安全意识的会议）上，来自KeenTeam的高手现场演示了Android手机在关机状态下被黑客通过听筒进行窃听的全过程，如此炫酷的神技原来果真存在。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br><span style="color:#cc0000;"><strong>视频地址：</strong></span></span><a href="http://v.qq.com/page/v/e/x/v0141kvwrex.html"><span style="font-family:'微软雅黑','sans-serif';">http://v.qq.com/page/v/e/x/v0141kvwrex.html<br><embed src="http://static.video.qq.com/TPout.swf?vid=v0141kvwrex&amp;auto=0" allowfullscreen="true" quality="high" width="480" height="400" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></span></a></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>“没有想不到，只有做不到”。在强烈的好奇心的驱使下，笔者根据猜想，分析和模仿实现了一个类似的场景。技术原理就是在Android手机上安装用于窃听的程序伪装成关机状态后实现监听、偷拍等操作，并远程发送给坏人。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>先看看效果，手机虽然被“关机”了，但是电话仍然可以拨通，这时声音会通过电话传给黑客而让用户毫不察觉。<br><br></span></p><p style="text-align:center;"><strong><span style="font-size:14.0pt;font-family:'微软雅黑','sans-serif';"><br><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/03b6752aa8d0b3216e5040b63f91c773.png" alt="" style="max-width: 854px;"><br></span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;</span></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;</span></p><p><strong><span style="font-size:14.0pt;font-family:'微软雅黑','sans-serif';">安卓系统源码分析</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">要对关机做手脚，先要了解它到底是怎么关机的。来看下Android源码对关机事件的处理。从按电源键开始，下面是PhoneWindowManager.interceptKeyBeforeQueueing方法的部分代码，如图1。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/499581febc8be90adc7779190b45597a.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 1</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>interceptKeyBeforeQueueing</span><span style="font-family:'微软雅黑','sans-serif';">方法主要做一些对特殊按键的处理，这里可以看到当电源键按下时做一些处理，最后进入了interceptPowerKeyDown。</span></p><p style="text-align:center;"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/9f97d505d24c8706e7e4843881cfc594.png" alt="" style="max-width: 854px;"><br><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 2</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>如图2，在interceptPowerKeyDown中，判断参数handled，如果为false就延时500ms触发一个Runnable，这里主要负责检测长按事件。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/dc6fdf1f3b6f71e82ec6697e42e57fbb.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 3</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>如图3，进入LONG_PRESS_POWER_GLOBAL_ACTIONS这个case，分别执行以下动作：</span></p><p><span style="font-family:'微软雅黑','sans-serif';">1.<span style="font-size:7pt;font-family:'Times New Roman';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">发起振动；</span></p><p><span style="font-family:'微软雅黑','sans-serif';">2.<span style="font-size:7pt;font-family:'Times New Roman';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">请求关闭所有窗口；</span></p><p><span style="font-family:'微软雅黑','sans-serif';">3.<span style="font-size:7pt;font-family:'Times New Roman';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-family:'微软雅黑','sans-serif';">显示关机对话框。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>关注一下第三步，这里调用showGlobalActionsDialog显示一个关机选择对话框，进入这个方法后后直接转入GlobalActions.showDialog，如图4。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/8ef2ca535521b3cae3494dc92212fb0c.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 4</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>如图4，在showDialog中再调用createDialog创建一个对话框列表供用户选择“关机”、“飞行模式”、“静音”等操作，以下为createDialog的部分代码，如图5。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/375854f51f6a23cbe9252d16b816f572.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 5</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>注意图5的onPress方法，这里调用mWindowManagerFuncs.shutdown。代码执行到这里framework层的工作基本就结束了，再往下分析就是关闭系统服务，还有Power.cpp中实现的电源管理，执行系统调用关闭内核等。要实现之前说的关机窃听不用再往下看，只要了解到这一步就够了。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>不过还有个问题，mWindowManagerFuncs这个引用是怎么得到的，从刚才的代码开始向上回溯，最终找到了PhoneWindowManager类的init方法，如图6。<br><br></span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/59560412f132e57ce337a7eade4b1949.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 6</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;</span></p><p><strong><span style="font-size:14.0pt;font-family:'微软雅黑','sans-serif';">Xposed</span><span style="font-size:14.0pt;font-family:'微软雅黑','sans-serif';">模块实现</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>了解了Android处理关机的流程以后，想一想怎么关机窃听呢？断电了还怎么窃听？你问我，我也不知道。不过要实现看上去像是“关机窃听”，这我倒是知道怎么做。无非就是播放关机动画，然后让手机装死，让用户以为它真的关机了，其实只是屏幕黑了、声音没了、按键没反应了而已。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>现在要做的是当用户要关机的时候阻止用户关机，并且实施自己的“关机窃听”计划。劫持关机动作只需要挂钩mWindowManagerFuncs对象的shutdown方法。挂钩的话这里我们采用的是xposed框架。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>之前说到mWindowManagerFuncs的引用是在PhoneWindowManager的init中传过来的，从这里入手吧，Hook之，如图7。</span></p><p style="text-align:center;"><br><br><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/666a243813e4a3ff728d5555f1f96ea7.png" alt="" style="max-width: 854px;"><br><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 7</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> </span><span style="font-family:'微软雅黑','sans-serif';">如图8，在init方法结尾处插入一段代码，把this对象（即phoneWindowManager的引用）保存下来，取到this.mWindowManagerFuncs，反射它，利用它再次Hook它自己的shutdown方法。</span></p><p style="text-align:center;"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/7952a20fb7b4a8d090b4e5c8c767826e.png" alt="" style="max-width: 854px;"><br><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 8</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">如图9在shutdown执行之前保存一个关机flag，然后显示关机动画，直接返回方法，阻止系统真实关机。在播放关机动画的同时还延时5秒抛了一个Runnable。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/7c7bfaf887ac433dc728b223bcf8aeb7.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 9</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>关机时保存的flag主要用来阻止一些系统事件，如按键、屏幕唤醒等，使伪装关机更加真实，如图10。</span></p><p style="text-align:center;"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/c19983071aec16c9ff54d579b6ccb683.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 10</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>&nbsp;5</span><span style="font-family:'微软雅黑','sans-serif';">秒以后关闭关机窗口，关闭系统音量，休眠机器，放一个Recriver监听来电，一有来电自动接听，如图11。</span></p><p><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/716cc02e291be2c21839106cdb025b62.png" alt="" style="max-width: 854px;"><br></p><p style="text-align:center;"><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">图 11</span></strong></p><p><strong><span style="font-size:10.0pt;font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></strong></p><p><strong><span style="font-size:14.0pt;font-family:'微软雅黑','sans-serif';">发现与防御</span></strong></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> </span><span style="font-family:'微软雅黑','sans-serif';">要发现这种攻击其实也很简单，只要抓住他的弱点——关机状态下检查手机和SIM卡的使用情况，如通话记录、流量记录等，实在有强迫症的同学可以把手机电池抠出来（要是你是高大上的iPhone系列那就把手机放远点，再远一点）。</span></p><p><span style="font-family:'微软雅黑','sans-serif';"><br>至于防御，要及时更新系统，不要安装未知来源的APP。总之还是一句话：珍爱Android，远离root。</span></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;</span></p><p><span style="font-family:'微软雅黑','sans-serif';">文中提到的工具可以在“腾讯安全应急响应中心”的实验室中下载到<br><span style="color:#cc0000;"><strong>地址：</strong></span></span><a href="http://security.tencent.com/index.php/opensource/detail/14"><span style="font-family:'微软雅黑','sans-serif';">http://security.tencent.com/index.php/opensource/detail/14</span></a></p><p><span style="font-family:'微软雅黑','sans-serif';">&nbsp;</span></p><p><span style="font-family:'微软雅黑','sans-serif';">欢迎大家与我们交流。</span></p>			<br>
+            <div>
+                <img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/blogmsg-73.png" style="max-width: 854px;"><strong style="font-size:15px;">本文专属二维码，扫一扫还能分享朋友圈</strong>            </div>
+			<div class="row">
+				<div class="pull-left"><a href="http://security.tencent.com/index.php/blog/msg/73#commentEditor">[共有<font color="red">5条</font>评论]</a></div>
+				<div class="pull-right"><a href="javascript:void(0);" onclick="qqWb();" style="background:url(/images/QQ_w.gif) no-repeat; padding:0 0 0 20px;  text-decoration:none; ">转发至腾讯微博</a>
+<a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://v.t.sina.com.cn/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey='].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" style="background:url(/images/sina_w.gif) no-repeat; padding:0 0 0 20px; text-decoration:none; ">转发至新浪微博</a>
+</div>
+			</div>
+			<hr>
+            <div class="row comments-title">
+                <span class="pull-left">评论列表</span>
+                <span class="pull-right"><a href="http://security.tencent.com/index.php/blog/msg/73#xhe0_iframe" class="btn btn-primary">发表评论</a> </span>
+            </div>
+            <div class="row">
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/CDFE17B1EBCC259FF48834CB5E7A5C4B"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/100" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/CDFE17B1EBCC259FF48834CB5E7A5C4B">　原来　原　去CC2(新手上路)</a></span>
+                                <span class="comment-time">2014-11-26 17:44:29</span>
+                                                            </div>
+                            <p>这也算是标题党了吧？</p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/D06257334A7D1AE72E3A40C0AD15C6DF"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/100(1)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/D06257334A7D1AE72E3A40C0AD15C6DF">linso(新手上路)</a></span>
+                                <span class="comment-time">2014-11-28 12:15:27</span>
+                                                            </div>
+                            <p>不觉明历...</p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/FF838B5BE9DE6682B548C57162F80762"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/100(2)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/FF838B5BE9DE6682B548C57162F80762">咖啡(民间高手)</a></span>
+                                <span class="comment-time">2014-11-30 15:26:14</span>
+                                                            </div>
+                            <p>我草，吓尿了啊</p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/AA439727392B31EF63F66460B579E5F4"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/100(3)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/AA439727392B31EF63F66460B579E5F4">Koohik(高级安全研究员)</a></span>
+                                <span class="comment-time">2014-12-05 10:19:02</span>
+                                                            </div>
+                            <p>被标题吸引过来了，原PKHT来。。。</p>
+                        </div>
+                    </div>
+                </div>
+                                <div class="comment row">
+                    <a href="http://security.tencent.com/index.php/report/people/4D7A0AA806F6FD87EC09F375722525C7"><img src="窃听风云——关机窃听原理与实现 - 博客内容 - 腾讯安全应急响应中心_files/100(4)" style="max-width: 854px;"></a>
+                    <div class="comment-info">
+                        <div class="comment-detail left">
+                            <div class="user-info row">
+                                <span class="pull-left"><a href="http://security.tencent.com/index.php/report/people/4D7A0AA806F6FD87EC09F375722525C7">去谷(新手上路)</a></span>
+                                <span class="comment-time">2014-12-06 00:14:00</span>
+                                                            </div>
+                            <p>伪装、、、、</p>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+            <hr>
+                            <div class="hero-unit">
+                    <h1>哇，你还没有登录！</h1>
+                    <p>目前TSRC博客评论之前必须先要登录，请点击下面的按钮登录。</p>
+                    <p><a class="btn btn-primary btn-large" href="http://security.tencent.com/index.php/sign/login">点击登录</a></p>
+                </div>
+            			<p class="indent">腾讯公司欢迎社会各界向我们反馈腾讯的安全问题，更多信息可见<a href="http://security.tencent.com/index.php/report">报告漏洞</a>。</p>
+
+			<p class="postmeta"></p>
+		</div>
+		<!--Content End-->
+
+	</div>
+
+	<div class="bottom_nosider"></div>
+
+</div>
+<!--Footer-->
+<div id="footer">
+    <p>
+				<a href="http://www.tencent.com/" target="_blank">关于腾讯</a>|<a href="http://www.tencent.com/index_e.shtml" target="_blank">About Tencent</a>|<a href="http://www.qq.com/contract.shtml" target="_blank">服务条款</a>|<a href="http://security.tencent.com/index.php/jobs" target="_blank">加入我们</a>|<a href="http://security.tencent.com/index.php/report" target="_self">报告漏洞</a>|<a href="http://security.tencent.com/index.php/friends">合作伙伴</a>|<a href="http://service.qq.com/" target="_blank">腾讯客服</a>
+	</p>
+    <p>
+        Copyright © 1998 - 2015 Tencent. All Rights Reserved
+    </p>
+    <p>腾讯公司 版权所有</p>
+</div>
+<!--Footer End-->
+
+    
+
+
+
+
+</body></html>

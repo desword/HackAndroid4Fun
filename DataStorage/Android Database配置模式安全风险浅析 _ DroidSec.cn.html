@@ -1,0 +1,329 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0130)http://www.droidsec.cn/android-database%e9%85%8d%e7%bd%ae%e6%a8%a1%e5%bc%8f%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android Database配置模式安全风险浅析  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android Database配置模式安全风险浅析评论Feed" href="http://www.droidsec.cn/android-database%e9%85%8d%e7%bd%ae%e6%a8%a1%e5%bc%8f%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Android属性allowBackup安全风险浅析" href="http://www.droidsec.cn/android%e5%b1%9e%e6%80%a7allowbackup%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/">
+<link rel="next" title="Android HTTPS中间人劫持漏洞浅析" href="http://www.droidsec.cn/android-https%e4%b8%ad%e9%97%b4%e4%ba%ba%e5%8a%ab%e6%8c%81%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/Android Database配置模式安全风险浅析 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=170">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-170 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Android Database配置模式安全风险浅析              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Android Database配置模式安全风险浅析            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-170" class="uazoh7-post post-170 post type-post status-publish format-standard hentry category-app">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android Database配置模式安全风险浅析</span></h3>
+<p> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" rel="category tag">APP漏洞挖掘</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>1. Database配置模式安全风险描述</h2>
+<p>Database配置模式安全风险源于:1)开发者在创建数据库(Database)时没有正确的选取合适的创建模式(MODE_PRIVATE、MODE_WORLD_READABLE以及MODE_WORLD_WRITEABLE)进行权限控制，从而导致数据库(Database)内容被恶意读写，造成账户密码、身份信息、以及其他敏感信息的泄露，甚至攻击者进一步实施恶意攻击。<br>
+如果在开发中没有使用正确的创建模式数据库(Database)文件，将会导致敏感信息泄露危害，如个人账户密码、身份信息以及金融账户等重要敏感信息。</p>
+<h2>2. Database配置模式安全影响范围</h2>
+<p>Android所有系统</p>
+<h2>3.Database配置模式安全风险详情</h2>
+<h3>1) 风险位置:</h3>
+<p></p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac91d6345412740761" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">      openOrCreateDatabase(String fileName, int mode, CursorFactory factory)[1];</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac91d6345412740761-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac91d6345412740761-1"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">openOrCreateDatabase</span><span class="crayon-sy">(</span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">fileName</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">int</span><span class="crayon-h"> </span><span class="crayon-v">mode</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-e">CursorFactory </span><span class="crayon-v">factory</span><span class="crayon-sy">)</span><span class="crayon-sy">[</span><span class="crayon-cn">1</span><span class="crayon-sy">]</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0034 seconds] -->
+<p></p>
+<h3>2) 风险触发前提条件：</h3>
+<p>使用非MODE_PRIVATE模式创建数据库文件；</p>
+<h3>3) 风险原理：</h3>
+<p>a. 使用MODE_WORLD_READABLE模式创建数据库文件，使得其他应用对该数据库文件具备可读的权限；<br>
+b. 使用MODE_WORLD_WRITEABLE模式创建数据库文件，使得其他应用对该数据库文件具备可写的权限；</p>
+<h2>4. Database配置模式安全风险证明</h2>
+<p>1) 使用MODE_PRIVATE模式创建数据库(Database)文件,因此在不具有root权限的情况下，其他应用不能读取该应用的数据库文件内容；</p>
+<p>通过MODE_PRIVATE模式创建数据库的代码片段：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1Z.DnHXXXXXciaXXXGtoF5VXX-746-21.png" alt="" width="700"><br>
+通过adb shell进入系统终端，查看创建的内部存储文件的权限为“-rw-rw—-”，其中others的权限不可读，与应用不同uid的用户查看数据库文件内容时提示”Permission denied”，如下图所示：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1jHY5GXXXXXXdapXXqxdd6VXX-758-91.png" alt="" width="700"><br>
+读取数据库的恶意代码片段：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1GWdjGFXXXXbwaXXXluiM7FXX-804-20.png" alt="" width="700"><br>
+其他应用读取该应用通过MODE_PRIVATE模式创建的数据库&nbsp;&nbsp;&nbsp;&nbsp;结果如下图所示：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB14nKpHpXXXXaBXVXXQgKBOVXX-720-905.png" alt="" width="300" height="377"><br>
+2) 使用MODE_WORLD_READABLE模式创建数据库(Database)文件,因此在不具有root权限的情况下，其他应用能够读取该应用的数据库文件内容；</p>
+<p>通过MODE_WORLD_READABLE模式创建数据库的代码片段：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1Z227GFXXXXbnapXXRkQw8pXX-790-23.png" alt="" width="700"><br>
+通过adb shell进入系统终端，查看创建的内部存储文件的权限为“-rw-rw-r–”，其中others的权限可读，与应用不同uid的用户能够查看数据库文件内容，如下图所示：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1iaBrGFXXXXciapXXXWpE7VXX-762-100.png" alt="" width="700"><br>
+读取数据库的恶意代码片段：<br>
+<img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB1EWD.HXXXXXcpXVXXluiM7FXX-804-20.png" alt="" width="700"><br>
+其他应用读取该应用通过MODE_WORLD_READABLE模式创建的数据库结果如下图所示：</p>
+<p><img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/TB17iolGFXXXXbGXVXXWENPOVXX-720-478.png" alt="" width="300"></p>
+<h2>5.Database配置模式安全风险安全建议</h2>
+<p>1. 避免使用MODE_WORLD_WRITEABLE和MODE_WORLD_READABLE模式创建数据库(Database)；<br>
+出于安全考虑，阿里聚安全建议不要使用全局可读模式和全局可写模式创建数据库,详情参照Google官方安全指导[2]。</p>
+<p>引用</p>
+<p>[1] http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html<br>
+[2] http://developer.android.com/training/articles/security-tips.html</p>
+<p>转载自：http://jaq.alibaba.com/blog.htm?spm=0.0.0.0.1Dj8fA&amp;id=59</p>
+<p>&nbsp;</p>
+<p class="tags"></p>
+
+<div class="date">
+  <span class="day">14</span>
+  <span class="month">2015-03</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default8814_provider" id="easyXDM_default8814_provider" frameborder="0" src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ae%89%e5%85%a8%e4%bc%9a%e8%ae%ae%ef%bc%88%e5%ad%a6%e6%9c%af%e7%95%8c%ef%bc%89%e6%a6%82%e5%bf%b5%e6%99%ae%e5%8f%8a-asiaccs2015%e4%bc%9a%e8%ae%ae%e6%80%bb%e7%bb%93/" rel="bookmark" title="计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）">计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/fiddler%e6%8f%92%e4%bb%b6%e7%bc%96%e5%86%99%e4%b9%8bwebview%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%a3%80%e6%b5%8b/" rel="bookmark" title="Fiddler插件编写之WebView远程代码执行检测">Fiddler插件编写之WebView远程代码执行检测</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/webview-file%e5%9f%9f%e5%90%8c%e6%ba%90%e7%ad%96%e7%95%a5%e7%bb%95%e8%bf%87%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="WebView File域同源策略绕过漏洞浅析">WebView File域同源策略绕过漏洞浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ashared-preferences%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android本地数据存储：Shared Preferences安全风险浅析">Android本地数据存储：Shared Preferences安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%94%bb%e9%98%b2%e6%8c%87%e5%8d%97-%e7%ac%ac2%e7%ab%a0-android%e7%9a%84%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1%e4%b8%8e%e6%9e%b6%e6%9e%84-%ef%bc%882%ef%bc%89/" rel="bookmark" title="《Android安全攻防指南》第2章 Android的安全设计与架构 （2）">《Android安全攻防指南》第2章 Android的安全设计与架构 （2）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-app%e9%80%9a%e7%94%a8%e5%9e%8b%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="Android APP通用型拒绝服务漏洞分析报告">Android APP通用型拒绝服务漏洞分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e7%94%a8%e6%89%8b%e6%9c%ba%e8%bd%bb%e6%9d%be%e5%88%b7%e6%b4%9e%ef%bc%8c%e7%a7%bb%e5%8a%a8%e7%ab%af%e5%bc%80%e6%ba%90%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%b7%a5%e5%85%b7%e5%90%88%e9%9b%86/" rel="bookmark" title="用手机轻松刷洞，移动端开源安全测试工具合集">用手机轻松刷洞，移动端开源安全测试工具合集</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e6%b5%85%e8%b0%88android%e5%bc%80%e6%94%be%e7%bd%91%e7%bb%9c%e7%ab%af%e5%8f%a3%e7%9a%84%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9/" rel="bookmark" title="浅谈Android开放网络端口的安全风险">浅谈Android开放网络端口的安全风险</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-service-security/" rel="bookmark" title="Android Service Security">Android Service Security</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android Database配置模式安全风险浅析 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

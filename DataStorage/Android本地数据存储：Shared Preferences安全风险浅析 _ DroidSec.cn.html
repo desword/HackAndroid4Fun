@@ -1,0 +1,599 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0166)http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ashared-preferences%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android本地数据存储：Shared Preferences安全风险浅析  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android本地数据存储：Shared Preferences安全风险浅析评论Feed" href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ashared-preferences%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Android应用本地拒绝服务漏洞浅析" href="http://www.droidsec.cn/android%e5%ba%94%e7%94%a8%e6%9c%ac%e5%9c%b0%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/">
+<link rel="next" title="Android本地数据存储：Internal Storage安全风险浅析" href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ainternal-storage%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=163">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-163 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover" style="display: none;"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Android本地数据存储：Shared Preferences安全风险浅析              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Android本地数据存储：Shared Preferences安全风险浅析            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-163" class="uazoh7-post post-163 post type-post status-publish format-standard hentry category-app tag-android-shared-preferences">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android本地数据存储：Shared Preferences安全风险浅析</span></h3>
+<p> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" rel="category tag">APP漏洞挖掘</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>1. 安卓Shared Preferences存储安全风险描述</h2>
+<p>Android系统提供了以下四种Android应用本地存储方式：Shared Preferences、SQLite Databases、Internal Storage、External Storage等存储方式。Shared Preferences是一种轻量级的基于XML文件存储的键值对(key-value)数据的数据存储方式，一般用于储存应用的配置等信息【1】；<br>
+Shared Preferences存储安全风险源于:1)开发者在创建文件时没有正确的选取合适的创建模式(MODE_PRIVATE、MODE_WORLD_READABLE以及MODE_WORLD_WRITEABLE)进行权限控制;2)开发者过度依赖Android系统内部存储安全机制，将用户信息、密码等敏感重要的信息明文存储在Shared Preferences文件中，导致攻击者可通过root手机来查看敏感信息。<br>
+在乌云漏洞平台上，存在大量Shared Preferences文件中明文存储个人身份信息、密码以及token等重要敏感信息导致泄露的漏洞，如网易阅读Android客户端漏洞导致账号密码泄漏[2]、高朋团购网泄漏用户敏感信息[3]、苏宁易购用户敏感信息泄露[4]、最新江苏移动营业厅官方手机android客户端应用目录两个文件明文存储登录使用的服务密码手机号等信息[5]。</p>
+<h2>2.安卓Shared Preferences存储安全影响范围</h2>
+<p>Android所有系统</p>
+<h2>3.安卓Shared Preferences存储安全风险详情</h2>
+<h3>1) 风险位置:</h3>
+<p></p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c8ec636900073" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">SharedPreferences.getSharedPreferences(String prefName, int mode);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c8ec636900073-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c8ec636900073-1"><span class="crayon-v">SharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">prefName</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">int</span><span class="crayon-h"> </span><span class="crayon-v">mode</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0037 seconds] -->
+<p></p>
+<h3>2) 风险触发前提条件：</h3>
+<p>使用MODE_WORLD_READABLE模式创建Shared Preferences文件或使用MODE_WORLD_WRITEABLE模式创建Shared Preferences文件并含有“android:sharedUserId”属性值和测试签名；</p>
+<h3>3) 风险原理：</h3>
+<p>a. 使用MODE_WORLD_READABLE模式创建Shared Preferences文件，使得其他应用对该Shared Preferences文件具备可读的权限；<br>
+b. 使用MODE_WORLD_WRITEABLE模式创建Shared Preferences文件并含有“android:sharedUserId”属性值，使得其他应用对该应用的Shared Preferences文件具备可写的权限。<br>
+c. 在具备root权限的程序或用户对任何应用程序通过任意模式创建的的Shared Preferences文件都具有可读可写的权限。</p>
+<h2>4. Shared Preferences存储安全风险POC</h2>
+<p>1) 使用MODE_PRIVATE模式创建Shared Preferences文件,其他应用不可读取该应用的Shared Preferences文件的内容；<br>
+通过MODE_PRIVATE模式创建Shared Preferences文件的代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c975851946612" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">String user=mEtUserName.getText().toString();
+String pass=mEtPassword.getText().toString();
+SharedPreferences.Editor editor = getSharedPreferences("settings", Context.MODE_PRIVATE).edit();
+editor.putString("username", user);
+editor.putString("password", pass);
+editor.commit();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c975851946612-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c975851946612-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c975851946612-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c975851946612-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c975851946612-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c975851946612-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c975851946612-1"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-o">=</span><span class="crayon-v">mEtUserName</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c975851946612-2"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-o">=</span><span class="crayon-v">mEtPassword</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c975851946612-3"><span class="crayon-v">SharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">Editor </span><span class="crayon-v">editor</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_PRIVATE</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">edit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c975851946612-4"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c975851946612-5"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c975851946612-6"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">commit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0029 seconds] -->
+<p>该POC应用启动后输入用户名和密码，然后点击登录之后将以MODE_PRIVATE模式创建Shared Preferences文件：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB10rzGHXXXXXaLapXXA0gJJXXX-720-1280.png" alt="" height="600"><br>
+通过adb shell进入系统终端，切换至su账户查看该应用创建的shared Preferences文件属性，得知其权限为“-rw-rw—-”，其中others的权限不可读，如下图所示：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1TUahHpXXXXcEXVXXKQUSWFXX-548-75.png" alt="" width="700"></p>
+<p>通过adb shell进入系统终端，通过普通用户查看该应用创建的Shared Preferences文件，如下图所示，将提示“Permission denied”：</p>
+<p><img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1yQWkHpXXXXcQXFXX54q92FXX-662-42.png" alt="" width="700"></p>
+<p>其他应用查看该应用创建的Shared Preferences文件的代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c988602457120" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">Context context = createPackageContext("com.alibaba.jaq.datastoragepoc", Context.CONTEXT_IGNORE_SECURITY);
+SharedPreferences sharedPreferences = context.getSharedPreferences("settings", Context.MODE_WORLD_READABLE);
+String username = sharedPreferences.getString("username", "");
+String password = sharedPreferences.getString("password", "");
+mBtnCrackerContent.setText("user: " + username + "pwd: " + password);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c988602457120-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c988602457120-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c988602457120-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c988602457120-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c988602457120-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c988602457120-1"><span class="crayon-e">Context </span><span class="crayon-v">context</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">createPackageContext</span><span class="crayon-sy">(</span><span class="crayon-s">"com.alibaba.jaq.datastoragepoc"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">CONTEXT_IGNORE_SECURITY</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c988602457120-2"><span class="crayon-e">SharedPreferences </span><span class="crayon-v">sharedPreferences</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">context</span><span class="crayon-sy">.</span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_READABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c988602457120-3"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c988602457120-4"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c988602457120-5"><span class="crayon-v">mBtnCrackerContent</span><span class="crayon-sy">.</span><span class="crayon-e">setText</span><span class="crayon-sy">(</span><span class="crayon-s">"user: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-s">"pwd: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0055 seconds] -->
+<p>通过adb logcat发现以下日志，即提示没有权限查看该Shared Preferences文件：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1xIenHpXXXXXeXFXXvu6fZVXX-585-84.png" alt="" width="700"><br>
+2) 使用MODE_WORLD_READABLE模式创建Shared Preferences文件,其他应用可读取该应用创建的Shared Preferences文件，将会造成敏感信息泄露；<br>
+通过MODE_WORLD_READABLE模式创建Shared Preferences文件的代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c99c652264516" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">String user=mEtUserName.getText().toString();
+String pass=mEtPassword.getText().toString();
+SharedPreferences.Editor editor = getSharedPreferences("settings", Context.MODE_WORLD_READABLE).edit();
+editor.putString("username", user);
+editor.putString("password", pass);
+editor.commit();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c99c652264516-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c99c652264516-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c99c652264516-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c99c652264516-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c99c652264516-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c99c652264516-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c99c652264516-1"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-o">=</span><span class="crayon-v">mEtUserName</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c99c652264516-2"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-o">=</span><span class="crayon-v">mEtPassword</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c99c652264516-3"><span class="crayon-v">SharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">Editor </span><span class="crayon-v">editor</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_READABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">edit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c99c652264516-4"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c99c652264516-5"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c99c652264516-6"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">commit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0034 seconds] -->
+<p>该POC应用启动后输入用户名和密码，然后点击登录之后将以MODE_WORLD_READABLE模式创建Shared Preferences文件：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1vCunHpXXXXb8XpXXA0gJJXXX-720-1280.png" alt="" height="600"><br>
+通过adb shell进入系统终端，切换至su账户查看该应用创建的Shared Preferences文件属性，得知其权限为“-rw-rw-r–”，其中others具有可读权限，如下图所示：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1LwinHpXXXXcKXpXX73MSWFXX-548-74.png" alt="" width="700"></p>
+<p>通过adb shell进入普通用户的shell，查看通过MODE_WORLD_READABLE模式Shared Preferences文件”settings.xml”，文件内容如下图所示：</p>
+<p><img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1SUCpHpXXXXczXXXXFQAl_pXX-555-118.png" alt="" width="700"></p>
+<p>攻击代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9b2687977957" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">Context context = createPackageContext("com.alibaba.jaq.datastoragepoc", Context.CONTEXT_IGNORE_SECURITY);
+SharedPreferences sharedPreferences = context.getSharedPreferences("settings", Context.MODE_WORLD_READABLE);
+String username = sharedPreferences.getString("username", "");
+String password = sharedPreferences.getString("password", "");
+mBtnCrackerContent.setText("user: " + username + "pwd: " + password);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9b2687977957-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9b2687977957-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9b2687977957-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9b2687977957-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c9b2687977957-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9b2687977957-1"><span class="crayon-e">Context </span><span class="crayon-v">context</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">createPackageContext</span><span class="crayon-sy">(</span><span class="crayon-s">"com.alibaba.jaq.datastoragepoc"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">CONTEXT_IGNORE_SECURITY</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9b2687977957-2"><span class="crayon-e">SharedPreferences </span><span class="crayon-v">sharedPreferences</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">context</span><span class="crayon-sy">.</span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_READABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9b2687977957-3"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9b2687977957-4"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9b2687977957-5"><span class="crayon-v">mBtnCrackerContent</span><span class="crayon-sy">.</span><span class="crayon-e">setText</span><span class="crayon-sy">(</span><span class="crayon-s">"user: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-s">"pwd: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0033 seconds] -->
+<p>启动攻击应用，即可获取到包名为“com.alibaba.jaq.datastoragepoc”应用的Shared Preferences文件“settings.xml”的内容键值：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1eSCnHpXXXXcjXpXXA0gJJXXX-720-1280.png" alt="" height="600"><br>
+3) 使用MODE_WORLD_WRITEABLE模式创建Shared Preferences,虽然其他应用不可读取该应用的Shared Preferences文件，但是如果恶意应用与该POC应用具有相同的“android:sharedUserId”属性值和签名key时，恶意应用即可对其Shared Preferences文件进行写操作；<br>
+通过MODE_WORLD_WRITEABLE模式创建Shared Preferences的代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9c5691653386" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">String user=mEtUserName.getText().toString();
+String pass=mEtPassword.getText().toString();
+SharedPreferences.Editor editor = getSharedPreferences("settings", Context.MODE_WORLD_WRITEABLE).edit();
+editor.putString("username", user);
+editor.putString("password", pass);
+editor.commit();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9c5691653386-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9c5691653386-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9c5691653386-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9c5691653386-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c9c5691653386-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9c5691653386-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9c5691653386-1"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-o">=</span><span class="crayon-v">mEtUserName</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9c5691653386-2"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-o">=</span><span class="crayon-v">mEtPassword</span><span class="crayon-sy">.</span><span class="crayon-e">getText</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9c5691653386-3"><span class="crayon-v">SharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">Editor </span><span class="crayon-v">editor</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_WRITEABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">edit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9c5691653386-4"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">user</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9c5691653386-5"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">pass</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9c5691653386-6"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">commit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0032 seconds] -->
+<p>该POC应用启动后输入用户名和密码，然后点击登录之后将以MODE_WORLD_WRITEABLE模式创建Shared Preferences文件：</p>
+<p><img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1T2miHpXXXXbqXVXXA0gJJXXX-720-1280.png" alt="" height="600"></p>
+<p>通过adb shell进入系统终端，切换至su账户查看创建的shared Preferences文件的权限为“-rw-rw–w-”，其中others具有可写权限，如下图所示：</p>
+<p><img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1IAKhHpXXXXXfaXXXF55bWVXX-549-57.png" alt="" width="700"></p>
+<p>通过adb shell进入普通用户的shell，查看通过MODE_WORLD_WRITEABLE模式shared Preferences文件”settings.xml”， 如下图所示，将提示“Permission denied”：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1GBqlHpXXXXbPXFXXqiI2LFXX-679-135.png" alt="" width="700"><br>
+读取其他应用的shared Preferences的攻击代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9d3836042852" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">Context context = createPackageContext("com.alibaba.jaq.datastoragepoc", Context.CONTEXT_IGNORE_SECURITY);
+SharedPreferences sharedPreferences = context.getSharedPreferences("settings", Context.MODE_WORLD_READABLE);
+String username = sharedPreferences.getString("username", "");
+String password = sharedPreferences.getString("password", "");
+mBtnCrackerContent.setText("user: " + username + "pwd: " + password);</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9d3836042852-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9d3836042852-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9d3836042852-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9d3836042852-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c9d3836042852-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9d3836042852-1"><span class="crayon-e">Context </span><span class="crayon-v">context</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">createPackageContext</span><span class="crayon-sy">(</span><span class="crayon-s">"com.alibaba.jaq.datastoragepoc"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">CONTEXT_IGNORE_SECURITY</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9d3836042852-2"><span class="crayon-e">SharedPreferences </span><span class="crayon-v">sharedPreferences</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">context</span><span class="crayon-sy">.</span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_READABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9d3836042852-3"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"username"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9d3836042852-4"><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">sharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">getString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">""</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9d3836042852-5"><span class="crayon-v">mBtnCrackerContent</span><span class="crayon-sy">.</span><span class="crayon-e">setText</span><span class="crayon-sy">(</span><span class="crayon-s">"user: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">username</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-s">"pwd: "</span><span class="crayon-h"> </span><span class="crayon-o">+</span><span class="crayon-h"> </span><span class="crayon-v">password</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0433 seconds] -->
+<p>启动攻击应用读取包名为“com.alibaba.jaq.datastoragepoc”应用的shared Preference文件“settings.xml”时，将提示“Permission denied”：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1hWiqHpXXXXcYXXXXLtXSWXXX-540-72.png" alt="" width="700"><br>
+写其他应用的Shared Preferences文件的攻击代码片段：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9e1124481667" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">Context context = createPackageContext("com.alibaba.jaq.datastoragepoc", Context.CONTEXT_IGNORE_SECURITY);
+SharedPreferences.Editor editor = context.getSharedPreferences("settings", Context.MODE_WORLD_WRITEABLE).edit();
+editor.putString("password", "hacked");
+editor.commit();</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9e1124481667-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9e1124481667-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9e1124481667-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9e1124481667-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9e1124481667-1"><span class="crayon-e">Context </span><span class="crayon-v">context</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-e">createPackageContext</span><span class="crayon-sy">(</span><span class="crayon-s">"com.alibaba.jaq.datastoragepoc"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">CONTEXT_IGNORE_SECURITY</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9e1124481667-2"><span class="crayon-v">SharedPreferences</span><span class="crayon-sy">.</span><span class="crayon-e">Editor </span><span class="crayon-v">editor</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">context</span><span class="crayon-sy">.</span><span class="crayon-e">getSharedPreferences</span><span class="crayon-sy">(</span><span class="crayon-s">"settings"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">Context</span><span class="crayon-sy">.</span><span class="crayon-v">MODE_WORLD_WRITEABLE</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">edit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-55a7ac255c9e1124481667-3"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">putString</span><span class="crayon-sy">(</span><span class="crayon-s">"password"</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"hacked"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9e1124481667-4"><span class="crayon-v">editor</span><span class="crayon-sy">.</span><span class="crayon-e">commit</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0046 seconds] -->
+<p>当受害应用和攻击应用都相同含有“android:sharedUserId”属性值时，攻击者即可对受害应用的Shared Perferences有写的权限：<br>
+受害者应用AndroidManifest.xml文件内容：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9ef396211018" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.alibaba.jaq.datastoragepoc"
+          android:versionCode="1"
+          android:versionName="1.0"
+          android:sharedUserId="jaq.poc"&gt;
+    &lt;uses-sdk android:minSdkVersion="10"/&gt;
+    &lt;application android:label="@string/app_name"
+                 &gt;
+        &lt;activity android:name="MainActivity"
+                  android:label="@string/app_name"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN"/&gt;
+                &lt;category android:name="android.intent.category.LAUNCHER"/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-6">6</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-8">8</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-10">10</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-12">12</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-14">14</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-16">16</div><div class="crayon-num" data-line="crayon-55a7ac255c9ef396211018-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9ef396211018-18">18</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-1"><span class="crayon-ta">&lt;?</span><span class="crayon-e">xml </span><span class="crayon-i">version</span><span class="crayon-o">=</span><span class="crayon-s">"1.0"</span><span class="crayon-h"> </span><span class="crayon-i">encoding</span><span class="crayon-o">=</span><span class="crayon-s">"utf-8"</span><span class="crayon-ta">?&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-2"><span class="crayon-o">&lt;</span><span class="crayon-e">manifest </span><span class="crayon-v">xmlns</span><span class="crayon-o">:</span><span class="crayon-v">android</span><span class="crayon-o">=</span><span class="crayon-s">"http://schemas.android.com/apk/res/android"</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">package</span><span class="crayon-o">=</span><span class="crayon-s">"com.alibaba.jaq.datastoragepoc"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">versionCode</span><span class="crayon-o">=</span><span class="crayon-s">"1"</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">versionName</span><span class="crayon-o">=</span><span class="crayon-s">"1.0"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">sharedUserId</span><span class="crayon-o">=</span><span class="crayon-s">"jaq.poc"</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-v">uses</span><span class="crayon-o">-</span><span class="crayon-e">sdk </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">minSdkVersion</span><span class="crayon-o">=</span><span class="crayon-s">"10"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">application </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">label</span><span class="crayon-o">=</span><span class="crayon-s">"@string/app_name"</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">activity </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"MainActivity"</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">label</span><span class="crayon-o">=</span><span class="crayon-s">"@string/app_name"</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-v">intent</span><span class="crayon-o">-</span><span class="crayon-v">filter</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">action </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"android.intent.action.MAIN"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">category </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"android.intent.category.LAUNCHER"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">intent</span><span class="crayon-o">-</span><span class="crayon-v">filter</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">activity</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9ef396211018-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">application</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9ef396211018-18"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">manifest</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0520 seconds] -->
+<p>攻击者应用AndroidManifest.xml文件内容：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7ac255c9fe218583519" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.alibaba.jaq.datastoragecrackerpoc"
+          android:versionCode="1"
+          android:versionName="1.0"
+          android:sharedUserId="jaq.poc"&gt;
+    &lt;uses-sdk android:minSdkVersion="10"/&gt;
+    &lt;application android:label="@string/app_name"
+                 &gt;
+        &lt;activity android:name="CrackerActivity"
+                  android:label="@string/app_name"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN"/&gt;
+                &lt;category android:name="android.intent.category.LAUNCHER"/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-2">2</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-4">4</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-6">6</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-8">8</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-10">10</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-12">12</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-14">14</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-16">16</div><div class="crayon-num" data-line="crayon-55a7ac255c9fe218583519-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7ac255c9fe218583519-18">18</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-1"><span class="crayon-ta">&lt;?</span><span class="crayon-e">xml </span><span class="crayon-i">version</span><span class="crayon-o">=</span><span class="crayon-s">"1.0"</span><span class="crayon-h"> </span><span class="crayon-i">encoding</span><span class="crayon-o">=</span><span class="crayon-s">"utf-8"</span><span class="crayon-ta">?&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-2"><span class="crayon-o">&lt;</span><span class="crayon-e">manifest </span><span class="crayon-v">xmlns</span><span class="crayon-o">:</span><span class="crayon-v">android</span><span class="crayon-o">=</span><span class="crayon-s">"http://schemas.android.com/apk/res/android"</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">package</span><span class="crayon-o">=</span><span class="crayon-s">"com.alibaba.jaq.datastoragecrackerpoc"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">versionCode</span><span class="crayon-o">=</span><span class="crayon-s">"1"</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">versionName</span><span class="crayon-o">=</span><span class="crayon-s">"1.0"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">sharedUserId</span><span class="crayon-o">=</span><span class="crayon-s">"jaq.poc"</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-v">uses</span><span class="crayon-o">-</span><span class="crayon-e">sdk </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">minSdkVersion</span><span class="crayon-o">=</span><span class="crayon-s">"10"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">application </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">label</span><span class="crayon-o">=</span><span class="crayon-s">"@string/app_name"</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">activity </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"CrackerActivity"</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">label</span><span class="crayon-o">=</span><span class="crayon-s">"@string/app_name"</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-v">intent</span><span class="crayon-o">-</span><span class="crayon-v">filter</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">action </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"android.intent.action.MAIN"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">category </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"android.intent.category.LAUNCHER"</span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">intent</span><span class="crayon-o">-</span><span class="crayon-v">filter</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">activity</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-55a7ac255c9fe218583519-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">application</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7ac255c9fe218583519-18"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">manifest</span><span class="crayon-o">&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0054 seconds] -->
+<p>下图结果显示，当受害应用和攻击应用都相同含有“android:sharedUserId”属性值时，攻击者可写入受害应用通过MODE_WORLD_WRITEABLE模式创建的Shared Preferences：<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB10HGdHpXXXXbGapXXBaVtFpXX-561-241.png" alt="" width="700"></p>
+<p>4) root下可任意读写应用创建的Shared Preferences，因此不可将密码等用户敏感信息明文存储在Shared Preferences中，以防止Android设备被root之后，造成敏感信息的泄露以及财产损失;<br>
+<img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/TB1YaqcGXXXXXbRapXX7qWYFVXX-559-155.png" alt="" width="700"></p>
+<h2>5.Shared Preferences存储安全风险修复建议</h2>
+<h3>&nbsp; &nbsp; &nbsp; 1. 避免使用MODE_WORLD_WRITEABLE和MODE_WORLD_READABLE模式创建进程间通信的文件，此处即为Shared Preferences；</h3>
+<p>出于安全考虑，阿里聚安全建议不要使用全局可读模式和全局可写模式创建进程间通信的文件，此处即为但不限于Shared Preferences。如果需要与其他进程应用进行数据共享，请考虑使用content provider，详情参照Google官方安全指导[6]。</p>
+<p>&nbsp;</p>
+<h3>&nbsp; &nbsp; &nbsp; 2. 避免将密码等敏感数据信息明文存储在Shared Preferences中；</h3>
+<p>出于安全考虑，阿里聚安全建议不要将密码等敏感信息存储在Shared Preferences等内部存储中，即使Android系统内部存储安全机制，使得内部存储文件可不让其他应用读写，但是在Android系统root之后，该安全机制将失效而导致信息泄露。因此应该将敏感信息进行加密存储在Shared Preferences等内部存储文件中，详情参照Google官方安全指导[6]。</p>
+<h3>&nbsp; &nbsp; &nbsp; 3. 避免滥用“android:sharedUserId”属性；</h3>
+<p>阿里聚安全建议不要在使用“android:sharedUserId”属性的同时，对应用使用测试签名，否则其他应用拥有“android:sharedUserId”属性值和测试签名时，将会访问到内部存储文件数据 [7]。</p>
+<p>引用<br>
+[1] http://developer.android.com/guide/topics/data/data-storage.html#pref<br>
+[2] http://www.wooyun.org/bugs/wooyun-2010-010056<br>
+[3] http://www.wooyun.org/bugs/wooyun-2010-016309<br>
+[4] http://www.wooyun.org/bugs/wooyun-2010-014308<br>
+[5] http://www.wooyun.org/bugs/wooyun-2010-079232<br>
+[6]http://developer.android.com/training/articles/security-tips.html#StoringData<br>
+[7]http://developer.android.com/guide/topics/manifest/manifest-element.html#uid</p>
+<p>转载自：http://jaq.alibaba.com/blog.htm?spm=0.0.0.0.ZJDxpz&amp;id=56</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/android-shared-preferences/" rel="tag">Android Shared Preferences</a></p>
+
+<div class="date">
+  <span class="day">14</span>
+  <span class="month">2015-03</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default8773_provider" id="easyXDM_default8773_provider" frameborder="0" src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/e%e5%ae%89%e5%85%a8app-v2-1-%e6%9b%b4%e6%96%b0%e5%8f%91%e5%b8%83/" rel="bookmark" title="E安全App v2.1 更新发布">E安全App v2.1 更新发布</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-app%e9%80%9a%e7%94%a8%e5%9e%8b%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="Android APP通用型拒绝服务漏洞分析报告">Android APP通用型拒绝服务漏洞分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98%e7%ac%ac%e4%b8%80%e6%ad%a5android%e6%b5%8b%e8%af%95%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba/" rel="bookmark" title="[APP漏洞挖掘第一步]Android测试环境搭建">[APP漏洞挖掘第一步]Android测试环境搭建</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%af%a6%e8%a7%a3android-app-allowbackup%e9%85%8d%e7%bd%ae%e5%b8%a6%e6%9d%a5%e7%9a%84%e9%a3%8e%e9%99%a9/" rel="bookmark" title="两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险">两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-database%e9%85%8d%e7%bd%ae%e6%a8%a1%e5%bc%8f%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android Database配置模式安全风险浅析">Android Database配置模式安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/fiddler%e6%8f%92%e4%bb%b6%e7%bc%96%e5%86%99%e4%b9%8bwebview%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%a3%80%e6%b5%8b/" rel="bookmark" title="Fiddler插件编写之WebView远程代码执行检测">Fiddler插件编写之WebView远程代码执行检测</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ae%89%e5%85%a8%e4%bc%9a%e8%ae%ae%ef%bc%88%e5%ad%a6%e6%9c%af%e7%95%8c%ef%bc%89%e6%a6%82%e5%bf%b5%e6%99%ae%e5%8f%8a-asiaccs2015%e4%bc%9a%e8%ae%ae%e6%80%bb%e7%bb%93/" rel="bookmark" title="计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）">计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-content-provider-security/" rel="bookmark" title="Android Content Provider Security">Android Content Provider Security</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-installer-hijacking/" rel="bookmark" title="Android Installer Hijacking漏洞可被恶意软件利用影响用户安全">Android Installer Hijacking漏洞可被恶意软件利用影响用户安全</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android本地数据存储：Shared Preferences安全风险浅析 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

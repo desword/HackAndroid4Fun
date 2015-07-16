@@ -1,0 +1,345 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0130)http://www.droidsec.cn/content-provider%e6%96%87%e4%bb%b6%e7%9b%ae%e5%bd%95%e9%81%8d%e5%8e%86%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Content Provider文件目录遍历漏洞浅析  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Content Provider文件目录遍历漏洞浅析评论Feed" href="http://www.droidsec.cn/content-provider%e6%96%87%e4%bb%b6%e7%9b%ae%e5%bd%95%e9%81%8d%e5%8e%86%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="外部动态加载DEX安全风险浅析" href="http://www.droidsec.cn/%e5%a4%96%e9%83%a8%e5%8a%a8%e6%80%81%e5%8a%a0%e8%bd%bddex%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/">
+<link rel="next" title="WebView File域同源策略绕过漏洞浅析" href="http://www.droidsec.cn/webview-file%e5%9f%9f%e5%90%8c%e6%ba%90%e7%ad%96%e7%95%a5%e7%bb%95%e8%bf%87%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=176">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-176 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Content Provider文件目录遍历漏洞浅析              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> Content Provider文件目录遍历漏洞浅析            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-176" class="uazoh7-post post-176 post type-post status-publish format-standard hentry category-app tag-api">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Content Provider文件目录遍历漏洞浅析</span></h3>
+<p> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" rel="category tag">APP漏洞挖掘</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>1. 文件目录遍历安全漏洞描述</h2>
+<p>Android Content Provider存在文件目录遍历安全漏洞，该漏洞源于对外暴露Content Provider组件的应用，没有对Content Provider组件的访问进行权限控制和对访问的目标文件的Content Query Uri进行有效判断，攻击者利用该应用暴露的Content Provider的openFile()接口进行文件目录遍历以达到访问任意可读文件的目的；<br>
+在不少漏洞平台上，存在大量由于Content Provider文件目录遍历而导致信息泄露的漏洞，如猎豹浏览器（Android版）任意私有文件数据可被本地第三方窃取漏洞[1]、赶集网Android客户端Content Provider组件任意文件读取漏洞[2]、58同城Android客户端远程文件写入漏洞[3]、Path traversal vulnerability on Adobe Reader (Android) Application[4]、Kaseya Browser Android Path Traversal[5]。</p>
+<h2>2. 文件目录遍历安全漏洞影响范围</h2>
+<p>Android所有系统</p>
+<h2>3.文件目录遍历安全漏洞详情</h2>
+<h3>1) 漏洞位置:</h3>
+<p></p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7acef34670742261924" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: block; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">ContentProvider.openFile(Uri uri, String mode)</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7acef34670742261924-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7acef34670742261924-1"><span class="crayon-v">ContentProvider</span><span class="crayon-sy">.</span><span class="crayon-e">openFile</span><span class="crayon-sy">(</span><span class="crayon-e">Uri </span><span class="crayon-v">uri</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">mode</span><span class="crayon-sy">)</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0034 seconds] -->
+<p></p>
+<h3>2) 漏洞触发前提条件：</h3>
+<p>对外暴露的Content Provider组件实现了openFile()接口；<br>
+没有对所访问的目标文件Uri进行有效判断，如没有过滤限制如“../”可实现任意可读文件的访问的Content Query Uri；</p>
+<h3>3) 漏洞原理：</h3>
+<p>对外暴露的Content Provider实现了openFile()接口，因此其他有相应调用该Content Provider权限的应用即可调用Content Provider的openFile()接口进行文件数据访问。但是如果没有进行Content Provider访问权限控制和对访问的目标文件的Uri进行有效判断，攻击者利用文件目录遍历访问任意可读文件。</p>
+<h2>4. 文件目录遍历安全漏洞证明</h2>
+<h3>利用已注册的对外提供的ContentProvider的接口openFile进行任意可读文件的读取。</h3>
+<p>在我们这个Content Provider应用的AndroidManifest.xml文件中，注册一个对外公开访问的Content Provider，比如，我们的Content Provider的类名是com.alibaba.pathtraversal.FileContentProvider：</p>
+<p><img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1xyScGFXXXXcaXVXXwU8F2pXX-655-61.png" alt="" width="700"></p>
+<p>Content Provider应用实现openFile接口的Java代码片段:<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB17jyHGFXXXXcuXFXXl6wR9FXX-658-193.png" alt="" width="700"></p>
+<p>使用恶意应用调用Content Provider的openFile接口，用来读取任意可读文件的Java代码片段:</p>
+<p><img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB12UeVGpXXXXXJapXX9gId7pXX-769-92.png" alt="" width="700"></p>
+<p>（1） 读取设备hosts文件”/system/etc/hosts”或系统属性文件”/system/build.prop”：</p>
+<p>URI代码片段：</p>
+<p><img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1ULY0GXXXXXcDaXXXkwBg7pXX-770-20.png" alt="" width="700"></p>
+<p>攻击结果显示：<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1JnCqHpXXXXX2XVXXjR1_2FXX-662-47.png" alt="" width="700"><br>
+（2） 读取Content Provider应用私有文件如“databases/webview.db”：<br>
+URI代码片段：<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1KPioHpXXXXbUXVXXe50o7FXX-773-18.png" alt="" width="700"><br>
+攻击结果显示：<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1mvYSGFXXXXXKapXXuCqA4XXX-685-81.png" alt="" width="700"><br>
+（3） 读取sdcard中的可读文件,如“/mnt/sdcard/Log.txt”：<br>
+URI代码片段：<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1XUOqHpXXXXXjXFXXWOso8XXX-784-19.png" alt="" width="700"><br>
+攻击结果显示：<br>
+<img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/TB1CiUFGVXXXXccaXXXmYB1TFXX-731-102.png" alt="" width="700"></p>
+<h2>5. 文件目录遍历安全漏洞修复建议</h2>
+<h3>1. 将不必要导出的Content Provider设置为不导出[6]</h3>
+<p>由于Android组件Content Provider无法在Android 2.2（即API Level 8）系统上设为不导出，因此如果应用的Content Provider不必要导出，阿里聚安全建议声明最低SDK版本为8以上版本；<br>
+由于API level 在17以下的所有应用的“android:exported”属性默认值都为true.，因此如果应用的Content Provider不必要导出，阿里聚安全建议显示设置注册的Content Provider组件的“android:exported”属性为false；</p>
+<h3>2. 去除没有必要的openFile()接口</h3>
+<p>如果应用的Content Provider组件没有必要实现openFile()接口，阿里聚安全建议移除该Content Provider的不必要的openFile()接口。</p>
+<h3>3. 过滤限制跨域访问，对访问的目标文件的路径进行有效判断[7]</h3>
+<p>使用Uri.decode()先对Content Query Uri进行解码后，再过滤如可通过“../”实现任意可读文件的访问的Uri字符串；</p>
+<h3>4. 设置权限来进行内部应用通过Content Provider的数据共享[6]</h3>
+<p>使用签名验证来控制Content Provider共享数据的访问权限：设置protectionLevel=”signature”；</p>
+<p>引用</p>
+<p>[1] http://www.wooyun.org/bugs/wooyun-2013-047098<br>
+[2] http://www.wooyun.org/bugs/wooyun-2013-044407<br>
+[3] http://www.wooyun.org/bugs/wooyun-2013-044411<br>
+[4] http://blog.seguesec.com/2012/09/path-traversal-vulnerability-on-adobe-reader-android-application<br>
+[5] http://seclists.org/fulldisclosure/2015/Jan/127<br>
+[6] http://developer.android.com/training/articles/security-tips.html<br>
+[7] http://drops.wooyun.org/tips/4314</p>
+<p>转载自：http://jaq.alibaba.com/blog.htm?spm=0.0.0.0.KzgWEw&amp;id=61</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/api/" rel="tag">API</a></p>
+
+<div class="date">
+  <span class="day">14</span>
+  <span class="month">2015-03</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default8667_provider" id="easyXDM_default8667_provider" frameborder="0" src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/webview-file%e5%9f%9f%e5%90%8c%e6%ba%90%e7%ad%96%e7%95%a5%e7%bb%95%e8%bf%87%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="WebView File域同源策略绕过漏洞浅析">WebView File域同源策略绕过漏洞浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%87%aa%e5%b7%b1%e5%8a%a8%e6%89%8b%e5%bc%80%e5%8f%91drozer%e6%8f%92%e4%bb%b6%e4%b9%8bautoattack/" rel="bookmark" title="自己动手开发Drozer插件之AutoAttack">自己动手开发Drozer插件之AutoAttack</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-logcat-security/" rel="bookmark" title="Android Logcat Security">Android Logcat Security</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-uxss%e9%98%b6%e6%ae%b5%e6%80%a7%e5%b0%8f%e7%bb%93%e5%8f%8a%e8%87%aa%e5%8a%a8%e5%8c%96%e6%b5%8b%e8%af%95/" rel="bookmark" title="Android UXSS阶段性小结及自动化测试">Android UXSS阶段性小结及自动化测试</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-database%e9%85%8d%e7%bd%ae%e6%a8%a1%e5%bc%8f%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android Database配置模式安全风险浅析">Android Database配置模式安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e5%ad%94%e9%9b%80%e7%bf%8e-ida-pro/" rel="bookmark" title="安卓动态调试七种武器之孔雀翎 – Ida Pro">安卓动态调试七种武器之孔雀翎 – Ida Pro</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ainternal-storage%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android本地数据存储：Internal Storage安全风险浅析">Android本地数据存储：Internal Storage安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e7%94%a8%e6%89%8b%e6%9c%ba%e8%bd%bb%e6%9d%be%e5%88%b7%e6%b4%9e%ef%bc%8c%e7%a7%bb%e5%8a%a8%e7%ab%af%e5%bc%80%e6%ba%90%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%b7%a5%e5%85%b7%e5%90%88%e9%9b%86/" rel="bookmark" title="用手机轻松刷洞，移动端开源安全测试工具合集">用手机轻松刷洞，移动端开源安全测试工具合集</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%b9%b3%e5%8f%b0%e7%9a%84sql%e6%b3%a8%e5%85%a5%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="一条短信控制你的手机! Android平台的SQL注入漏洞浅析">一条短信控制你的手机! Android平台的SQL注入漏洞浅析</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Content Provider文件目录遍历漏洞浅析 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

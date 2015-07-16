@@ -1,0 +1,686 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0146)http://www.droidsec.cn/android%e5%ba%94%e7%94%a8%e5%88%86%e6%9e%90%e8%bf%9b%e9%98%b6%e6%95%99%e7%a8%8b%e4%b9%8b%e4%b8%80-%e5%88%9d%e8%af%86jebapi/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android应用分析进阶教程之一- 初识JEBAPI  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android应用分析进阶教程之一- 初识JEBAPI评论Feed" href="http://www.droidsec.cn/android%e5%ba%94%e7%94%a8%e5%88%86%e6%9e%90%e8%bf%9b%e9%98%b6%e6%95%99%e7%a8%8b%e4%b9%8b%e4%b8%80-%e5%88%9d%e8%af%86jebapi/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+<style type="text/css"></style>
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Facebook开源智能代码静态分析工具Infer" href="http://www.droidsec.cn/facebook%e5%bc%80%e6%ba%90%e6%99%ba%e8%83%bd%e4%bb%a3%e7%a0%81%e9%9d%99%e6%80%81%e5%88%86%e6%9e%90%e5%b7%a5%e5%85%b7infer/">
+<link rel="next" title="安卓动态调试七种武器之孔雀翎 – Ida Pro" href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e5%ad%94%e9%9b%80%e7%bf%8e-ida-pro/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=325">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style></head>
+<body class="single single-post postid-325 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/">安卓安全工具</a> <i class="fa fa-angle-double-right"></i> Android应用分析进阶教程之一- 初识JEBAPI              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/">安卓安全工具</a> <i class="fa fa-angle-double-right"></i> Android应用分析进阶教程之一- 初识JEBAPI            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-325" class="uazoh7-post post-325 post type-post status-publish format-standard hentry category-3 category-5 tag-jeb">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android应用分析进阶教程之一- 初识JEBAPI</span></h3>
+<p> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" rel="category tag">安卓安全工具</a>, <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" rel="category tag">安卓逆向分析</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<p>点评：来自Keen Team的天才少年flanker详解了如何利用目前最好用的Android静态分析工具JEB的API编写自定义插件的基于原理与方法，目测还有下一集，值得期待。</p>
+<article class="entry ng-scope">
+<section class="entry-content ng-binding">
+<h1>0x00 前言 &amp; 背景</h1>
+<hr>
+<p>还在对着smali和jdgui抓耳挠腮grep来grep去吗？本系列教程将围绕Soot和JEB,讲述Android应用的进阶分析,感受鸟枪换炮的快感.</p>
+<p>JEB是Android应用静态分析的de facto standard,除去准确的反编译结果、高容错性之外,JEB提供的API也方便了我们编写插件对源文件进行处理,实施反混淆甚至一些更高级的应用分析来方便后续的人工分析.本系列文章的前几篇将对JEB的API使用进行介绍,并实战如何利用开发者留下的蛛丝马迹去反混淆.先来看看我们最终编写的这个自动化反混淆插件实例的效果：</p>
+<p>反混淆前：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f1.jpg" alt="Alt text"></p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f2.jpg" alt="Alt text"></p>
+<p>反混淆后：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f3.jpg" alt="Alt text"></p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f4.jpg" alt="Alt text"></p>
+<p>可以看到很多类名和field名都被恢复出来了. 读者朋友肯定会好奇这是如何做到的, 那我们首先来看下JEB提供API的结构：</p>
+<h1>0x01 <a href="http://www.droidsec.cn/tag/jeb/" class="st_tag internal_tag" rel="tag" title="Posts tagged with JEB">JEB</a> AST API结构</h1>
+<hr>
+<p>JEB的AST与Java的AST稍有不同,但大体还是很相似的,只是做了些简化.所有的AST Element实现<code>jeb.api.ast.IElement</code>,要么继承于<code>jeb.api.ast.NonStatement</code>,要么继承于<code>jeb.api.ast.Statement</code>.他们的关系如下图所示:</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f5.jpg" alt="Alt text"></p>
+<p><code>IElement</code>定义了<code>getSubElements</code>,但不同类型的实现和返回结果也不同,例如对<code>Method</code>进行<code>getSubElements</code>调用的返回会是函数的参数定义语句和函数体block,而<code>IfStmt</code>会返回判断使用的<code>Predicate</code>和每一个if/else/ifelse语句块.而一个<code>Assignment</code>语句则会返回左右<code>IExpression</code>操作数,以及<code>Operator</code>操作符.具体编写脚本中我们通常并不使用这个函数,而根据具体类型定义的更细致的函数,例如<code>Assignment</code>提供的<code>getLeft</code>和<code>getRight</code>.</p>
+<p>以下面的函数为例,我们来分析它具体由哪些AST元素组成.</p>
+<div>
+<div id="highlighter_23058" class="syntaxhighlighter  java">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+<div class="line number10 index9 alt1">10</div>
+<div class="line number11 index10 alt2">11</div>
+<div class="line number12 index11 alt1">12</div>
+<div class="line number13 index12 alt2">13</div>
+<div class="line number14 index13 alt1">14</div>
+<div class="line number15 index14 alt2">15</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="java keyword">boolean</code> <code class="java plain">isZtz162(Ztz ztz) {</code></div>
+<div class="line number2 index1 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">boolean</code> <code class="java plain">bool = </code><code class="java keyword">true</code><code class="java plain">;</code></div>
+<div class="line number3 index2 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">Redrain redrain = Redrain.getInstance(</code><code class="java string">"AnAn"</code><code class="java plain">);</code></div>
+<div class="line number4 index3 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(redrain.canShoot()) {</code></div>
+<div class="line number5 index4 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">redrain.shoot(</code><code class="java value">163</code><code class="java plain">);</code></div>
+<div class="line number6 index5 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(ztz.isDead()) {</code></div>
+<div class="line number7 index6 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">bool = </code><code class="java keyword">false</code><code class="java plain">;</code></div>
+<div class="line number8 index7 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number9 index8 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number10 index9 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">else</code> <code class="java keyword">if</code><code class="java plain">(ztz.height + Integer.parseInt(ztz.shoe) &gt; </code><code class="java value">162</code><code class="java plain">) {</code></div>
+<div class="line number11 index10 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">bool = </code><code class="java keyword">false</code><code class="java plain">;</code></div>
+<div class="line number12 index11 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number13 index12 alt2"></div>
+<div class="line number14 index13 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java plain">bool;</code></div>
+<div class="line number15 index14 alt2"><code class="java plain">}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>首先来看下<code>NonStatement</code></p>
+<h2>NonStatement</h2>
+<p>在文档中, NonStatement的描述是<code>Base class for AST elements that do not represent Statements.</code> ,即所有不是<code>Statement</code>的AST结构继承于<code>NonStatement</code>,如下图所示：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f6.jpg" alt="Alt text"></p>
+<p><code>NonStatement</code>与<code>Expression</code>的区别在于,<code>NonStatement</code>包含了一些高阶结构,例如<code>jeb.api.ast.Class</code>, <code>jeb.api.ast.Method</code>这些并不会出现在语句中的AST结构体,他们分别代表一个Class结构和Method结构,注意不要与反射语句中使用的Class和Method混淆.</p>
+<h2>Statement</h2>
+<p>Statement顾名思义就代表了一个<em>语句</em>,但值得注意的是这里的<em>语句</em>并不代表单个语句,继承于<code>Compound</code>的<code>Statement</code>中也可能包含其他的<code>Statement</code>.例如下面这段代码：</p>
+<div>
+<div id="highlighter_962368" class="syntaxhighlighter  java">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="java keyword">if</code><code class="java plain">(ztz.isDead())</code><code class="java comments">//redundant statement to demonstrate if-else</code></div>
+<div class="line number2 index1 alt1"><code class="java plain">{</code></div>
+<div class="line number3 index2 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java keyword">false</code><code class="java plain">;</code></div>
+<div class="line number4 index3 alt1"><code class="java plain">}</code></div>
+<div class="line number5 index4 alt2"><code class="java keyword">else</code><code class="java plain">{</code></div>
+<div class="line number6 index5 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java keyword">true</code><code class="java plain">;</code></div>
+<div class="line number7 index6 alt2"><code class="java plain">}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>这事实上是一整个继承于<code>Compound</code>的<code>IfStm</code>,也就是<code>Statement</code>.</p>
+<p><code>Statement</code>的继承关系图如下图所示,<img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f7.jpg" alt="Alt text"></p>
+<p>非<code>Compound</code>的<code>Statement</code>是最基本的语句结构,它的子节点只会由<code>Expression</code>构成而不会包含block. 例如<code>Assignment</code>,可以通过<code>getLeft</code>和<code>getRight</code>调用获得左右两边的操作对象,分别为<code>ILeftExpression</code>和<code>IExpression</code>.<code>ILeftExpression</code>代表可以做左值的Expression,例如变量.而常量显然不实现<code>ILeftExpression</code>接口</p>
+<h2>Compound</h2>
+<p><code>Compound</code>代表多个语句集合的语法块集合,每一个语法块以<code>Block</code>（也是<code>Compound</code>的子类）呈现,通过<code>getBlocks</code>调用获得.所有分支语句均继承<code>Compound</code>,如下图所示：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f8.jpg" alt="Alt text"></p>
+<p>在上面提到的例子中,<code>IfStmt</code>就是一个<code>Compound</code>,我们通过<code>getBranchPredicate(idx)</code>获取<code>Predict</code>,也就是ztz.isDead()这个<code>Expression</code>,而这个<code>Expression</code>真正的类型是子类<code>Call</code>.我们可以通过<code>getBranchBody(idx)</code>获取if和if-else中的<code>Block</code>,通过<code>getDefaultBlock</code>获取else的<code>Block</code></p>
+<h2>IExpression</h2>
+<p>IExpression代表了最基本的AST节点,其实现关系如下图：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f9.jpg" alt="Alt text"></p>
+<p><code>IExpression</code>接口的实现者<code>Expression</code>类代表了算术和逻辑运算的语句片段,例如a+b, “162” + ztz.toString(), !ztz, redrain*(ztz-162)等等,同时<code>Predicate</code>类是<code>Expression</code>类的直接子类,譬如在<code>if(ztz162)</code>中,该语句的<code>Predicate</code>左值为ztz162这个<code>identifier</code>,右值为null.</p>
+<p>以<code>ztz.test(1) + ”height" + 162</code>这个<code>Expression</code>为例,其结构组成和各节点类型如下：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/2015062222035831126jeb-expression-chart.png" alt="Alt text"></p>
+<p>值得注意的有如下几点：</p>
+<ul>
+<li>Expression是从右到左的结构</li>
+<li>Call没有提供获取caller的API,不过可以通过getSubElements()获取,返回顺序为
+<ul>
+<li>callee method</li>
+<li>calling instance (if instance call)</li>
+<li>calling arguments, one by one</li>
+</ul>
+</li>
+</ul>
+<h2>InstanceField, StaticField和Field</h2>
+<p>三者的关系如下图所示：</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/f5.jpg" alt="Alt text"></p>
+<p><code>InstanceField</code>和<code>StaticField</code>包含Field. <code>InstanceField</code>通过<code>getInstance</code>调用获取一个<code>IExpression</code>,也就是<code>Field</code>的container. <code>Field</code>本身是<code>Class</code>的元素,而<code>InstanceField</code>与<code>StaticField</code>则是它的具体实例化.</p>
+<h2>实例Method分析</h2>
+<p>以我们上面提到的isZtz162函数为例,它的AST结构如下：</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7af3c79825218844533" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; position: absolute; z-index: 2;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">- jeb.api.ast.Method  (getName() == "isZtz162") =&gt; getBody()
+    - Block =&gt; block.get(i) //遍历block中的语句
+        - Assignment "boolean bool = true"  =&gt; getSubElements
+            - Definition "boolean bool"
+                - Identifier "bool"
+            - Constant "true"
+        - Assignment "Redrain redrain = Redrain.getInstance("AnAn");"  =&gt; getSubElements
+            - Definition =&gt; getSubElements (注意它是父assignment的getLeft返回结果(左值))
+                - Identifier "redrain"
+            - Call "Redrain.getInstance("AnAn)"" (注意它是父assignment的getRight返回结果(右值))
+                - ...(omit)
+        - IfStmt (Compound) =&gt; getBlocks()
+            - Block (if block) =&gt; block.get(i) 遍历block中的语句
+                - Call "redrain.shoot(163);"
+                - IfStmt (Compound) 
+                    - ...omit
+            - Block (elseif block) =&gt; block.get(i) 遍历block中的语句
+                - Assignment "bool = false'"
+                - ..omit</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-2">2</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-4">4</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-6">6</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-8">8</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-10">10</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-12">12</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-14">14</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-16">16</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-55a7af3c79825218844533-18">18</div><div class="crayon-num" data-line="crayon-55a7af3c79825218844533-19">19</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7af3c79825218844533-1"><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-v">jeb</span><span class="crayon-sy">.</span><span class="crayon-v">api</span><span class="crayon-sy">.</span><span class="crayon-v">ast</span><span class="crayon-sy">.</span><span class="crayon-e">Method</span><span class="crayon-h">&nbsp;&nbsp;</span><span class="crayon-sy">(</span><span class="crayon-e">getName</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">==</span><span class="crayon-h"> </span><span class="crayon-s">"isZtz162"</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-e">getBody</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-2"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-v">Block</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">block</span><span class="crayon-sy">.</span><span class="crayon-e">get</span><span class="crayon-sy">(</span><span class="crayon-v">i</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-c">//遍历block中的语句</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Assignment</span><span class="crayon-h"> </span><span class="crayon-s">"boolean bool = true"</span><span class="crayon-h">&nbsp;&nbsp;</span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">getSubElements</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Definition</span><span class="crayon-h"> </span><span class="crayon-s">"boolean bool"</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Identifier</span><span class="crayon-h"> </span><span class="crayon-s">"bool"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Constant</span><span class="crayon-h"> </span><span class="crayon-s">"true"</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Assignment</span><span class="crayon-h"> </span><span class="crayon-s">"Redrain redrain = Redrain.getInstance("</span><span class="crayon-i">AnAn</span><span class="crayon-s">");"</span><span class="crayon-h">&nbsp;&nbsp;</span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">getSubElements</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-v">Definition</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-e">getSubElements</span><span class="crayon-h"> </span><span class="crayon-sy">(</span>注意它是父<span class="crayon-i">assignment</span>的<span class="crayon-i">getLeft</span>返回结果<span class="crayon-sy">(</span>左值<span class="crayon-sy">)</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Identifier</span><span class="crayon-h"> </span><span class="crayon-s">"redrain"</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Call</span><span class="crayon-h"> </span><span class="crayon-s">"Redrain.getInstance("</span><span class="crayon-v">AnAn</span><span class="crayon-sy">)</span><span class="crayon-s">""</span><span class="crayon-h"> </span><span class="crayon-sy">(</span>注意它是父<span class="crayon-i">assignment</span>的<span class="crayon-i">getRight</span>返回结果<span class="crayon-sy">(</span>右值<span class="crayon-sy">)</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-sy">.</span><span class="crayon-sy">.</span><span class="crayon-sy">.</span><span class="crayon-sy">(</span><span class="crayon-v">omit</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-e">IfStmt</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">Compound</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-e">getBlocks</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-e">Block</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-st">if</span><span class="crayon-h"> </span><span class="crayon-v">block</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">block</span><span class="crayon-sy">.</span><span class="crayon-e">get</span><span class="crayon-sy">(</span><span class="crayon-v">i</span><span class="crayon-sy">)</span><span class="crayon-h"> </span>遍历<span class="crayon-i">block</span>中的语句</div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Call</span><span class="crayon-h"> </span><span class="crayon-s">"redrain.shoot(163);"</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-e">IfStmt</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">Compound</span><span class="crayon-sy">)</span><span class="crayon-h"> </span></div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-sy">.</span><span class="crayon-sy">.</span><span class="crayon-sy">.</span><span class="crayon-v">omit</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-e">Block</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-st">elseif</span><span class="crayon-h"> </span><span class="crayon-v">block</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">block</span><span class="crayon-sy">.</span><span class="crayon-e">get</span><span class="crayon-sy">(</span><span class="crayon-v">i</span><span class="crayon-sy">)</span><span class="crayon-h"> </span>遍历<span class="crayon-i">block</span>中的语句</div><div class="crayon-line crayon-striped-line" id="crayon-55a7af3c79825218844533-18"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-i">Assignment</span><span class="crayon-h"> </span><span class="crayon-s">"bool = false'"</span></div><div class="crayon-line" id="crayon-55a7af3c79825218844533-19"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">-</span><span class="crayon-h"> </span><span class="crayon-sy">.</span><span class="crayon-sy">.</span><span class="crayon-v">omit</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0153 seconds] -->
+<p>可以通过如下代码来递归打印一个<code>Method</code>中的各个<code>Element</code>:</p>
+<div>
+<div id="highlighter_295250" class="syntaxhighlighter  python">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+<div class="line number10 index9 alt1">10</div>
+<div class="line number11 index10 alt2">11</div>
+<div class="line number12 index11 alt1">12</div>
+<div class="line number13 index12 alt2">13</div>
+<div class="line number14 index13 alt1">14</div>
+<div class="line number15 index14 alt2">15</div>
+<div class="line number16 index15 alt1">16</div>
+<div class="line number17 index16 alt2">17</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="python keyword">class</code> <code class="python plain">test(IScript):</code></div>
+<div class="line number2 index1 alt1"></div>
+<div class="line number3 index2 alt2"><code class="python keyword">def</code> <code class="python plain">run(</code><code class="python color1">self</code><code class="python plain">, j):</code></div>
+<div class="line number4 index3 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance </code><code class="python keyword">=</code> <code class="python plain">j</code></div>
+<div class="line number5 index4 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">sig </code><code class="python keyword">=</code> <code class="python color1">self</code><code class="python plain">.instance.getUI().getView(View.</code><code class="python functions">Type</code><code class="python plain">.JAVA).getCodePosition().getSignature()</code></div>
+<div class="line number6 index5 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">currentMethod </code><code class="python keyword">=</code> <code class="python color1">self</code><code class="python plain">.instance.getDecompiledMethodTree(sig)</code></div>
+<div class="line number7 index6 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance.</code><code class="python keyword">print</code><code class="python plain">(</code><code class="python string">"scanning method: "</code> <code class="python keyword">+</code> <code class="python plain">currentMethod.getSignature())</code></div>
+<div class="line number8 index7 alt1"></div>
+<div class="line number9 index8 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">body </code><code class="python keyword">=</code> <code class="python plain">currentMethod.getBody()</code></div>
+<div class="line number10 index9 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance.</code><code class="python functions">print</code><code class="python plain">(</code><code class="python functions">repr</code><code class="python plain">(body))</code></div>
+<div class="line number11 index10 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">i </code><code class="python keyword">in</code> <code class="python functions">range</code><code class="python plain">(body.size()):</code></div>
+<div class="line number12 index11 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.viewElement(body.get(i),</code><code class="python value">1</code><code class="python plain">)</code></div>
+<div class="line number13 index12 alt2"></div>
+<div class="line number14 index13 alt1"><code class="python keyword">def</code> <code class="python plain">viewElement(</code><code class="python color1">self</code><code class="python plain">, element, depth):</code></div>
+<div class="line number15 index14 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance.</code><code class="python keyword">print</code><code class="python plain">(</code><code class="python string">"&nbsp;&nbsp;&nbsp; "</code><code class="python keyword">*</code><code class="python plain">depth</code><code class="python keyword">+</code><code class="python functions">repr</code><code class="python plain">(element))</code></div>
+<div class="line number16 index15 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">sub </code><code class="python keyword">in</code> <code class="python plain">element.getSubElements():</code></div>
+<div class="line number17 index16 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.viewElement(sub, depth</code><code class="python keyword">+</code><code class="python value">1</code><code class="python plain">)</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>输出结果如下：</p>
+<div>
+<div id="highlighter_483608" class="syntaxhighlighter  bash">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+<div class="line number10 index9 alt1">10</div>
+<div class="line number11 index10 alt2">11</div>
+<div class="line number12 index11 alt1">12</div>
+<div class="line number13 index12 alt2">13</div>
+<div class="line number14 index13 alt1">14</div>
+<div class="line number15 index14 alt2">15</div>
+<div class="line number16 index15 alt1">16</div>
+<div class="line number17 index16 alt2">17</div>
+<div class="line number18 index17 alt1">18</div>
+<div class="line number19 index18 alt2">19</div>
+<div class="line number20 index19 alt1">20</div>
+<div class="line number21 index20 alt2">21</div>
+<div class="line number22 index21 alt1">22</div>
+<div class="line number23 index22 alt2">23</div>
+<div class="line number24 index23 alt1">24</div>
+<div class="line number25 index24 alt2">25</div>
+<div class="line number26 index25 alt1">26</div>
+<div class="line number27 index26 alt2">27</div>
+<div class="line number28 index27 alt1">28</div>
+<div class="line number29 index28 alt2">29</div>
+<div class="line number30 index29 alt1">30</div>
+<div class="line number31 index30 alt2">31</div>
+<div class="line number32 index31 alt1">32</div>
+<div class="line number33 index32 alt2">33</div>
+<div class="line number34 index33 alt1">34</div>
+<div class="line number35 index34 alt2">35</div>
+<div class="line number36 index35 alt1">36</div>
+<div class="line number37 index36 alt2">37</div>
+<div class="line number38 index37 alt1">38</div>
+<div class="line number39 index38 alt2">39</div>
+<div class="line number40 index39 alt1">40</div>
+<div class="line number41 index40 alt2">41</div>
+<div class="line number42 index41 alt1">42</div>
+<div class="line number43 index42 alt2">43</div>
+<div class="line number44 index43 alt1">44</div>
+<div class="line number45 index44 alt2">45</div>
+<div class="line number46 index45 alt1">46</div>
+<div class="line number47 index46 alt2">47</div>
+<div class="line number48 index47 alt1">48</div>
+<div class="line number49 index48 alt2">49</div>
+<div class="line number50 index49 alt1">50</div>
+<div class="line number51 index50 alt2">51</div>
+<div class="line number52 index51 alt1">52</div>
+<div class="line number53 index52 alt2">53</div>
+<div class="line number54 index53 alt1">54</div>
+<div class="line number55 index54 alt2">55</div>
+<div class="line number56 index55 alt1">56</div>
+<div class="line number57 index56 alt2">57</div>
+<div class="line number58 index57 alt1">58</div>
+<div class="line number59 index58 alt2">59</div>
+<div class="line number60 index59 alt1">60</div>
+<div class="line number61 index60 alt2">61</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="bash plain">jeb.api.ast.Block@5909b311</code></div>
+<div class="line number2 index1 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Assignment@bcb4ec2</code></div>
+<div class="line number3 index2 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@66afd874</code></div>
+<div class="line number4 index3 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@38ffa6bd</code></div>
+<div class="line number5 index4 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@181bdf87</code></div>
+<div class="line number6 index5 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Assignment@4df0246e</code></div>
+<div class="line number7 index6 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@50e7d9bb</code></div>
+<div class="line number8 index7 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@2587ad7c</code></div>
+<div class="line number9 index8 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Call@6e8ebb23</code></div>
+<div class="line number10 index9 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Method@5ca02f89</code></div>
+<div class="line number11 index10 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@1890fae1</code></div>
+<div class="line number12 index11 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@5646d660</code></div>
+<div class="line number13 index12 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@44a464e0</code></div>
+<div class="line number14 index13 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@4dad155</code></div>
+<div class="line number15 index14 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.IfStm@298ea172</code></div>
+<div class="line number16 index15 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Predicate@530958ae</code></div>
+<div class="line number17 index16 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Call@a9d3219</code></div>
+<div class="line number18 index17 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Method@56440cc0</code></div>
+<div class="line number19 index18 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@da13d7f</code></div>
+<div class="line number20 index19 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@54cc63d6</code></div>
+<div class="line number21 index20 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@36aea218</code></div>
+<div class="line number22 index21 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@2587ad7c</code></div>
+<div class="line number23 index22 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Predicate@313f1b4</code></div>
+<div class="line number24 index23 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Expression@12616200</code></div>
+<div class="line number25 index24 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.InstanceField@3768f76d</code></div>
+<div class="line number26 index25 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@4c4c3186</code></div>
+<div class="line number27 index26 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Field@198ed96b</code></div>
+<div class="line number28 index27 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Call@71640ce8</code></div>
+<div class="line number29 index28 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Method@5f8b8d80</code></div>
+<div class="line number30 index29 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.InstanceField@42f6ff81</code></div>
+<div class="line number31 index30 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@4c4c3186</code></div>
+<div class="line number32 index31 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Field@6600907f</code></div>
+<div class="line number33 index32 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@2f0eb62a</code></div>
+<div class="line number34 index33 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@6ed99788</code></div>
+<div class="line number35 index34 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Call@f6b9a93</code></div>
+<div class="line number36 index35 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Method@617130cd</code></div>
+<div class="line number37 index36 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@4e3b14b5</code></div>
+<div class="line number38 index37 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@8cc9f33</code></div>
+<div class="line number39 index38 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@31e7d1c8</code></div>
+<div class="line number40 index39 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@6a7dbb10</code></div>
+<div class="line number41 index40 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@64844e0e</code></div>
+<div class="line number42 index41 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@2587ad7c</code></div>
+<div class="line number43 index42 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@2a20acb0</code></div>
+<div class="line number44 index43 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.IfStm@47296c6b</code></div>
+<div class="line number45 index44 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Predicate@708d094c</code></div>
+<div class="line number46 index45 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Call@3b5d964e</code></div>
+<div class="line number47 index46 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Method@7d36f954</code></div>
+<div class="line number48 index47 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Definition@242b3a05</code></div>
+<div class="line number49 index48 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@11ee30d0</code></div>
+<div class="line number50 index49 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@2cc6b0e2</code></div>
+<div class="line number51 index50 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@4c4c3186</code></div>
+<div class="line number52 index51 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@2886dc65</code></div>
+<div class="line number53 index52 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Assignment@2def7fac</code></div>
+<div class="line number54 index53 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@38ffa6bd</code></div>
+<div class="line number55 index54 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@46a70cc3</code></div>
+<div class="line number56 index55 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Block@136fa72</code></div>
+<div class="line number57 index56 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Assignment@407452fd</code></div>
+<div class="line number58 index57 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@38ffa6bd</code></div>
+<div class="line number59 index58 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Constant@46a70cc3</code></div>
+<div class="line number60 index59 alt1"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Return@14f4811a</code></div>
+<div class="line number61 index60 alt2"><code class="bash spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="bash plain">jeb.api.ast.Identifier@38ffa6bd</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>对AST结构的分析就到这里，本文选取了几种最典型的做了讲解.此外JEB还提供了<code>jeb.api.dex</code>,提供了对dex文件的操作API.由于这方面资料比较多,这里就先不赘述了.</p>
+<h1>0x02 实例分析之开发环境配置</h1>
+<hr>
+<p>JEB原生支持Java和Python两种语言进行开发,后者的支持是通过Jython实现的.这里简便起见我们的例子均以Python为例.个人建议想使用前者的话最好使用Scala,否则Java本身实在太罗嗦了.</p>
+<h2>Java</h2>
+<p>在eclipse中配置好classpath中的library指向bin/jeb.jar,同时将javadoc路径指向jeb/doc/apidoc.zip即可.</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/1434639770823.png" alt="Alt text"></p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/1434639823928.png" alt="Alt text"></p>
+<h2>Python</h2>
+<p>Python环境配置相对麻烦点,因为JEB并没有提供相对应的skeleton,导致Python的IDE中默认没有代码补全,需要自行配置.笔者使用了PyCharm的JythonHelper插件,可以帮助生成skeleton从而有基本的代码补全.</p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/1434639954618.png" alt="Alt text"></p>
+<p><img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/1434639993696.png" alt="Alt text"></p>
+<p>配置好环境后,我们来编写一个最简单的插件：输出光标所在位置的method signature,代码如下所示：</p>
+<div>
+<div id="highlighter_331558" class="syntaxhighlighter  python">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="python keyword">from</code> <code class="python plain">jeb.api </code><code class="python keyword">import</code> <code class="python plain">IScript</code></div>
+<div class="line number2 index1 alt1"><code class="python keyword">from</code> <code class="python plain">jeb.api.ui </code><code class="python keyword">import</code> <code class="python plain">View</code></div>
+<div class="line number3 index2 alt2"><code class="python keyword">class</code> <code class="python plain">test(IScript):</code></div>
+<div class="line number4 index3 alt1"></div>
+<div class="line number5 index4 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">def</code> <code class="python plain">run(</code><code class="python color1">self</code><code class="python plain">, j):</code></div>
+<div class="line number6 index5 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance </code><code class="python keyword">=</code> <code class="python plain">j</code></div>
+<div class="line number7 index6 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">sig </code><code class="python keyword">=</code> <code class="python color1">self</code><code class="python plain">.instance.getUI().getView(View.</code><code class="python functions">Type</code><code class="python plain">.JAVA).getCodePosition().getSignature()</code></div>
+<div class="line number8 index7 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">currentMethod </code><code class="python keyword">=</code> <code class="python color1">self</code><code class="python plain">.instance.getDecompiledMethodTree(sig)</code></div>
+<div class="line number9 index8 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python color1">self</code><code class="python plain">.instance.</code><code class="python keyword">print</code><code class="python plain">(</code><code class="python string">"scanning method: "</code> <code class="python keyword">+</code> <code class="python plain">currentMethod.getSignature())</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>保存为test.py,点击File-&gt;Run Script-&gt;test.py, JEB就会在下面的console中输出当前光标所在函数的signature.</p>
+<h1>0x03 总结</h1>
+<hr>
+<p>本文介绍了JEB Java AST API的基本知识和插件编写入门,同时也可以作为一个APIDoc的补充参考.在下一篇文章中我们将会根据实例讲解如何编写高级的更复杂的插件.</p>
+<p>源代码和测试样例在https://github.com/flankerhqd/jebPlugins可以找到。</p>
+<p>English version of this article can be found at http://blog.flanker017.me/advanced-android-application-analysis-jeb-api-manual-and-plugin-writing/</p>
+<p>转载自：http://drops.wooyun.org/mobile/6665 &nbsp;原文作者：<b>hqdvista</b></p>
+</section>
+</article>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/jeb/" rel="tag">JEB</a></p>
+
+<div class="date">
+  <span class="day">23</span>
+  <span class="month">2015-06</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span class="">11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span class="">16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default6523_provider" id="easyXDM_default6523_provider" frameborder="0" src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e5%ad%94%e9%9b%80%e7%bf%8e-ida-pro/" rel="bookmark" title="安卓动态调试七种武器之孔雀翎 – Ida Pro">安卓动态调试七种武器之孔雀翎 – Ida Pro</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e6%96%b0%e6%b5%aa%e5%be%ae%e5%8d%9aandroid%e5%ae%a2%e6%88%b7%e7%ab%af%e6%9c%ac%e5%9c%b0%e6%8f%90%e6%9d%83%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90/" rel="bookmark" title="新浪微博android客户端本地提权漏洞分析">新浪微博android客户端本地提权漏洞分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%a4%96%e9%83%a8%e5%8a%a8%e6%80%81%e5%8a%a0%e8%bd%bddex%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="外部动态加载DEX安全风险浅析">外部动态加载DEX安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e7%89%88dropbox-sdk%e5%ad%98%e5%9c%a8%e8%bf%9c%e7%a8%8b%e5%88%a9%e7%94%a8%e6%bc%8f%e6%b4%9e/" rel="bookmark" title="安卓版Dropbox SDK被爆存在远程利用漏洞，目前已紧急修复">安卓版Dropbox SDK被爆存在远程利用漏洞，目前已紧急修复</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e4%ba%ba%e6%89%8b%e4%b8%80%e4%bb%bd%e6%a0%b8%e6%ad%a6%e5%99%a8-hacking-team-%e6%b3%84%e9%9c%b2%ef%bc%88%e5%bc%80%e6%ba%90%ef%bc%89%e8%b5%84%e6%96%99%e5%af%bc%e8%a7%88%e6%89%8b%e5%86%8c/" rel="bookmark" title="人手一份核武器 – Hacking Team 泄露（开源）资料导览手册">人手一份核武器 – Hacking Team 泄露（开源）资料导览手册</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e4%bd%bf%e7%94%a8drozer%e5%af%b9android%e5%ba%94%e7%94%a8%e8%bf%9b%e8%a1%8c%e5%ae%89%e5%85%a8%e8%af%84%e4%bc%b0/" rel="bookmark" title="使用drozer对Android应用进行安全评估">使用drozer对Android应用进行安全评估</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-https%e4%b8%ad%e9%97%b4%e4%ba%ba%e5%8a%ab%e6%8c%81%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android HTTPS中间人劫持漏洞浅析">Android HTTPS中间人劫持漏洞浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ae%89%e5%85%a8%e4%bc%9a%e8%ae%ae%ef%bc%88%e5%ad%a6%e6%9c%af%e7%95%8c%ef%bc%89%e6%a6%82%e5%bf%b5%e6%99%ae%e5%8f%8a-asiaccs2015%e4%bc%9a%e8%ae%ae%e6%80%bb%e7%bb%93/" rel="bookmark" title="计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）">计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ainternal-storage%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android本地数据存储：Internal Storage安全风险浅析">Android本地数据存储：Internal Storage安全风险浅析</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android应用分析进阶教程之一- 初识JEBAPI _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

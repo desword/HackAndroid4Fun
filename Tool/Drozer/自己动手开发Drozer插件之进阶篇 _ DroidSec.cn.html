@@ -1,0 +1,433 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0138)http://www.droidsec.cn/%e8%87%aa%e5%b7%b1%e5%8a%a8%e6%89%8b%e5%bc%80%e5%8f%91drozer%e6%8f%92%e4%bb%b6%e4%b9%8b%e8%bf%9b%e9%98%b6%e7%af%87/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>自己动手开发Drozer插件之进阶篇  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » 自己动手开发Drozer插件之进阶篇评论Feed" href="http://www.droidsec.cn/%e8%87%aa%e5%b7%b1%e5%8a%a8%e6%89%8b%e5%bc%80%e5%8f%91drozer%e6%8f%92%e4%bb%b6%e4%b9%8b%e8%bf%9b%e9%98%b6%e7%af%87/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）" href="http://www.droidsec.cn/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ae%89%e5%85%a8%e4%bc%9a%e8%ae%ae%ef%bc%88%e5%ad%a6%e6%9c%af%e7%95%8c%ef%bc%89%e6%a6%82%e5%bf%b5%e6%99%ae%e5%8f%8a-asiaccs2015%e4%bc%9a%e8%ae%ae%e6%80%bb%e7%bb%93/">
+<link rel="next" title="远控木马Dendoroid.B分析报告" href="http://www.droidsec.cn/%e8%bf%9c%e6%8e%a7%e6%9c%a8%e9%a9%acdendoroid-b%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/自己动手开发Drozer插件之进阶篇 _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=282">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-282 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover" style="display: none;"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/">安卓安全工具</a> <i class="fa fa-angle-double-right"></i> 自己动手开发Drozer插件之进阶篇              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/">安卓安全工具</a> <i class="fa fa-angle-double-right"></i> 自己动手开发Drozer插件之进阶篇            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-282" class="uazoh7-post post-282 post type-post status-publish format-standard hentry category-3 tag-drozer tag-drozer-moudle">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> 自己动手开发Drozer插件之进阶篇</span></h3>
+<p> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" rel="category tag">安卓安全工具</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<p><strong>1.如何从源代码编译drozer</strong></p>
+<p>参照https://github.com/mwrlabs/<a href="http://www.droidsec.cn/tag/drozer/" class="st_tag internal_tag" rel="tag" title="Posts tagged with Drozer">drozer</a>/blob/develop/INSTALLING</p>
+<p>最好是在ubuntu或linux环境下安装好编译环境<br>
+* Java （自带或安装）<br>
+* Android Software Development Kit (google去下载sdk)<br>
+* Native Development Kit (google去下载ndk)<br>
+* Python 2.7 with development headers（自带）<br>
+* Python Setuptools（apt-get install python-setuptools）<br>
+* ia-32libs (64位得系统需要安装)</p>
+<p>安装好drozer的Python依赖库<br>
+$ easy_install –allow-hosts pypi.python.org protobuf==2.4.1<br>
+$ easy_install twisted==10.2.0</p>
+<p>克隆drozer的源代码<br>
+git clone git://github.com/mwrlabs/drozer/</p>
+<p>到源代码根目录，将版本文件meta.py从src里拷贝到源代码drozer根目录下<br>
+cd drozer<br>
+cp src/drozer/meta.py .</p>
+<p>修改Makefile文件<br>
+将DX环境变量指向dorzer源代码自带的dx<br>
+DX = $(CURDIR)/src/drozer/lib/dx<br>
+其他javac，NDKBUILD等环境变量按自己的系统环境指定。</p>
+<p>编译安装<br>
+make<br>
+python setup.py install</p>
+<p>&nbsp;</p>
+<p><strong>2.编写自己的dex插件</strong><br>
+之前在http://appscan.360.cn/blog/?p=45中，已经交大家如何写python插件,但drozer还有更强大的dex插件。</p>
+<p>参考http://blogs.360.cn/blog/android-app%E9%80%9A%E7%94%A8%E5%9E%8B%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/</p>
+<p>我们可以试着写一个超级拒绝服务的fuzz插件，这里为了方便直接进入drozer的公共模块代码目录里写自己的dex插件。<br>
+drozer/src/drozer/modules/common/IntentTest.java</p>
+<div class="codecolorer-container cpp blackboard">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="line-numbers">
+<div>1<br>
+2<br>
+3<br>
+4<br>
+5<br>
+6<br>
+7<br>
+8<br>
+9<br>
+10<br>
+11<br>
+12<br>
+13<br>
+14<br>
+15<br>
+16<br>
+17<br>
+18<br>
+19<br>
+20<br>
+21<br>
+22<br>
+23<br>
+24<br>
+25<br>
+26<br>
+27<br>
+28<br>
+29<br>
+30<br>
+31<br>
+32<br>
+33<br>
+34<br>
+35</div>
+</td>
+<td>
+<div class="cpp codecolorer">import android.<span class="me1">content</span>.<span class="me1">Intent</span><span class="sy4">;</span><br>
+import android.<span class="me1">content</span>.<span class="me1">Context</span><span class="sy4">;</span><br>
+import java.<span class="me1">io</span>.<span class="me1">Serializable</span><span class="sy4">;</span><p></p>
+<p><span class="kw2">public</span> <span class="kw2">class</span> IntentTest <span class="br0">{</span></p>
+<p><span class="kw2">public</span> <span class="kw4">static</span> <span class="kw2">class</span> test implements Serializable <span class="br0">{</span><br>
+<span class="br0">}</span></p>
+<p><span class="kw2">public</span> <span class="kw4">static</span> boolean superfuzz_Activity<span class="br0">(</span>Context context ,String package_params, String compoment_params <span class="br0">)</span><span class="br0">{</span><br>
+Intent intent <span class="sy1">=</span> <span class="kw3">new</span> Intent<span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">setClassName</span><span class="br0">(</span> package_params , compoment_params<span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">putExtra</span><span class="br0">(</span><span class="st0">“serializable_key”</span>,<span class="kw3">new</span> test<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">setFlags</span><span class="br0">(</span><span class="nu12">0x10000000</span><span class="br0">)</span><span class="sy4">;</span><br>
+context.<span class="me1">startActivity</span><span class="br0">(</span>intent<span class="br0">)</span><span class="sy4">;</span><br>
+<span class="kw1">return</span> <span class="kw2">true</span><span class="sy4">;</span><br>
+<span class="br0">}</span></p>
+<p><span class="kw2">public</span> <span class="kw4">static</span> boolean superfuzz_Broadcast<span class="br0">(</span>Context context ,String package_params, String compoment_params <span class="br0">)</span><span class="br0">{</span><br>
+Intent intent <span class="sy1">=</span> <span class="kw3">new</span> Intent<span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">setClassName</span><span class="br0">(</span> package_params , compoment_params<span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">putExtra</span><span class="br0">(</span><span class="st0">“serializable_key”</span>,<span class="kw3">new</span> test<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="sy4">;</span><br>
+context.<span class="me1">sendBroadcast</span><span class="br0">(</span>intent<span class="br0">)</span><span class="sy4">;</span><br>
+<span class="kw1">return</span> <span class="kw2">true</span><span class="sy4">;</span><br>
+<span class="br0">}</span></p>
+<p><span class="kw2">public</span> <span class="kw4">static</span> boolean superfuzz_Service<span class="br0">(</span>Context context ,String package_params, String compoment_params <span class="br0">)</span><span class="br0">{</span><br>
+Intent intent <span class="sy1">=</span> <span class="kw3">new</span> Intent<span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">setClassName</span><span class="br0">(</span> package_params , compoment_params<span class="br0">)</span><span class="sy4">;</span><br>
+intent.<span class="me1">putExtra</span><span class="br0">(</span><span class="st0">“serializable_key”</span>,<span class="kw3">new</span> test<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="sy4">;</span><br>
+context.<span class="me1">startService</span><span class="br0">(</span>intent<span class="br0">)</span><span class="sy4">;</span><br>
+<span class="kw1">return</span> <span class="kw2">true</span><span class="sy4">;</span><br>
+<span class="br0">}</span></p>
+<p><span class="br0">}</span></p></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>重新make，drozer/src/drozer/modules/common/下将多出一个IntentTest.apk和IntentTest$test.class，IntentTest.java先被javac编译成class，再被dx转换成IntentTest.apk</p>
+<p>然后再重新安装drozer，不影响之前安装的drozer<br>
+python setup.py install</p>
+<p>&nbsp;</p>
+<p><strong>3.写python插件测试调用dex插件</strong></p>
+<p>先用self.loadClass动态加载common/IntentTest.apk，然后就可以指定调用函数方法。</p>
+<div class="codecolorer-container ruby blackboard">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td class="line-numbers">
+<div>1<br>
+2<br>
+3<br>
+4<br>
+5<br>
+6<br>
+7<br>
+8<br>
+9<br>
+10<br>
+11<br>
+12<br>
+13<br>
+14<br>
+15<br>
+16</div>
+</td>
+<td>
+<div class="ruby codecolorer">from drozer.<span class="me1">modules</span> import common, <span class="kw1">Module</span><p></p>
+<p><span class="kw1">class</span> test<span class="br0">(</span><span class="kw1">Module</span>,common.<span class="me1">ClassLoader</span><span class="br0">)</span>:<br>
+name = <span class="st0">“”</span><br>
+description = <span class="st0">“”</span><br>
+examples = <span class="st0">“”</span><br>
+author = <span class="st0">“”</span><br>
+date = <span class="st0">“”</span><br>
+license = <span class="st0">“”</span><br>
+path = <span class="br0">[</span><span class="st0">“exp”</span>, <span class="st0">“test”</span><span class="br0">]</span></p>
+<p><span class="kw1">def</span> execute<span class="br0">(</span><span class="kw2">self</span>, arguments<span class="br0">)</span>:<br>
+IntentTest = <span class="kw2">self</span>.<span class="me1">loadClass</span><span class="br0">(</span><span class="st0">“common/IntentTest.apk”</span>, <span class="st0">“IntentTest”</span><span class="br0">)</span><br>
+IntentTest.<span class="me1">superfuzz_Activity</span><span class="br0">(</span><span class="kw2">self</span>.<span class="me1">getContext</span><span class="br0">(</span><span class="br0">)</span>,<span class="st0">“包名XX”</span>,<span class="st0">“组件名xx”</span><span class="br0">)</span><br>
+IntentTest.<span class="me1">superfuzz_Broadcast</span><span class="br0">(</span><span class="kw2">self</span>.<span class="me1">getContext</span><span class="br0">(</span><span class="br0">)</span>,<span class="st0">“包名XX”</span>,<span class="st0">“组件名xx”</span><span class="br0">)</span><br>
+IntentTest.<span class="me1">superfuzz_Service</span><span class="br0">(</span><span class="kw2">self</span>.<span class="me1">getContext</span><span class="br0">(</span><span class="br0">)</span>,<span class="st0">“包名XX”</span>,<span class="st0">“组件名xx”</span><span class="br0">)</span></p></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>4.测试插件</strong></p>
+<p>直接针对某个包的导出组件进行自动化的Fuzz测试，效果还不错。</p>
+<p><img class="alignnone" src="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/test1.jpg" alt="" width="1166" height="758"></p>
+<p>&nbsp;</p>
+<p><strong>5.关于dex插件的原理</strong></p>
+<p>用java编写核心代码，用python调用，drozer可谓是安卓安全测试神器，这些功能是怎么实现的呢？</p>
+<p>这里我只简单介绍下，具体可以看到下图插件的MD5值，drozer是通过protobuf协议传送本地插件apk文件到app的cache目录，然后动态加载的。</p>
+<p>至于python是如何和dex插件交互的，建议大家深读下drozer的源代码，这里向drozer的作者致敬，能开发出如此强大的框架！</p>
+<p><img class="alignnone" src="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/11111222.jpg" alt="" width="859" height="485"></p>
+<p>&nbsp;</p>
+<p>转载自：http://appscan.360.cn/blog/?p=150 &nbsp;作者：Rayh4c</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/drozer/" rel="tag">Drozer</a> <a href="http://www.droidsec.cn/tag/drozer-moudle/" rel="tag">drozer moudle</a></p>
+
+<div class="date">
+  <span class="day">24</span>
+  <span class="month">2015-04</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default8762_provider" id="easyXDM_default8762_provider" frameborder="0" src="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/%e5%88%a9%e7%94%a8mono-for-android%e5%bc%80%e5%8f%91%e7%9a%84%e6%81%b6%e6%84%8f%e8%bd%af%e4%bb%b6/" rel="bookmark" title="利用Mono for Android开发的恶意软件">利用Mono for Android开发的恶意软件</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%b8%b8%e8%a7%81android-native%e5%b4%a9%e6%ba%83%e5%8f%8a%e9%94%99%e8%af%af%e5%8e%9f%e5%9b%a0/" rel="bookmark" title="常见Android Native崩溃及错误原因">常见Android Native崩溃及错误原因</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ae%89%e5%85%a8%e6%94%bb%e9%98%b2%e6%8c%87%e5%8d%97-%e7%ac%ac2%e7%ab%a0-android%e7%9a%84%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1%e4%b8%8e%e6%9e%b6%e6%9e%84-%ef%bc%882%ef%bc%89/" rel="bookmark" title="《Android安全攻防指南》第2章 Android的安全设计与架构 （2）">《Android安全攻防指南》第2章 Android的安全设计与架构 （2）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%ae%89%e5%85%a8%e4%bc%9a%e8%ae%ae%ef%bc%88%e5%ad%a6%e6%9c%af%e7%95%8c%ef%bc%89%e6%a6%82%e5%bf%b5%e6%99%ae%e5%8f%8a-asiaccs2015%e4%bc%9a%e8%ae%ae%e6%80%bb%e7%bb%93/" rel="bookmark" title="计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）">计算机安全会议（学术界）概念普及 &amp; ASIACCS2015会议总结（移动安全部分）</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e6%96%b0%e7%9a%84android-webview%e8%bf%9c%e7%a8%8b%e4%bb%a3%e7%a0%81%e6%89%a7%e8%a1%8c%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e4%b8%8e%e6%b5%8b%e8%af%95%e6%96%b9%e6%b3%95/" rel="bookmark" title="新的Android webview远程代码执行漏洞分析与测试方法">新的Android webview远程代码执行漏洞分析与测试方法</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-broadcastanywhere%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90/" rel="bookmark" title="Android BroadcastAnywhere漏洞分析">Android BroadcastAnywhere漏洞分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/cve-2014-7911%e5%ae%89%e5%8d%93%e6%8f%90%e6%9d%83%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90/" rel="bookmark" title="cve-2014-7911安卓提权漏洞分析">cve-2014-7911安卓提权漏洞分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-activtity-security/" rel="bookmark" title="Android Activtity Security">Android Activtity Security</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ba%94%e7%94%a8%e6%9c%ac%e5%9c%b0%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android应用本地拒绝服务漏洞浅析">Android应用本地拒绝服务漏洞浅析</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="自己动手开发Drozer插件之进阶篇 _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>

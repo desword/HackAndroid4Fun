@@ -1,0 +1,726 @@
+<!DOCTYPE html><!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh-CN"> <![endif]--><!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="zh-CN"> <![endif]--><!--[if IE 8]> <html class="no-js lt-ie9" lang="zh-CN"> <![endif]--><!--[if gt IE 8]><!-->
+<!-- saved from url=(0050)http://www.droidsec.cn/android-broadcast-security/ -->
+<html class="no-js" lang="zh-CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Android Security 安卓安全中文站 | 移动安全技术与资讯分享 | 安卓应用漏洞挖掘 | 安卓漏洞攻防">
+<meta name="author" content="K | Uazoh.com">
+<title>Android Broadcast Security  |  DroidSec.cn</title>
+<link rel="icon" type="image/png" href="http://www.droidsec.cn/wp-content/uploads/2015/03/1112.png"><link rel="alternate" type="application/rss+xml" title="DroidSec.cn » Android Broadcast Security评论Feed" href="http://www.droidsec.cn/android-broadcast-security/feed/">
+		
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="crayon-css" href="Android Broadcast Security _ DroidSec.cn_files/crayon.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-theme-github-css" href="Android Broadcast Security _ DroidSec.cn_files/github.css" type="text/css" media="all">
+<link rel="stylesheet" id="crayon-font-monaco-css" href="Android Broadcast Security _ DroidSec.cn_files/monaco.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-bootstrap-css" href="Android Broadcast Security _ DroidSec.cn_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-animate-css" href="Android Broadcast Security _ DroidSec.cn_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-mCustomScrollbar-css" href="Android Broadcast Security _ DroidSec.cn_files/jquery.mCustomScrollbar.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-font-awesome-css" href="Android Broadcast Security _ DroidSec.cn_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-main-css" href="Android Broadcast Security _ DroidSec.cn_files/main.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-h1-css" href="Android Broadcast Security _ DroidSec.cn_files/h1.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-responsive-css" href="Android Broadcast Security _ DroidSec.cn_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-color-scheme-css" href="Android Broadcast Security _ DroidSec.cn_files/color.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-default-style-css" href="Android Broadcast Security _ DroidSec.cn_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="uazoh-LayerSlider-css" href="Android Broadcast Security _ DroidSec.cn_files/layerslider.css" type="text/css" media="all">
+
+
+
+
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.droidsec.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.droidsec.cn/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Android Content Provider Security" href="http://www.droidsec.cn/android-content-provider-security/">
+<link rel="next" title="Android https敏感数据劫持漏洞" href="http://www.droidsec.cn/android-https%e6%95%8f%e6%84%9f%e6%95%b0%e6%8d%ae%e5%8a%ab%e6%8c%81%e6%bc%8f%e6%b4%9e/">
+<meta name="generator" content="WordPress 4.2.2">
+<link rel="canonical" href="Android Broadcast Security _ DroidSec.cn_files/Android Broadcast Security _ DroidSec.cn.html">
+<link rel="shortlink" href="http://www.droidsec.cn/?p=20">
+<style type="text/css" media="screen">#wp-admin-bar-user-info .avatar-64 {width:64px}</style>
+<style></style><style type="text/css"></style></head>
+<body class="single single-post postid-20 single-format-standard">
+<!--专版参数-->
+<div id="to-the-top" title="返回顶端" style="display: block;"><i class="fa fa-chevron-up"></i></div>
+<!--移动菜单-->
+<i class="fa fa-align-justify" id="uazoh7-mobile-menu-btn"></i>
+<div class="uazoh7-mobile-menu" id="uazoh7-mobile-menu"> <h3>菜单</h3>
+<nav class="menu-%e8%8f%9c%e5%8d%951-container mCustomScrollbar _mCS_1" style="max-height: 871px; overflow: hidden;"><div class="mCustomScrollBox mCS-light" id="mCSB_1" style="position: relative; height: 100%; overflow: hidden; max-width: 100%; max-height: 871px;"><div class="mCSB_container mCS_no_scrollbar" style="position:relative; top:0;"><ul id="mobile_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul></div><div class="mCSB_scrollTools" style="position: absolute; display: none;"><div class="mCSB_draggerContainer"><div class="mCSB_dragger" style="position: absolute; top: 0px;" oncontextmenu="return false;"><div class="mCSB_dragger_bar" style="position:relative;"></div></div><div class="mCSB_draggerRail"></div></div></div></div><span class="border"></span></nav></div>
+    <header class="uazoh7-header uazoh7-header-1">
+
+      <div class="uazoh7-top-bar">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              
+              <ul class="social-btns">
+								<li><a href="http://www.droidsec.cn/feed" title="rss" class="rss regular" target="_blank"><i class="fa fa-rss"></i></a><a href="http://www.droidsec.cn/feed" title="rss" class="rss hover" target="_blank"><i class="fa fa-rss"></i></a></li><li><a href="http://weibo.com/androidsec" title="weibo" class="weibo regular" target="_blank"><i class="fa fa-weibo"></i></a><a href="http://weibo.com/androidsec" title="weibo" class="weibo hover" target="_blank"><i class="fa fa-weibo"></i></a></li><li><a href="http://droidsec/#QQ.com" title="envelope" class="envelope regular" target="_blank"><i class="fa fa-envelope"></i></a><a href="http://droidsec/#QQ.com" title="envelope" class="envelope hover" target="_blank"><i class="fa fa-envelope"></i></a></li>              </ul>
+            </div>
+          </div>
+        </div>
+      </div>	   <div class="uazoh7-header-bg uazoh7-header-sticked" id="uazoh7-header-menu">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-relative">
+                <a href="http://www.droidsec.cn/" title="DroidSec.cn">
+                <div class="uazoh7-logo">                  <img src="Android Broadcast Security _ DroidSec.cn_files/a1a.png" alt="DroidSec.cn">                  <p class="logo">DroidSec.cn</p>
+                  <p class="tagline">安卓安全中文站</p>
+                </div>
+                </a>
+				<nav class="menu-%e8%8f%9c%e5%8d%951-container"><ul id="main_nav" class="main-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="hover"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="hover"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="hover"></span></li>
+</ul></nav>              </div>
+            </div>
+          </div>
+        </div>
+      </div>    </header><div class="uazoh7-content" style="padding-top: 101px;"><section class="uazoh7-page-title-1" data-stellar-background-ratio="0.5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9">
+			
+								<h1>文章</h1>
+				            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <form class="search" method="get" action="http://www.droidsec.cn/"><input type="text" placeholder="输入关键词后回车..." id="s" name="s" value=""><button type="submit" value="Search"><i class="fa fa-search"></i></button></form>            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-desktop-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="uazoh7-desktop-breadscrubs-inner">
+                 <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android Broadcast Security              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="uazoh7-mobile-breadscrubs">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+               <a href="http://www.droidsec.cn/">Home</a> <i class="fa fa-angle-double-right"></i> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/">安卓漏洞攻防</a> <i class="fa fa-angle-double-right"></i> Android Broadcast Security            </div>
+          </div>
+        </div>
+      </section><section class="uazoh7-section">
+<div class="container">
+<div class="row" style="margin-top: 0px;">
+<div class="col-lg-9" id="main"><article id="post-20" class="uazoh7-post post-20 post type-post status-publish format-standard hentry category-4 tag-poc">
+<header>
+<h3 style="margin-top: 0px;"><i class="fa fa-pencil"></i><span> Android Broadcast Security</span></h3>
+<p> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" rel="category tag">安卓漏洞攻防</a> by <a href="http://www.droidsec.cn/author/droidsec/" title="由droidsec发布" rel="author">droidsec</a></p>
+</header>
+
+<h2>点评：文章对Broadcast Recevier组件暴露造成的常见的本地拒绝服务，敏感信息泄露，权限绕过做了详细分析。</h2>
+<h2>0x00 科普</h2>
+<hr>
+<p>Broadcast Recevier 广播接收器是一个专注于接收广播通知信息，并做出对应处理的组件。很多广播是源自于系统代码的──比如，通知时区改变、电池电量低、拍摄了一张照片或者用户改变了语言选项。应用程序也可以进行广播──比如说，通知其它应用程序一些数据下载完成并处于可用状态。 应用程序可以拥有任意数量的广播接收器以对所有它感兴趣的通知信息予以响应。所有的接收器均继承自BroadcastReceiver基类。 广播接收器没有用户界面。然而，它们可以启动一个activity来响应它们收到的信息，或者用NotificationManager来通知用户。通知可以用很多种方式来吸引用户的注意力──闪动背灯、震动、播放声音等等。一般来说是在状态栏上放一个持久的图标，用户可以打开它并获取消息。</p>
+<p><span id="more-20"></span></p>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/broad.jpg" alt=""></p>
+<h2>0x01 知识要点</h2>
+<hr>
+<p><strong>注册形式：动态or静态</strong></p>
+<p>元素的name属性指定了实现了这个activity的 Activity的子类。icon和label属性指向了包含展示给用户的此activity的图标和标签的资源文件。其它组件也以类似的方法声明──&nbsp;元素用于声明服务，&nbsp;元素用于声明广播接收器，而&nbsp;元素用于声明内容提供器。 manifest文件中未进行声明的activity、服务以及内容提供器将不为系统所见，从而也就不会被运行。然而，广播接收器既可以在manifest文件中声明，也可以在代码中进行动态的创建，并以调用Context.registerReceiver()的方式注册至系统。</p>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/static.jpg" alt=""></p>
+<p>（静态与动态注册广播接收器区别）</p>
+<p><strong>回调方法</strong></p>
+<p>广播接收器只有一个回调方法：</p>
+<div>
+<div id="highlighter_713641">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+</td>
+<td>
+<div>
+<div><code>void</code> <code>onReceive(Context curContext, Intent broadcastMsg)</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>当广播消息抵达接收器时，Android调用它的onReceive() 方法并将包含消息的Intent对象传递给它。广播接收器仅在它执行这个方法时处于活跃状态。当onReceive()返回后，它即为失活状态。 拥有一个活跃状态的广播接收器的进程被保护起来而不会被杀死。但仅拥有失活状态组件的进程则会在其它进程需要它所占有的内存的时候随时被杀掉。 这种方式引出了一个问题：如果响应一个广播信息需要很长的一段时间，我们一般会将其纳入一个衍生的线程中去完成，而不是在主线程内完成它，从而保证用户交互过程的流畅。如果onReceive()衍生了一个线程并且返回，则包涵新线程在内的整个进程都被会判为失活状态（除非进程内的其它应用程序组件仍处于活跃状态），于是它就有可能被杀掉。这个问题的解决方法是令onReceive()启动一个新服务，并用其完成任务，于是系统就会知道进程中仍然在处理着工作。</p>
+<p><strong>权限</strong></p>
+<p>设置接收app</p>
+<div>
+<div id="highlighter_339077">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>Intent&nbsp;&nbsp;setPackage(String packageName)</code></div>
+<div><code>(Usually optional) Set an explicit application </code><code>package</code> <code>name that limits the components </code><code>this</code> <code>Intent will resolve to.</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>设置接收权限</p>
+<div>
+<div id="highlighter_943804">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+</td>
+<td>
+<div>
+<div><code>abstract</code> <code>void</code>&nbsp;&nbsp; <code>sendBroadcast(Intent intent, String receiverPermission)</code></div>
+<div><code>Broadcast the given intent to all interested BroadcastReceivers, allowing an optional required permission to be enforced.</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>protectionLevel</p>
+<p>normal:默认值。低风险权限，只要申请了就可以使用，安装时不需要用户确认。</p>
+<p>dangerous：像WRITE_SETTING和SEND_SMS等权限是有风险的，因为这些权限能够用来重新配置设备或者导致话费。使用此protectionLevel来标识用户可能关注的一些权限。Android将会在安装程序时，警示用户关于这些权限的需求，具体的行为可能依据Android版本或者所安装的移动设备而有所变化。</p>
+<p>signature：这些权限仅授予那些和本程序应用了相同密钥来签名的程序。</p>
+<p>signatureOrSystem:与signature类似，除了一点，系统中的程序也需要有资格来访问。这样允许定制Android系统应用也能获得权限，这种保护等级有助于集成系统编译过程。</p>
+<p><strong>广播类型</strong></p>
+<p>系统广播：像开机启动、接收到短信、电池电量低这类事件发生的时候系统都会发出特定的广播去通知应用，应用接收到广播后会以某种形式再转告用户。</p>
+<p>自定义广播：不同于系统广播事件，应用可以为自己的广播接收器自定义出一条广播事件。</p>
+<p><strong>Ordered Broadcast</strong></p>
+<p>OrderedBroadcast-有序广播，Broadcast-普通广播，他们的区别是有序广播发出后能够适配的广播接收者按照一定的权限顺序接收这个广播，并且前面的接收者可以对广播的内容进行修改，修改的结果被后面接收者接收，优先级高的接收者还可以结束这个广播，那么后面优先级低的接收者就接收不到这个广播了。而普通广播发出后，能够是适配的接收者没有一定顺序接收广播，也不能终止广播。</p>
+<p><strong>sticky broadcast</strong></p>
+<p>有这么一种broadcast，在发送并经过AMS(ActivityManagerService)分发给对应的receiver后，这个broadcast并不会被丢弃，而是保存在AMS中，当有新的需要动态注册的receiver请求AMS注册时，如果这个receiver能够接收这个broadcast，那么AMS会将在receiver注册成功之后，马上向receiver发送这个broadcast。这种broadcast我们称之为stickybroadcast。</p>
+<p>sendStickyBroadcast()字面意思是发送粘性的广播，使用这个api需要权限android.Manifest.permission.BROADCAST_STICKY,粘性广播的特点是Intent会一直保留到广播事件结束，而这种广播也没有所谓的10秒限制，10秒限制是指普通的广播如果onReceive方法执行时间太长，超过10秒的时候系统会将这个广播置为可以干掉的candidate，一旦系统资源不够的时候，就会干掉这个广播而让它不执行。</p>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/charact.png" alt=""></p>
+<p>(几种广播的特性)</p>
+<p><strong>变动</strong></p>
+<p>android3.1以及之后版本广播接收器不能在启动应用前注册。可以通过设置intent的flag为Intent.FLAG_INCLUDE_STOPPED_PACKAGES将广播发送给未启动应用的广播接收器。</p>
+<p><strong>关键方法</strong></p>
+<ul>
+<li>sendBroadcast(intent)</li>
+<li>sendOrderedBroadcast(intent, null, mResultReceiver, null, 0, null, null)</li>
+<li>onReceive(Context context, Intent intent)</li>
+<li>getResultData()</li>
+<li>abortBroadcast()</li>
+<li>registerReceiver()</li>
+<li>unregisterReceiver()</li>
+<li>LocalBroadcastManager.getInstance(this).sendBroadcast(intent)</li>
+<li>sendStickyBroadcast(intent)</li>
+</ul>
+<h2>0x02 分类</h2>
+<hr>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/type.jpg" alt=""></p>
+<ol>
+<li>私有广播接收器：只接收app自身发出的广播</li>
+<li>公共广播接收器：能接收所有app发出的广播</li>
+<li>内部广播接收器：只接收内部app发出的广播</li>
+</ol>
+<p><strong>安全建议</strong></p>
+<p>intent-filter节点与exported属性设置组合建议</p>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/exported.png" alt=""></p>
+<ol>
+<li>私有广播接收器设置exported=’false’，并且不配置intent-filter。(私有广播接收器依然能接收到同UID的广播)<br>
+<!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a99370731408873279" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">&lt;receiver android:name=".PrivateReceiver" android:exported="false" /&gt; </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a99370731408873279-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a99370731408873279-1"><span class="crayon-o">&lt;</span><span class="crayon-e">receiver </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">".PrivateReceiver"</span><span class="crayon-h"> </span><span class="crayon-v">android</span><span class="crayon-o">:</span><span class="crayon-v">exported</span><span class="crayon-o">=</span><span class="crayon-s">"false"</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0057 seconds] -->
+
+</li>
+<li>对接收来的广播进行验证</li>
+<li>内部app之间的广播使用protectionLevel=’signature’验证其是否真是内部app</li>
+<li>返回结果时需注意接收app是否会泄露信息</li>
+<li>发送的广播包含敏感信息时需指定广播接收器，使用显示意图或者<br>
+<!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9937078c255475211" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">setPackage(String packageName) </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9937078c255475211-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9937078c255475211-1"><span class="crayon-e">setPackage</span><span class="crayon-sy">(</span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">packageName</span><span class="crayon-sy">)</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0012 seconds] -->
+
+</li>
+<li>sticky broadcast粘性广播中不应包含敏感信息</li>
+<li>Ordered Broadcast建议设置接收权限receiverPermission，避免恶意应用设置高优先级抢收此广播后并执行abortBroadcast()方法。</li>
+</ol>
+<h2>0x03 测试方法</h2>
+<hr>
+<p>1、查找动态广播接收器：反编译后检索registerReceiver(),</p><!-- Crayon Syntax Highlighter v2.7.1 -->
+
+		<div id="crayon-55a7a9937079f304508777" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style="margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important; height: auto;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important; height: 18px !important; line-height: 18px !important; margin-top: -18px; display: none; z-index: 4;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button crayon-pressed" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码" style="display: none;"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">Java</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly="" style="tab-size: 4; font-size: 12px !important; line-height: 15px !important; z-index: 0; opacity: 0; overflow: hidden;">dz&gt; run app.broadcast.info -a android -i </textarea></div>
+			<div class="crayon-main" style="position: relative; z-index: 1; overflow: hidden;">
+				<table class="crayon-table">
+					<tbody><tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-55a7a9937079f304508777-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-55a7a9937079f304508777-1"><span class="crayon-v">dz</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-e">run </span><span class="crayon-v">app</span><span class="crayon-sy">.</span><span class="crayon-v">broadcast</span><span class="crayon-sy">.</span><span class="crayon-v">info</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">a</span><span class="crayon-h"> </span><span class="crayon-v">android</span><span class="crayon-h"> </span><span class="crayon-o">-</span><span class="crayon-i">i</span><span class="crayon-h"> </span></div></div></td>
+					</tr>
+				</tbody></table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0012 seconds] -->
+<p>2、查找静态广播接收器：反编译后查看配置文件查找广播接收器组件，注意exported属性</p>
+<p>3、查找发送广播内的信息检索sendBroadcast与sendOrderedBroadcast，注意setPackage方法于receiverPermission变量。</p>
+<p>发送测试广播</p>
+<div>
+<div id="highlighter_186291">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+</td>
+<td>
+<div>
+<div><code>adb shell：</code></div>
+<div><code>am broadcast -a MyBroadcast -n com.isi.vul_broadcastreceiver/.MyBroadCastReceiver</code></div>
+<div><code>am broadcast -a MyBroadcast -n com.isi.vul_broadcastreceiver/.MyBroadCastReceiver –es number </code><code>5556</code><code>.</code></div>
+<div></div>
+<div><code>drozer：</code></div>
+<div><code>dz&gt; run app.broadcast.send --component com.</code><code>package</code><code>.name --action android.intent.action.XXX</code></div>
+<div></div>
+<div><code>code：</code></div>
+<div><code>Intent i = </code><code>new</code> <code>Intent();</code></div>
+<div><code>ComponentName componetName = </code><code>new</code> <code>ComponentName(packagename,&nbsp;&nbsp;componet);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code></div>
+<div><code>i.setComponent(componetName);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code></div>
+<div><code>sendBroadcast(i);</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>接收指定广播</p>
+<div>
+<div id="highlighter_144759">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+<div>18</div>
+<div>19</div>
+<div>20</div>
+<div>21</div>
+<div>22</div>
+<div>23</div>
+<div>24</div>
+<div>25</div>
+<div>26</div>
+<div>27</div>
+<div>28</div>
+</td>
+<td>
+<div>
+<div><code>public</code> <code>class</code> <code>Receiver </code><code>extends</code> <code>BroadcastReceiver {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>private</code> <code>final</code> <code>String ACCOUNT_NAME = </code><code>"account_name"</code><code>;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>private</code> <code>final</code> <code>String ACCOUNT_PWD = </code><code>"account_password"</code><code>;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>private</code> <code>final</code> <code>String ACCOUNT_TYPE = </code><code>"account_type"</code><code>;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>private</code> <code>void</code> <code>doLog(Context paramContext, Intent paramIntent)</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>{</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String name;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String password;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String type;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>do</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>{</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>name = paramIntent.getExtras().getString(ACCOUNT_NAME);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>password = paramIntent.getExtras().getString(ACCOUNT_PWD);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>type = paramIntent.getExtras().getString(ACCOUNT_TYPE);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>while</code> <code>((TextUtils.isEmpty(name)) || (TextUtils.isEmpty(password)) || (TextUtils.isEmpty(type)) || ((!type.equals(</code><code>"email"</code><code>)) &amp;&amp; (!type.equals(</code><code>"cellphone"</code><code>))));</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Log.i(</code><code>"name"</code><code>, name);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Log.i(</code><code>"password"</code><code>, password);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Log.i(</code><code>"type"</code><code>, type);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>public</code> <code>void</code> <code>onReceive(Context paramContext, Intent paramIntent)</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>{</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>if</code> <code>(TextUtils.equals(paramIntent.getAction(), </code><code>"account"</code><code>))</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>doLog(paramContext, paramIntent);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h2>0x04 案例</h2>
+<hr>
+<p><strong>案例1：伪造消息代码执行</strong></p>
+<p><a href="http://www.wooyun.org/bugs/wooyun-2013-039801" target="_blank">WooYun: 百度云盘手机版钓鱼、信息泄露和代码执行高危漏洞三合一</a></p>
+<p><strong>案例2：拒绝服务</strong></p>
+<p>尝试向广播接收器发送不完整的intent比如空action或者空extra。</p>
+<ul>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2010-0511" target="_blank">WooYun: 乐phone手机系统重启漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-042755" target="_blank">WooYun: QQ手机管家拒绝服务漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-034181" target="_blank">WooYun: 手机百度4.5.1Android客户端DOS攻击</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-053878" target="_blank">WooYun: 百度某手机应用拒绝服务漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-047716" target="_blank">WooYun: 搜狗输入法安卓客户端本地拒绝服务漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-039968" target="_blank">WooYun: 百度云盘客户端拒绝服务</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-019422" target="_blank">WooYun: su提权广播劫持导致拒绝服务攻击</a>&nbsp;（上面都是伪造，这个是劫持）</li>
+</ul>
+<p><strong>案例3：敏感信息泄漏</strong></p>
+<p>某应用利用广播传输用户账号密码</p>
+<p><img src="Android Broadcast Security _ DroidSec.cn_files/break.png" alt=""></p>
+<p>隐式意图发送敏感信息</p>
+<div>
+<div id="highlighter_975009">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+</td>
+<td>
+<div>
+<div><code>public</code> <code>class</code> <code>ServerService </code><code>extends</code> <code>Service {</code></div>
+<div><code>&nbsp;&nbsp;</code><code>// ...</code></div>
+<div><code>&nbsp;&nbsp;</code><code>private</code> <code>void</code> <code>d() {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>// ...</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Intent v1 = </code><code>new</code> <code>Intent();</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.setAction(</code><code>"com.sample.action.server_running"</code><code>);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"local_ip"</code><code>, v0.h);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"port"</code><code>, v0.i);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"code"</code><code>, v0.g);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"connected"</code><code>, v0.s);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"pwd_predefined"</code><code>, v0.r);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>if</code> <code>(!TextUtils.isEmpty(v0.t)) {</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>v1.putExtra(</code><code>"connected_usr"</code><code>, v0.t);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>&nbsp;&nbsp;</code><code>this</code><code>.sendBroadcast(v1);</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>接收POC</p>
+<div>
+<div id="highlighter_326878">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+</td>
+<td>
+<div>
+<div><code>public</code> <code>class</code> <code>BcReceiv </code><code>extends</code> <code>BroadcastReceiver {</code></div>
+<div><code>&nbsp;&nbsp;</code><code>@Override</code></div>
+<div><code>&nbsp;&nbsp;</code><code>public</code> <code>void</code> <code>onReceive(Context context, Intent intent){</code></div>
+<div></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String s = </code><code>null</code><code>;</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>if</code> <code>(intent.getAction().equals(</code><code>"com.sample.action.server_running"</code><code>)){</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>String pwd = intent.getStringExtra(</code><code>"connected"</code><code>);</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>s = </code><code>"Airdroid&nbsp;&nbsp;=&gt; ["</code> <code>+ pwd + </code><code>"]/"</code> <code>+ intent.getExtras();</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Toast.makeText(context, String.format(</code><code>"%s Received"</code><code>, s),</code></div>
+<div><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code>Toast.LENGTH_SHORT).show();</code></div>
+<div><code>&nbsp;&nbsp;</code><code>}</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>修复后代码，使用 LocalBroadcastManager.sendBroadcast() 发出的广播只能被app自身广播接收器接收。</p>
+<div>
+<div id="highlighter_236427">
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+</td>
+<td>
+<div>
+<div><code>Intent intent = </code><code>new</code> <code>Intent(</code><code>"my-sensitive-event"</code><code>);</code></div>
+<div><code>intent.putExtra(</code><code>"event"</code><code>, </code><code>"this is a test event"</code><code>);</code></div>
+<div><code>LocalBroadcastManager.getInstance(</code><code>this</code><code>).sendBroadcast(intent);</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>案例4：权限绕过</strong></p>
+<ul>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2012-09175" target="_blank">WooYun: 小米MIUI漏洞可能导致硬件资源消耗</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2013-019579" target="_blank">WooYun: 无须权限随意开启和关闭手机wifi功能</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-068478" target="_blank">WooYun: 华为荣耀3X Android4.2提权打电话漏洞</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-084520" target="_blank">WooYun: 酷派最安全手机s6拨打电话权限绕过</a></li>
+<li><a href="http://www.wooyun.org/bugs/wooyun-2014-084516" target="_blank">WooYun: 酷派最安全手机s6程序锁绕过</a></li>
+</ul>
+<p><a href="http://zone.wooyun.org/content/16841">任意短信重发漏洞</a></p>
+<h2>0x05 参考</h2>
+<hr>
+<p><a href="http://www.jssec.org/dl/android_securecoding_en.pdf">http://www.jssec.org/dl/android_securecoding_en.pdf</a></p>
+<p><a href="https://www.securecoding.cert.org/confluence/display/java/DRD03-J.+Do+not+broadcast+sensitive+information+using+an+implicit+intent">https://www.securecoding.cert.org/confluence/display/java/DRD03-J.+Do+not+broadcast+sensitive+information+using+an+implicit+intent</a></p>
+<p>转载自：<a href="http://drops.wooyun.org/tips/3812">乌云知识库</a>&nbsp;作者：<a title="由 瘦蛟舞 发布" href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" rel="author">瘦蛟舞</a>&nbsp; &nbsp; 感谢原文作者授权转载</p>
+<p>&nbsp;</p>
+<p class="tags"><i class="fa fa-tag"></i> <a href="http://www.droidsec.cn/tag/poc/" rel="tag">POC</a></p>
+
+<div class="date">
+  <span class="day">11</span>
+  <span class="month">2015-02</span>
+</div>
+</article>
+<p>&nbsp;</p>
+	</div><div class="col-lg-3" id="side"><aside class="uazoh7-widget"><h3 style="margin-top: 0px;">文章分类</h3>		<div class="uazoh7-category-widget"><div class="uazoh7-widget-inner"><ul>
+<li><p><a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/" title="APP漏洞挖掘"><i class="fa fa-folder-open"></i>APP漏洞挖掘</a> <a href="http://www.droidsec.cn/category/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98/"><i class="fa fa-rss"></i></a> <span>25</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/androidsecuritybook/" title="安卓安全书籍"><i class="fa fa-folder-open"></i>安卓安全书籍</a> <a href="http://www.droidsec.cn/category/androidsecuritybook/"><i class="fa fa-rss"></i></a> <span>8</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/" title="安卓安全工具"><i class="fa fa-folder-open"></i>安卓安全工具</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e5%ae%89%e5%85%a8%e5%b7%a5%e5%85%b7/"><i class="fa fa-rss"></i></a> <span>11</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/" title="安卓漏洞攻防"><i class="fa fa-folder-open"></i>安卓漏洞攻防</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e6%bc%8f%e6%b4%9e%e6%94%bb%e9%98%b2/"><i class="fa fa-rss"></i></a> <span>16</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/" title="安卓逆向分析"><i class="fa fa-folder-open"></i>安卓逆向分析</a> <a href="http://www.droidsec.cn/category/%e5%ae%89%e5%8d%93%e9%80%86%e5%90%91%e5%88%86%e6%9e%90/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li><li><p><a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/" title="移动安全资讯"><i class="fa fa-folder-open"></i>移动安全资讯</a> <a href="http://www.droidsec.cn/category/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%b5%84%e8%ae%af/"><i class="fa fa-rss"></i></a> <span>9</span></p><small></small></li>		</ul></div></div>
+</aside><aside class="uazoh7-widget"><h3>友情链接</h3>
+	<ul class="xoxo blogroll">
+<li><a href="http://security.tencent.com/" target="_blank">腾讯TSRC</a></li>
+<li><a href="http://www.ijiandao.com/" target="_blank">爱尖刀</a></li>
+<li><a href="http://xteam.baidu.com/" target="_blank">Baidu x-team</a></li>
+<li><a href="http://blogs.360.cn/360mobile/" target="_blank">360移动安全</a></li>
+<li><a href="http://navisec.it/" target="_blank">navisec安全导航</a></li>
+<li><a href="http://www.nxadmin.com/">Nxadmin</a></li>
+<li><a href="http://www.secpulse.com/" target="_blank">安全脉博</a></li>
+<li><a href="http://www.monstersb.net/" target="_blank">Monster</a></li>
+<li><a href="http://jaq.alibaba.com/blog.htm" target="_blank">阿里聚安全</a></li>
+<li><a href="http://www.freebuf.com/" target="_blank">FreeBuf</a></li>
+<li><a href="http://www.wooyun.org/" target="_blank">乌云漏洞平台</a></li>
+<li><a href="http://wiki.secmobi.com/home" target="_blank">SecMobi Wiki</a></li>
+<li><a href="http://securityintelligence.com/" target="_blank">SecurityIntelligence</a></li>
+<li><a href="http://androidxref.com/" target="_blank">AndroidXRef</a></li>
+<li><a href="http://www.androiddevtools.cn/" target="_blank">AndroidDevTools</a></li>
+
+	</ul>
+</aside>
+</div></div></div></section>
+<div id="comments" style="display:none"><a name="respond"></a></div>
+<div id="denglu_tuijian"></div><div id="denglu_comment"><iframe name="easyXDM_default6119_provider" id="easyXDM_default6119_provider" frameborder="0" src="Android Broadcast Security _ DroidSec.cn_files/commentMiddle.html" style="width: 100%; height: 232px;"></iframe></div>
+
+</div><!--uazoh7-content-->
+<footer class="uazoh7-footer">
+      <div class="container">
+        <div class="row">
+		<div class="col-lg-2 col-md-2">
+            <div class="uazoh7-widget uazoh7-links-widget">
+              <h3>links</h3>
+              <div class="uazoh7-widget-inner">
+                <ul id="footer_top_nav" class="mobile-menu"><li><a href="http://www.droidsec.cn/">首页</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-security-basic/">Android安全基础</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e5%ae%89%e5%85%a8%e6%b5%8b%e8%af%95%e5%85%a5%e9%97%a8/">APP安全测试入门</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e9%87%91%e5%88%9a%e5%ae%a1%e8%ae%a1%e7%b3%bb%e7%bb%9f/">金刚审计系统</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e5%85%b3%e4%ba%8e%e6%9c%ac%e7%ab%99/">关于DroidSec</a><span class="border"></span></li>
+<li><a href="http://weibo.com/androidsec">关注本站微博</a><span class="border"></span></li>
+</ul>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="uazoh7-widget uazoh7-links-widget uazoh7-about-widget">
+              <h3>随机 <strong>文章</strong></h3>
+              <div class="uazoh7-widget-inner">
+   <ul>
+<li><a href="http://www.droidsec.cn/android-app%e9%80%9a%e7%94%a8%e5%9e%8b%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="Android APP通用型拒绝服务漏洞分析报告">Android APP通用型拒绝服务漏洞分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/app%e6%bc%8f%e6%b4%9e%e6%8c%96%e6%8e%98%e7%ac%ac%e4%b8%80%e6%ad%a5android%e6%b5%8b%e8%af%95%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba/" rel="bookmark" title="[APP漏洞挖掘第一步]Android测试环境搭建">[APP漏洞挖掘第一步]Android测试环境搭建</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android%e5%ba%94%e7%94%a8%e6%9c%ac%e5%9c%b0%e6%8b%92%e7%bb%9d%e6%9c%8d%e5%8a%a1%e6%bc%8f%e6%b4%9e%e6%b5%85%e6%9e%90/" rel="bookmark" title="Android应用本地拒绝服务漏洞浅析">Android应用本地拒绝服务漏洞浅析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e7%a7%bb%e5%8a%a8%e5%ae%89%e5%85%a8%e8%8f%9c%e5%88%80-santoku/" rel="bookmark" title="强大的移动安全”菜刀”–Santoku">强大的移动安全”菜刀”–Santoku</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/xxshenqi%e5%ae%89%e5%8d%93%e7%9f%ad%e4%bf%a1%e8%a0%95%e8%99%ab%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="“XXshenqi”安卓短信蠕虫分析报告">“XXshenqi”安卓短信蠕虫分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-service-security/" rel="bookmark" title="Android Service Security">Android Service Security</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/cve-2014-7911%e5%ae%89%e5%8d%93%e6%8f%90%e6%9d%83%e6%bc%8f%e6%b4%9e%e5%88%86%e6%9e%90/" rel="bookmark" title="cve-2014-7911安卓提权漏洞分析">cve-2014-7911安卓提权漏洞分析</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/%e8%bf%9c%e6%8e%a7%e6%9c%a8%e9%a9%acdendoroid-b%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a/" rel="bookmark" title="远控木马Dendoroid.B分析报告">远控木马Dendoroid.B分析报告</a><span class="border"></span></li>
+<li><a href="http://www.droidsec.cn/android-content-provider-security/" rel="bookmark" title="Android Content Provider Security">Android Content Provider Security</a></li>
+</ul>
+            </div>
+          </div></div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-tags-widget">
+              <h3>文章 <strong>Tags</strong></h3>
+              <div class="uazoh7-widget-inner">
+                <a href="http://www.droidsec.cn/tag/pin/" class="tag-link-47" title="1个话题" style="font-size: 13pt;">PIN</a>
+<a href="http://www.droidsec.cn/tag/tsrc/" class="tag-link-48" title="1个话题" style="font-size: 13pt;">TSRC</a>
+<a href="http://www.droidsec.cn/tag/ui/" class="tag-link-42" title="1个话题" style="font-size: 13pt;">UI</a>
+<a href="http://www.droidsec.cn/tag/activity/" class="tag-link-36" title="1个话题" style="font-size: 13pt;">Activity</a>
+<a href="http://www.droidsec.cn/tag/mobile-forensics/" class="tag-link-32" title="1个话题" style="font-size: 13pt;">Mobile Forensics</a>
+<a href="http://www.droidsec.cn/tag/santoku-linux/" class="tag-link-33" title="1个话题" style="font-size: 13pt;">Santoku Linux</a>
+<a href="http://www.droidsec.cn/tag/url/" class="tag-link-49" title="1个话题" style="font-size: 13pt;">URL</a>
+<a href="http://www.droidsec.cn/tag/sd/" class="tag-link-50" title="1个话题" style="font-size: 13pt;">SD</a>
+<a href="http://www.droidsec.cn/tag/debug/" class="tag-link-62" title="1个话题" style="font-size: 13pt;">DEBUG</a>
+<a href="http://www.droidsec.cn/tag/google-android/" class="tag-link-71" title="1个话题" style="font-size: 13pt;">Google Android</a>
+<a href="http://www.droidsec.cn/tag/verbose/" class="tag-link-61" title="1个话题" style="font-size: 13pt;">VERBOSE</a>
+<a href="http://www.droidsec.cn/tag/android-override/" class="tag-link-57" title="1个话题" style="font-size: 13pt;">Android Override</a>
+<a href="http://www.droidsec.cn/tag/http/" class="tag-link-51" title="1个话题" style="font-size: 13pt;">HTTP</a>
+<a href="http://www.droidsec.cn/tag/mitm/" class="tag-link-52" title="1个话题" style="font-size: 13pt;">MITM</a>
+<a href="http://www.droidsec.cn/tag/adb/" class="tag-link-24" title="1个话题" style="font-size: 13pt;">ADB</a>
+<a href="http://www.droidsec.cn/tag/root/" class="tag-link-22" title="1个话题" style="font-size: 13pt;">ROOT</a>
+<a href="http://www.droidsec.cn/tag/android-shared-preferences/" class="tag-link-18" title="1个话题" style="font-size: 13pt;">Android Shared Preferences</a>
+<a href="http://www.droidsec.cn/tag/android-internal-storage/" class="tag-link-19" title="1个话题" style="font-size: 13pt;">Android Internal Storage</a>
+<a href="http://www.droidsec.cn/tag/android-backup/" class="tag-link-21" title="1个话题" style="font-size: 13pt;">Android Backup</a>
+<a href="http://www.droidsec.cn/tag/gui/" class="tag-link-35" title="2个话题" style="font-size: 13pt;">GUI</a>
+<a href="http://www.droidsec.cn/tag/android-system/" class="tag-link-12" title="2个话题" style="font-size: 13pt;">Android System</a>
+<a href="http://www.droidsec.cn/tag/uri/" class="tag-link-46" title="2个话题" style="font-size: 13pt;">URI</a>
+<a href="http://www.droidsec.cn/tag/uc/" class="tag-link-53" title="2个话题" style="font-size: 13pt;">UC</a>
+<a href="http://www.droidsec.cn/tag/gid/" class="tag-link-89" title="2个话题" style="font-size: 13pt;">GID</a>
+<a href="http://www.droidsec.cn/tag/uxss/" class="tag-link-74" title="2个话题" style="font-size: 13pt;">UXSS</a>
+<a href="http://www.droidsec.cn/tag/apk/" class="tag-link-15" title="3个话题" style="font-size: 13pt;">APK</a>
+<a href="http://www.droidsec.cn/tag/jeb/" class="tag-link-44" title="3个话题" style="font-size: 13pt;">JEB</a>
+<a href="http://www.droidsec.cn/tag/drozer/" class="tag-link-76" title="3个话题" style="font-size: 13pt;">Drozer</a>
+<a href="http://www.droidsec.cn/tag/api/" class="tag-link-59" title="3个话题" style="font-size: 13pt;">API</a>
+<a href="http://www.droidsec.cn/tag/poc/" class="tag-link-16" title="4个话题" style="font-size: 13pt;">POC</a>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-3">
+            <div class="uazoh7-widget uazoh7-about-widget">
+              <h3>关注 | 联系</h3>
+              <div class="uazoh7-widget-inner">                  <img src="Android Broadcast Security _ DroidSec.cn_files/3d563857728b88c4f666a9d9adb4c2ed_qrcode.png" alt="DroidSec.cn qr-code">				  <p class="contacts" style="border-top-width: 1px; margin-top: 30px;"><i class="fa fa-envelope"></i> DroidSec#QQ.com</p>              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="uazoh7-widget uazoh7-copyright-widget">
+              <div class="uazoh7-widget-inner">
+                <p>© Copyright 2015 by DroidSec.cn. All Rights Reserved.</p>
+                <p><a href="http://weibo.com/androidsec">更多安卓安全资讯请关注本站微博</a> </p>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+</footer>
+
+
+
+
+
+
+
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><button type="button" id="cboxClose"></button></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div>
+
+ </body></html>
