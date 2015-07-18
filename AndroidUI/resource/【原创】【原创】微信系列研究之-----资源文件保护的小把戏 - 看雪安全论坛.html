@@ -1,0 +1,4883 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0044)http://bbs.pediy.com/showthread.php?t=202303 -->
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+<meta name="generator" content="vBulletin 3.8.7">
+
+<meta name="keywords" content="微信, 【原创】【原创】微信系列研究之-----资源文件保护的小把戏, 安全,软件安全,WEB安全,加密,解密,加壳,脱壳,加密壳,软件保护,破解,debug,pack,unpack">
+<meta name="description" content=" 【原创】【原创】微信系列研究之-----资源文件保护的小把戏 『Android 安全』">
+
+
+<!-- CSS Stylesheet -->
+<style type="text/css" id="vbulletin_css">
+/**
+* vBulletin 3.8.7 CSS
+* Style: 'VBB3'; Style ID: 7
+*/
+body
+{
+	background: #EFF3F9;
+	color: #13253C;
+	font: 12px verdana, simsun,tahoma,geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	margin: 5px 10px 10px 10px;
+	padding: 0px;
+}
+a:link, body_alink
+{
+	color: #000000;
+	text-decoration: none;
+}
+a:visited, body_avisited
+{
+	color: #000000;
+	text-decoration: none;
+}
+a:hover, a:active, body_ahover
+{
+	color: #529AF2;
+	text-decoration: underline;
+}
+.page
+{
+	background: #FFFFFF;
+	color: #13253C;
+}
+td, th, p, li
+{
+	font: 12px 宋体,courier new,simsun,tahoma,verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.tborder
+{
+	background: #FFFFFF;
+	color: #13253C;
+	border: 1px solid #8FA0B0;
+}
+.tcat
+{
+	background: #415881 url(images/pediy/gradients/gradient_tcat.gif) repeat-x top left;
+	color: #F6F7FC;
+	font: bold 12px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.tcat a:link, .tcat_alink
+{
+	color: #F6F7FC;
+	text-decoration: none;
+}
+.tcat a:visited, .tcat_avisited
+{
+	color: #F6F7FC;
+	text-decoration: none;
+}
+.tcat a:hover, .tcat a:active, .tcat_ahover
+{
+	color: #F6F7FC;
+	text-decoration: underline;
+}
+.thead
+{
+	background: #D1D7DC url(images/pediy/gradients/gradient_thead.gif) repeat-x top left;
+	color: #333333;
+	font: 12px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	border-bottom: 1px solid #E2E7F0;
+}
+.thead a:link, .thead_alink
+{
+	color: #333333;
+	text-decoration: none;
+}
+.thead a:visited, .thead_avisited
+{
+	color: #333333;
+	text-decoration: none;
+}
+.thead a:hover, .thead a:active, .thead_ahover
+{
+	color: #333333;
+	text-decoration: underline;
+}
+.tfoot
+{
+	background: #415881 url(images/pediy/gradients/gradient_tcat.gif) repeat-x top left;
+	color: #F6F7FC;
+}
+.tfoot a:link, .tfoot_alink
+{
+	color: #F6F7FC;
+}
+.tfoot a:visited, .tfoot_avisited
+{
+	color: #F6F7FC;
+}
+.tfoot a:hover, .tfoot a:active, .tfoot_ahover
+{
+	color: #F6F7FC;
+}
+.alt1, .alt1Active
+{
+	background: #F5F5F5;
+	color: #13253C;
+	font: 12px 宋体,verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	border-bottom: 1px solid #E2E7F0;line-height:20px;padding:5px;
+}
+.alt2, .alt2Active
+{
+	background: #DEE3E7;
+	color: #333333;
+	font: 12px 宋体,verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	border-bottom: 1px solid #E2E7F0;
+	
+}
+.inlinemod
+{
+	background: #FFFFCC;
+	color: #333333;
+}
+.wysiwyg
+{
+	background: #F6F7FC;
+	color: #333333;
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	margin: 5px 10px 10px 10px;
+	padding: 0px;
+}
+.wysiwyg a:link, .wysiwyg_alink
+{
+	color: #00447F;
+}
+.wysiwyg a:visited, .wysiwyg_avisited
+{
+	color: #00447F;
+}
+.wysiwyg a:hover, .wysiwyg a:active, .wysiwyg_ahover
+{
+	color: #FF4400;
+}
+textarea, .bginput
+{
+	font: 12px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.bginput option, .bginput optgroup
+{
+	font-size: 12px;
+	font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.button
+{
+	font: 12px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+select
+{
+	font: 12px verdana, tahoma, arial, sans-serif;
+}
+option, optgroup
+{
+	font-size: 12px;
+	font-family: verdana, tahoma, arial, sans-serif;
+}
+.smallfont
+{
+	font: 12px 宋体,verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.time
+{
+	color: #333333;
+}
+.navbar
+{
+	font: 12px verdana, tahoma, arial, sans-serif;
+}
+.highlight
+{
+	color: #FF0000;
+	font-weight: bold;
+}
+.fjsel
+{
+	background: #415881;
+	color: #E0E0F6;
+}
+.fjdpth0
+{
+	background: #F7F7F7;
+	color: #333333;
+}
+.panel
+{
+	background: #E4E7F5 url(images/gradients/gradient_panel.gif) repeat-x top left;
+	color: #333333;
+	padding: 10px;
+	border: 2px outset;
+}
+.panelsurround
+{
+	background: #D1D4E0 url(images/gradients/gradient_panelsurround.gif) repeat-x top left;
+	color: #333333;
+}
+legend
+{
+	color: #00447F;
+	font: 12px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.vbmenu_control
+{
+	background: #415881 url(images/pediy/gradients/gradient_tcat.gif) repeat-x top left;
+	color: #FFFFFF;
+	font: bold 12px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	padding: 6px;
+	white-space: nowrap;
+}
+.vbmenu_control a:link, .vbmenu_control_alink
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_control a:visited, .vbmenu_control_avisited
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_control a:hover, .vbmenu_control a:active, .vbmenu_control_ahover
+{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+.vbmenu_popup
+{
+	background: #FFFFFF;
+	color: #333333;
+	border: 1px solid #00447F;
+}
+.vbmenu_option
+{
+	background: #F6F7FC;
+	color: #333333;
+	font: 12px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	white-space: nowrap;
+	cursor: pointer;
+	border-bottom: 1px solid #E2E7F0;
+}
+.vbmenu_option a:link, .vbmenu_option_alink
+{
+	color: #00447F;
+	text-decoration: none;
+}
+.vbmenu_option a:visited, .vbmenu_option_avisited
+{
+	color: #00447F;
+	text-decoration: none;
+}
+.vbmenu_option a:hover, .vbmenu_option a:active, .vbmenu_option_ahover
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite
+{
+	background: #8A949E;
+	color: #FFFFFF;
+	font: 12px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+	white-space: nowrap;
+	cursor: pointer;
+	border-bottom: 1px solid #E2E7F0;
+}
+.vbmenu_hilite a:link, .vbmenu_hilite_alink
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite a:visited, .vbmenu_hilite_avisited
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.vbmenu_hilite a:hover, .vbmenu_hilite a:active, .vbmenu_hilite_ahover
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+/* ***** styling for 'big' usernames on postbit etc. ***** */
+.bigusername { font-size: 11pt; FONT-FAMILY: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif} 
+
+
+/* ***** small padding on 'thead' elements ***** */
+td.thead, th.thead, div.thead { padding: 4px; }
+
+/* ***** basic styles for multi-page nav elements */
+.pagenav a { text-decoration: none; }
+.pagenav td { padding: 2px 4px 2px 4px; }
+
+/* ***** de-emphasized text */
+.shade, a.shade:link, a.shade:visited { color: #777777; text-decoration: none; }
+a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
+.tcat .shade, .thead .shade, .tfoot .shade { color: #DDDDDD; }
+
+/* ***** define margin and font-size for elements inside panels ***** */
+.fieldset { margin-bottom: 6px; }
+.fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 12px; }
+
+/* *****文字换行及横排***** */
+.tb {table-layout:fixed;}
+.columncell {background: #E1E4F2; color: #000000; border: 1px solid #0B198C; padding: 5px 5px 5px 5px;}
+#wrap{word-break:break-all; width:100%;}
+.divh {background-color: #FFFFCC;border: 1px dashed #000000;text-align: center;}
+/* ***** quote style 2 ***** */  
+.quoted1 { width: 95%; border: 1px solid #909090; padding: 8px; padding-top: 0px; margin: 8px; margin-top: 12pt; text-align: left; }  
+.quoted2 { position: relative; left: 4px; top: -7.5pt; width: 150px;  color: #ffffff; border: 1px solid #909090; background-color: #909090; padding: 1px; padding-left: 6px; padding-right: 6px; z-index: 1; }  
+
+/* *****CCF背景是深色的***** */
+.ccf{background: #DEDFDF; color: #000000}
+.ccffont{color: #000080}
+</style>
+<link rel="stylesheet" type="text/css" href="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/vbulletin_important.css">
+
+
+<!-- / CSS Stylesheet -->
+
+
+
+<style type="text/css"></style>
+
+
+
+
+	<link rel="alternate" type="application/rss+xml" title="看雪安全论坛 RSS Feed" href="http://bbs.pediy.com/external.php?type=RSS2">
+	
+		<link rel="alternate" type="application/rss+xml" title="看雪安全论坛 - 『Android 安全』 - RSS Feed" href="http://bbs.pediy.com/external.php?type=RSS2&amp;forumids=161">
+	
+
+
+<!-- Editor CSS automatically added by functions_editor.php at line 682 -->
+<!-- Editor Styles -->
+<style type="text/css" id="vbulletin_editor_css_dynamic">
+<!--
+@import url("clientscript/vbulletin_editor.css?v=383");
+
+.vBulletin_editor {
+	background: #E1E1E2;
+	padding: 6px;
+}
+.imagebutton {
+	background: #E1E1E2;
+	color: #000000;
+	padding: 1px;
+	border: none;
+}
+.ocolor, .ofont, .osize, .osmilie, .osyscoloar, .smilietitle {
+	background: #FFFFFF;
+	color: #000000;
+	border: 1px solid #FFFFFF;
+}
+.popup_pickbutton {
+	border: 1px solid #FFFFFF;
+}
+.popup_feedback {
+	background: #FFFFFF;
+	color: #000000;
+	border-right: 1px solid #FFFFFF;
+}
+.popupwindow {
+	background: #FFFFFF;
+}
+#fontOut, #sizeOut, .popup_feedback div {
+	background: #FFFFFF;
+	color: #000000;
+}
+.alt_pickbutton {
+	border-left: 1px solid #E1E1E2;
+}
+.popup_feedback input, .popup_feedback div
+{
+	border: 0px solid;
+	padding: 0px 2px 0px 2px;
+	cursor: default;
+	font: 12px tahoma;
+	overflow: hidden;
+}
+-->
+</style>
+<!-- / Editor Styles -->
+	<title>【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛</title>
+	
+	<style type="text/css" id="vbulletin_showthread_css">
+	<!--
+	
+	#tag_edit_list { list-style:none; margin:0px; padding:0px; }
+	#tag_edit_list li { float:left; display:block; width:200px; }
+	#tag_edit_list li.mine { font-weight:bold; }
+	
+	#links div { white-space: nowrap; }
+	#links img { vertical-align: middle; }
+	-->
+	</style>
+</head>
+<body onload="">
+<!-- logo -->
+<a name="top"></a>
+<table border="0" width="98%" cellpadding="0" cellspacing="0" align="center">
+<tbody><tr>
+	<td width="32" rowspan="2" align="left"><a href="http://www.pediy.com/"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/logo.gif" border="0" alt="看雪安全论坛" title="看雪安全论坛"></a></td>
+	<td width="603" rowspan="2" align="right" id="header_right_cell">
+	<a href="http://bbs.pediy.com/showthread.php?t=51839" target="_blank"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/kr201507.gif" width="480" height="65" border="0"></a>	</td>
+    <td width="320" align="right" id="header_right_cell"><p>&nbsp;</p>
+    <p>&nbsp;</p></td>
+    <td width="92" align="right" id="header_right_cell"><p>&nbsp;</p>
+    <p>&nbsp;</p></td>
+</tr>
+<tr>
+  <td align="right" id="header_right_cell"><a href="http://bbs.pediy.com/"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/head_forum_pediy_tab1.gif" height="25" border="0"></a></td>
+  <td align="right" id="header_right_cell"><a href="http://www.kanxue.com/bbs/"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/head_forum_modiy_tab2.gif" width="92" height="25" border="0"></a></td>
+</tr>
+</tbody></table>
+<!-- /logo -->
+
+<!-- content table -->
+<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+
+
+
+
+<br>
+<!-- breadcrumb, login, pm info -->
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+<tbody><tr>
+	<td class="alt1" width="100%">
+		
+			<table cellpadding="0" cellspacing="0" border="0">
+			<tbody><tr valign="bottom">
+				<td><a href="http://bbs.pediy.com/showthread.php?t=202303#" onclick="history.back(1); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/navbits_start.gif" alt="返回" border="0" title="返回"></a></td>
+				<td>&nbsp;</td>
+				<td width="100%"><span class="navbar"><a href="http://bbs.pediy.com/index.php" accesskey="1">看雪安全论坛</a></span> 
+	<span class="navbar">&gt; <a href="http://bbs.pediy.com/forumdisplay.php?f=158">移动平台</a></span>
+
+
+	<span class="navbar">&gt; <a href="http://bbs.pediy.com/forumdisplay.php?f=161">『Android 安全』</a></span>
+
+</td>
+			</tr>
+			<tr>
+				<td class="navbar" style="font-size:10pt; padding-top:1px" colspan="3"><a href="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛.html"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/navbits_finallink_ltr.gif" alt="刷新本页" border="0" title="刷新本页"></a> <strong>
+	 【原创】【原创】微信系列研究之-----资源文件保护的小把戏
+
+</strong></td>
+			</tr>
+			</tbody></table>
+		
+	</td>
+
+	<td class="alt2" nowrap="nowrap">
+	<div class="smallfont">
+		<strong>欢迎您，<a href="http://bbs.pediy.com/member.php?u=554506">二当家a</a></strong>
+		      
+			 
+
+		
+		<br>
+		您上次访问的时间是: 2015-05-12，<span class="time">19:09:18</span>
+    
+	
+			<div><span id="notifications"><a href="http://bbs.pediy.com/private.php">悄悄话:</a> 
+			0
+		 </span>&nbsp;
+		 提醒: 0
+	  
+
+		
+	</div>
+	</div></td>
+
+</tr>
+</tbody></table>
+<!-- / breadcrumb, login, pm info -->
+
+<!-- nav buttons bar -->
+<div class="tborder" style="padding:1px; border-top-width:0px">
+	<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+	<tbody><tr align="center">
+		
+			<td class="vbmenu_control"><a href="http://bbs.pediy.com/usercp.php">控制面板</a></td>
+		
+
+	<td class="vbmenu_control"><a href="http://www.pediy.com/kssd/" target="_blank"><div style="color:#FFFF00">KSSD</div></a></td>
+		
+		
+
+		
+		
+		
+		
+				
+
+		
+			<td class="vbmenu_control"><a id="community" href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#community" rel="nofollow" accesskey="6" style="cursor: pointer;">社区银行 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt=""></a> </td>
+		
+	
+		
+		
+	
+		
+			
+			
+			
+			  			
+				
+				<td class="vbmenu_control"><a id="navbar_search" href="http://bbs.pediy.com/search.php" accesskey="4" rel="nofollow" style="cursor: pointer;">搜索论坛 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt=""></a> </td>
+			
+			
+				<td class="vbmenu_control"><a id="usercptools" href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#usercptools" accesskey="3" style="cursor: pointer;">快速链接 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt=""></a> </td>
+			
+		
+		
+			<td class="vbmenu_control"><a href="http://bbs.pediy.com/calendar.php">日历事件</a></td>
+		<td class="vbmenu_control"><a rel="help" href="http://bbs.pediy.com/faq.php" accesskey="5">论坛帮助</a></td>
+		
+			<td class="vbmenu_control"><a href="http://bbs.pediy.com/login.php?do=logout&amp;logouthash=1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34" onclick="return log_out('您确定要退出论坛？')">退出论坛</a></td>
+		
+		</tr>
+	</tbody></table>
+</div>
+<!-- / nav buttons bar -->
+
+<br>
+
+
+
+
+
+
+<!-- NAVBAR POPUP MENUS -->
+
+	
+	<!-- community link menu -->
+	<div class="vbmenu_popup" id="community_menu" style="display:none;margin-top:3px" align="left">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tbody><tr><td class="thead">社区链接</td></tr>
+		
+		
+		
+					<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/album.php">照片与相册</a></td></tr>
+		
+		
+			<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=buddylist">联系人与好友</a></td></tr>
+		
+		
+		 <!--Joey修改银行-->
+ 
+ 		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/bank.php">社区银行</a></td></tr>
+ 
+ <!--Joey修改银行-->
+		</tbody></table>
+	</div>
+	<!-- / community link menu -->
+	
+	
+	
+	<!-- header quick search form -->
+	<div class="vbmenu_popup" id="navbar_search_menu" style="display:none;margin-top:3px" align="left">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tbody><tr>
+			<td class="thead">搜索论坛</td>
+		</tr>
+		<tr>
+			<td class="vbmenu_option" title="nohilite">
+				<form action="http://bbs.pediy.com/search.php?do=process" method="post">
+
+					<input type="hidden" name="do" value="process">
+					<input type="hidden" name="quicksearch" value="1">
+					<input type="hidden" name="childforums" value="1">
+					<input type="hidden" name="exactname" value="1">
+					<input type="hidden" name="s" value="">
+					<input type="hidden" name="securitytoken" value="1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34">
+					<div><input type="text" class="bginput" name="query" size="25" tabindex="1001"><input type="submit" class="button" value="执行" tabindex="1004"></div>
+					<div style="margin-top:6px">
+						<label for="rb_nb_sp0"><input type="radio" name="showposts" value="0" id="rb_nb_sp0" tabindex="1002" checked="checked">显示主题</label>
+						&nbsp;
+						<label for="rb_nb_sp1"><input type="radio" name="showposts" value="1" id="rb_nb_sp1" tabindex="1003">显示帖子</label>
+					</div>
+				</form>
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="vbmenu_option"><a href="http://bbs.pediy.com/tags.php" rel="nofollow">标签搜索</a></td>
+		</tr>
+		
+		<tr>
+			<td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php" accesskey="4" rel="nofollow">高级搜索</a></td>
+		</tr>
+
+		<!-- PHPForce - Joey增加搜索选项 -->
+		
+		<tr>
+			<td class="thead">快速搜索</td>
+		</tr>
+		<tr>
+			<td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;userid=554506" rel="nofollow">我的帖子</a></td>
+		</tr>
+		<tr>
+			<td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=process&amp;showposts=0&amp;starteronly=1&amp;exactname=1&amp;searchuser=%E4%BA%8C%E5%BD%93%E5%AE%B6a" rel="nofollow">我的主题</a></td>
+		</tr>
+		<tr>
+			<td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=getdaily" accesskey="2">显示今天的新帖</a></td>
+		</tr>
+		
+<!-- /PHPForce - Joey增加搜索选项 --><tr>
+	<td class="vbmenu_option"><a href="http://bbs.pediy.com/post_thanks.php?do=findallthanks">寻找所有致谢文章</a></td>
+</tr>
+		</tbody></table>
+	</div>
+	<!-- / header quick search form -->
+	
+	
+	
+	<!-- user cp tools menu -->
+	<div class="vbmenu_popup" id="usercptools_menu" style="display:none;margin-top:3px" align="left">
+		<table cellpadding="4" cellspacing="1" border="0">
+
+		<tbody><tr><td class="thead">快速链接</td></tr>
+
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=getdaily">显示今天的新帖</a></td></tr>
+
+<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=getnew" rel="nofollow">查看新帖</a></td></tr>
+
+
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/forumdisplay.php?do=markread">标记论坛已读</a></td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/showthread.php?t=202303#" onclick="window.open('misc.php?do=buddylist&amp;focus=1','buddylist','statusbar=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,width=250,height=300'); return false;">打开联系人窗口</a></td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;goodnees=1">最新精华</a></td></tr>
+		
+
+		<tr><td class="thead"><a href="http://bbs.pediy.com/usercp.php">用户控制面板</a></td></tr>
+		
+		<!--<tr><td class="vbmenu_option"><a href="profile.php?do=editavatar">编辑个性头像</a></td></tr>-->
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=editprofile">编辑个人资料</a></td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=editoptions">编辑论坛选项</a></td></tr>
+		
+
+		<tr><td class="thead">其他</td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php" rel="nofollow">悄悄话</a></td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/subscription.php" rel="nofollow">收藏的主题</a></td></tr>
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=554506">您的个人资料</a></td></tr>
+		
+		
+
+		</tbody></table>
+	</div>
+	<!-- / user cp tools menu -->
+
+	
+<!-- / NAVBAR POPUP MENUS -->
+
+<!-- PAGENAV POPUP -->
+	<div class="vbmenu_popup" id="pagenav_menu" style="display:none">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tbody><tr>
+			<td class="thead" nowrap="nowrap">转到页面...</td>
+		</tr>
+		<tr>
+			<td class="vbmenu_option" title="nohilite">
+			<form action="http://bbs.pediy.com/index.php" method="get" onsubmit="return this.gotopage()" id="pagenav_form">
+				<input type="text" class="bginput" id="pagenav_itxt" style="font-size:12px" size="4">
+				<input type="button" class="button" id="pagenav_ibtn" value="执行">
+			</form>
+			</td>
+		</tr>
+		</tbody></table>
+	</div>
+<!-- / PAGENAV POPUP -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="poststop" id="poststop"></a>
+
+<!-- controls above postbits -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:3px">
+<tbody><tr valign="bottom">
+	
+		<td class="smallfont">
+<!-- PHPForce - Joey修改新贴按钮  -->
+	<a href="http://bbs.pediy.com/newthread.php?do=newthread&amp;f=161" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/newthread.gif" alt="发表新主题" border="0" title="发表新主题"></a>
+<!-- /PHPForce - Joey修改新贴按钮 -->
+<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;noquote=1&amp;p=1380591" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reply.gif" alt="回复" border="0" title="回复"></a></td>
+	
+	
+</tr>
+</tbody></table>
+<!-- / controls above postbits -->
+
+<!-- toolbar -->
+<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center" style="border-bottom-width:0px">
+<tbody><tr>
+	<td class="tcat" width="100%">
+		<div class="smallfont">
+<!-- PHPForce - Joey修改精华/置顶/总顶/区顶 -->
+
+
+
+
+ 				
+ 
+  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/good_3.gif" alt="优秀帖" title="优秀帖">
+
+
+
+
+
+
+
+<!-- /PHPForce - Joey修改精华 -->
+
+		
+			<a href="http://bbs.pediy.com/showthread.php?t=202303#post1380591"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/firstnew.gif" alt="查看首个未读的帖子" border="0" title="查看首个未读的帖子"></a>
+			<a href="http://bbs.pediy.com/showthread.php?t=202303#post1380591"><strong>查看首个未读的帖子</strong></a>
+		
+		<!--悬赏系统 Aoron -->
+
+		&nbsp;
+		</div>
+	</td>
+	<td class="vbmenu_control" id="threadtools" nowrap="nowrap" style="cursor: pointer;">
+		<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#goto_threadtools">主题工具</a>
+		 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt="">
+	</td>
+	
+		<td class="vbmenu_control" id="threadsearch" nowrap="nowrap" style="cursor: pointer;">
+			<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#goto_threadsearch">搜索本主题</a>
+			 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt="">
+		</td>
+	
+	
+		<td class="vbmenu_control" id="threadrating" nowrap="nowrap" style="cursor: pointer;">
+			<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#goto_threadrating"><span id="threadrating_current">主题评分</span></a>
+			 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt="">
+		</td>
+	
+	
+	<td class="vbmenu_control" id="displaymodes" nowrap="nowrap" style="cursor: pointer;">
+		<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;nojs=1#goto_displaymodes">显示模式</a>
+		 <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menu_open.gif" border="0" title="" alt="">
+	</td>
+	
+
+	
+
+</tr>
+</tbody></table>
+<!-- / toolbar -->
+
+
+
+<!-- end content table -->
+
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+<!-- / end content table -->
+
+
+
+
+
+
+
+<div id="posts"><div align="center">
+<div class="page" style="WIDTH: 98%; TEXT-ALIGN: left">
+<div style="padding:0px 0px 1px 0px">
+<div style="PADDING-RIGHT: 7px; PADDING-LEFT: 7px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px" align="left">
+<table class="tborder" cellspacing="1" cellpadding="4" width="100%" align="center" border="0">
+  <tbody><tr> 
+          <td colspan="2" bgcolor="#F8F8F8"> <normalfont><font color="red">本站声明：</font><font color="#666666">看雪论坛文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者信息及本声明！</font></normalfont></td>
+        </tr>
+</tbody></table>
+
+</div>
+</div>
+</div><!-- post #1380591 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380591" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380591" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380591">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=366044"><font color="#000099">ggggwwww</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:4 | 在线时长:34小时 | 升级还需:11小时" border="0" title="级别:4 | 在线时长:34小时 | 升级还需:11小时">
+			  </div>
+	  </div>
+
+			
+				<div class="smallfont" align="center">
+					<br><a href="http://bbs.pediy.com/member.php?u=366044"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/image.php" width="100" height="31" alt="ggggwwww 的头像" border="0" title="ggggwwww 的头像"></a>
+				</div>
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Sep 2010</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=366044" rel="nofollow">32</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="ggggwwww 品行端正" border="0" title="ggggwwww 品行端正">
+
+				</div>
+
+				 <!--积分 <div>积分:40</div> -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 57 Kx</div>
+ <!--积分 <div>资产: 57 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：6<br>获会员感谢数：47
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380591" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380591&amp;postcount=1" target="new" rel="nofollow" id="postcount1380591" name="1"><strong>1</strong></a>
+				<a name="post1380591"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-11 00:19:33
+				<a name="newpost"></a>
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon20.gif" alt="icon20" border="0" title="icon20">
+				<strong>【原创】【原创】微信系列研究之-----资源文件保护的小把戏</strong>
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="ggggwwww 当前离线" border="0" title="ggggwwww 当前离线">
+
+
+				
+			<span id="reputationmenu_1380591"><a href="http://bbs.pediy.com/reputation.php?p=1380591" rel="nofollow" id="reputation_1380591"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 ggggwwww 的声望" border="0" title="添加 ggggwwww 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380591" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380591" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 <font color="#333333">标 题:</font><font color="#000000"> 【原创】【原创】微信系列研究之-----资源文件保护的小把戏</font><font color="#666666"><br> <font color="#333333">作 者:</font> <font color="#000000">ggggwwww</font><br>
+ <font color="#333333">时 间:</font> 2015-07-11,00:19:33<br> <font color="#333333">链 接:</font> http://bbs.pediy.com/showthread.php?t=202303<br>
+</font><br>
+
+                         
+			<!-- google_ad_section_start  -->
+		        
+			<font size="4"><br>
+<b>前言</b><br>
+<br>
+微信对APK进行多维度的保护，包括我们以前提到的客户端到服务器验证签名，插件验证，文件变动检测，代码混淆，把核心功能放在SO中等。<br>
+其中比较有特色的是对资源文件的保护，防止被恶意分析和山寨。<br>
+目前在国内对资源文件进行保护的APK还比较少，大部分都只对代码和插件进行了保护，所以微信这个特色值得我们去破解一下。<br>
+<br>
+<b>现象</b><br>
+<br>
+我们通过APKTOOL对微信的APK进行反编译时就会发现&nbsp;APKTOOL&nbsp;只生成了&nbsp;assets,lib,res,smali目录(有些版本的APKTOOL还生成了UNKOWN目录）。<br>
+进入资源文件目录，我们还发现图片文件比较少。缺少大量的布局文件XML。<br>
+<br>
+如果我们利用APKTOOL对微信反编译后再打包，会出现一大堆错误。<br>
+但如果我们直接把APK改名为ZIP，并解压后，会发现还有r目录。这其中必有蹊跷。<br>
+<br>
+<b>原理</b><br>
+由于APKTOOL反编译时只对RES目录下的&nbsp;二进制XML进行反编译。<br>
+而对应RES下的二进制XML引用的其他目录下的二进制XML无法识别。<br>
+微信正是通过这个缺陷对APKTOOL进行了欺骗。<br>
+<br>
+&lt;?xml&nbsp;version="1.0"&nbsp;encoding="utf-8"?&gt;<br>
+&lt;resources&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;item&nbsp;type="layout"&nbsp;name="a3l"&gt;r/o/a3l.xml&lt;/item&gt;<br>
+&lt;/resources&gt;<br>
+<br>
+<br>
+<br>
+<b>破解方法：</b><br>
+<br>
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/1364831271_1701.jpg" border="0" alt="http://img.my.csdn.net/uploads/201304/01/1364831271_1701.jpg" onload="if(this.width>screen.width*0.6) {this.width=screen.width*0.6;this.alt='';this.onmouseover=this.style.cursor='pointer';this.onclick=function(){window.open('http://img.my.csdn.net/uploads/201304/01/1364831271_1701.jpg')}}" title="http://img.my.csdn.net/uploads/201304/01/1364831271_1701.jpg"><br>
+<br>
+<br>
+<br>
+ANDROID中activity查找资源文件的是<br>
+activity&nbsp;（根据ID查找）-&gt;R.java对应的资源标号-》资源ID查找的对应的资源路径-》找到文件的路径，读取相应的文件配置）。<br>
+<br>
+<br>
+<br>
+1.从源码中分析，这里我们以weixin531.apk中的&nbsp;com.tencent.mm.ui.setting.EditSignatureUI.java&nbsp;为例<br>
+<br>
+com.tencent.mm.ui.setting.EditSignatureUI.java<br>
+<br>
+<br>
+import&nbsp;com.tencent.mm.i;<br>
+import&nbsp;com.tencent.mm.k;<br>
+<br>
+&nbsp;&nbsp;protected&nbsp;final&nbsp;void&nbsp;DP()<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;oP(n.cgU);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.jLo&nbsp;=&nbsp;((EditText)findViewById(i.content));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.hqI&nbsp;=&nbsp;((TextView)findViewById(i.baa));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;String&nbsp;str&nbsp;=&nbsp;ap.ja((String)bg.qW().oQ().get(12291));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.jLo.setText(str);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.jLo.setSelection(this.jLo.getText().length());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.hqI.setText(v(this.jLo.getEditableText()));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;EditText&nbsp;localEditText&nbsp;=&nbsp;this.jLo;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;InputFilter[]&nbsp;arrayOfInputFilter&nbsp;=&nbsp;new&nbsp;InputFilter[1];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arrayOfInputFilter[0]&nbsp;=&nbsp;new&nbsp;e(this);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;localEditText.setFilters(arrayOfInputFilter);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.jLo.addTextChangedListener(new&nbsp;f(this,&nbsp;(byte)0));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a(new&nbsp;c(this));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a(0,&nbsp;getString(n.bud),&nbsp;new&nbsp;d(this),&nbsp;cu.iMA);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;eB(false);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;protected&nbsp;final&nbsp;int&nbsp;getLayoutId()<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;k.bek;<br>
+&nbsp;&nbsp;}<br>
+<br>
+我们可以看到&nbsp;<br>
+<br>
+LayoutId&nbsp;布局资源ID为&nbsp;k.bek，<br>
+EditText&nbsp;jLo&nbsp;控件对应的ID&nbsp;为&nbsp;i.content<br>
+<br>
+从中我们知道对应的R.JAVA分别为&nbsp;com.tencent.mm.k和&nbsp;com.tencent.mm.i<br>
+<br>
+通过com.tencent.mm.k.java&nbsp;我们可以查到&nbsp;&nbsp;<br>
+public&nbsp;static&nbsp;final&nbsp;int&nbsp;bek&nbsp;=&nbsp;2130903326;<br>
+通过十六进制转化&nbsp;（2130903326-&gt;&nbsp;0x7F03011E&nbsp;）我们可以知道&nbsp;EditSignatureUI.java对应的布局文件的ID为&nbsp;0x7F03011E<br>
+<br>
+<br>
+通过com.tencent.mm.k.java&nbsp;我们可以查到&nbsp;&nbsp;<br>
+<br>
+&nbsp;public&nbsp;static&nbsp;final&nbsp;int&nbsp;content&nbsp;=&nbsp;2131165340;<br>
+通过十六进制转化&nbsp;(2131165340-&gt;&nbsp;0x7F07009C&nbsp;）我们可以知道&nbsp;EditText控件对应的布局文件的ID为&nbsp;0x7F07009C<br>
+<br>
+<br>
+<br>
+<br>
+2.利用AAPT分析AP资源的表，得到相应的资源编号文件<br>
+D:\adt-bundle-windows-x86-20140702\sdk\build-tools\19.0.0&gt;aapt&nbsp;dump&nbsp;--values&nbsp;res<br>
+ources&nbsp;weixin531.apk&nbsp;&gt;&nbsp;resources.txt<br>
+<br>
+<br>
+<br>
+3.通过查表我们可以找到对应的layout.xml&nbsp;为&nbsp;r/t/h0.xml.<br>
+<br>
+<br>
+resource&nbsp;0x7f03001e&nbsp;com.tencent.mm:layout/h0:&nbsp;t=0x03&nbsp;d=0x0000028e&nbsp;(s=0x0008&nbsp;r=0x00)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string8)&nbsp;"r/t/h0.xml"<br>
+<br>
+<br>
+4.利用AAPT查找到的内容对二进制XML进行反编译输出<br>
+D:\adt-bundle-windows-x86-20140702\sdk\build-tools\19.0.0&gt;aapt&nbsp;dump&nbsp;--values&nbsp;xml<br>
+tree&nbsp;weixin531.apk&nbsp;r/t/h0.xml&nbsp;&gt;&nbsp;h0.xml.txt&nbsp;到这一步基本就得到我们想要的资源布局文件了。<br>
+<br>
+<br>
+<br>
+5.&nbsp;我们还可以利用AXMLPrinter2对单个二进制XML&nbsp;进行反编译输出<br>
+<br>
+java&nbsp;-jar&nbsp;AXMLPrinter2.jar&nbsp;h0.xml&nbsp;&nbsp;&gt;&gt;&nbsp;ho.xml.txt<br>
+<br>
+得到的结果如下：<br>
+<br>
+&lt;?xml&nbsp;version="1.0"&nbsp;encoding="utf-8"?&gt;<br>
+&lt;LinearLayout<br>
+&nbsp;&nbsp;xmlns:android="http://schemas.android.com/apk/res/android"<br>
+&nbsp;&nbsp;android:orientation="1"<br>
+&nbsp;&nbsp;android:layout_width="-1"<br>
+&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&lt;LinearLayout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:orientation="0"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:background="@7F02053B"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_width="-1"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_marginLeft="@7F0A0021"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_marginTop="@7F0A0022"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_marginRight="@7F0A0021"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;EditText<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textColor="@7F090026"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textColorHint="@7F090037"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:gravity="0x00000030"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:id="@7F07009C"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:background="@00000000"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_width="0.0dip"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:singleLine="false"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_weight="1.0"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style="@7F0D008D"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/EditText&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;TextView<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textSize="@7F0A0016"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textColor="@7F090029"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_gravity="0x00000055"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:id="@7F070380"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:padding="@7F0A001D"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_width="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TextView&gt;<br>
+&nbsp;&nbsp;&lt;/LinearLayout&gt;<br>
+&nbsp;&nbsp;&lt;LinearLayout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:gravity="0x00000001"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_width="-1"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;android:layout_marginTop="@7F0A0023"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;TextView<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textSize="@7F0A0015"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:textColor="@7F090064"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_gravity="0x00000055"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:id="@7F0703BA"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:padding="@7F0A001D"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:visibility="2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_width="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:layout_height="-2"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android:text="@7F0C0797"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/TextView&gt;<br>
+&nbsp;&nbsp;&lt;/LinearLayout&gt;<br>
+&lt;/LinearLayout&gt;<br>
+<br>
+<br>
+<br>
+通过布局文件，我们可以看到&nbsp;EDITTEXT&nbsp;控件&nbsp;编号为（android:id="@7F07009C"）对应的风格了。<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+如果布局文件太多，我们还可以批量进行<br>
+<br>
+for&nbsp;/f&nbsp;&nbsp;"tokens=*"&nbsp;%%a&nbsp;in&nbsp;('dir&nbsp;/s/b/a-d&nbsp;"*.xml"')&nbsp;do&nbsp;(echo.%%a&nbsp;<br>
+@java&nbsp;-jar&nbsp;AXMLPrinter2.jar&nbsp;"%%a"&nbsp;&nbsp;&gt;&gt;"%%na".txt)&nbsp;<br>
+pause<br>
+<br>
+由于AXMLPrinter2久未更新，AXMLPrinter2对ANDROID高版本的XML文件无法反编译，为此我们需要下载修改过BUG的AXMLPrinter2<br>
+<br>
+<br>
+资源分享&nbsp;修正后的AXMLPrinter2<br>
+&nbsp;&nbsp;&nbsp;http://download.csdn.net/detail/simbaba/8625893<br>
+<br>
+</font>*转载请注明来自看雪论坛@PEdiy.com
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+
+			<a href="http://bbs.pediy.com/subscription.php?do=addsubscription&amp;t=202303" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/addfav.jpg" alt="订阅" border="0" title="订阅">  </a>
+			  <a href="http://bbs.pediy.com/post_thanks.php?do=post_thanks_add&amp;p=1380591&amp;securitytoken=1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34" id="post_thanks_button_1380591" onclick="return post_thanks_give(1380591, false);" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_thanks.gif" alt="致谢数" border="0" title="致谢数"></a>
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+		<!-- edit note -->
+			<div class="smallfont">
+				<!--	<hr size="1" style="color:#FFFFFF; background-color:#FFFFFF" />-->
+				<em>
+					
+						此帖于 2015-07-12 <span class="time">11:59:06</span> 被 ggggwwww 最后编辑
+					
+					
+						原因: 加结果分析
+					
+				</em>
+			</div>
+		<!-- / edit note -->
+		
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380591" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380591" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380591" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380591" rel="nofollow" id="qr_1380591" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380591"><div style="padding:0px 0px 3px 0px">
+	<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+		<tbody><tr valign="top">
+			<td class="alt2" width="175">
+				
+					<strong>共 4 位会员<br>感谢 ggggwwww 发表的文章：</strong>
+				
+				
+				
+			</td>
+			<td class="alt1"><div> <a href="http://bbs.pediy.com/member.php?u=629109" rel="nofollow">huluxia</a>&nbsp;(2015-07-12), <a href="http://bbs.pediy.com/member.php?u=664844" rel="nofollow">xiiiiao</a>&nbsp;(2015-07-14), <a href="http://bbs.pediy.com/member.php?u=602912" rel="nofollow">雪衫</a>&nbsp;(2015-07-11), <a href="http://bbs.pediy.com/member.php?u=272542" rel="nofollow">高军</a>&nbsp;(2015-07-14)</div></td>
+		</tr>
+	</tbody></table>
+</div></div>
+
+<!-- post 1380591 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380591_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">ggggwwww</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=366044">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=366044" rel="nofollow">发送悄悄话给 ggggwwww</a></td></tr>
+	
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=366044" rel="nofollow">查找 ggggwwww 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=366044&amp;starteronly=1" rel="nofollow">查找 ggggwwww 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=366044">添加 ggggwwww 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380591 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380591 --><!-- post #1380595 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380595" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380595" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380595">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=184511"><font color="#000099">karusel</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" style="filter:gray" alt="级别:0 | 在线时长:0小时 | 升级还需:5小时" border="0" title="级别:0 | 在线时长:0小时 | 升级还需:5小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Jun 2008</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=184511" rel="nofollow">1</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="karusel 品行端正" border="0" title="karusel 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 200 Kx</div>
+ <!--积分 <div>资产: 200 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380595" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380595&amp;postcount=2" target="new" rel="nofollow" id="postcount1380595" name="2"><strong>2</strong></a>
+				<a name="post1380595"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-11, 01:27:34
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="karusel 当前离线" border="0" title="karusel 当前离线">
+
+
+				
+			<span id="reputationmenu_1380595"><a href="http://bbs.pediy.com/reputation.php?p=1380595" rel="nofollow" id="reputation_1380595"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 karusel 的声望" border="0" title="添加 karusel 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380595" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380595" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			MARK下。
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380595" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380595" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380595" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380595" rel="nofollow" id="qr_1380595" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380595"></div>
+
+<!-- post 1380595 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380595_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">karusel</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=184511">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=184511" rel="nofollow">发送悄悄话给 karusel</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=184511" rel="nofollow">发送邮件给 karusel</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=184511" rel="nofollow">查找 karusel 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=184511&amp;starteronly=1" rel="nofollow">查找 karusel 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=184511">添加 karusel 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380595 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380595 --><!-- post #1380614 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380614" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380614" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380614">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=682415"><font color="#000099">易难言</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:26小时 | 升级还需:6小时" border="0" title="级别:3 | 在线时长:26小时 | 升级还需:6小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:26小时 | 升级还需:6小时" border="0" title="级别:3 | 在线时长:26小时 | 升级还需:6小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:26小时 | 升级还需:6小时" border="0" title="级别:3 | 在线时长:26小时 | 升级还需:6小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Jun 2015</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=682415" rel="nofollow">24</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="易难言 品行端正" border="0" title="易难言 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 6 Kx</div>
+ <!--积分 <div>资产: 6 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380614" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380614&amp;postcount=3" target="new" rel="nofollow" id="postcount1380614" name="3"><strong>3</strong></a>
+				<a name="post1380614"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-11, 08:31:04
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="易难言 当前离线" border="0" title="易难言 当前离线">
+
+
+				
+			<span id="reputationmenu_1380614"><a href="http://bbs.pediy.com/reputation.php?p=1380614" rel="nofollow" id="reputation_1380614"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 易难言 的声望" border="0" title="添加 易难言 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380614" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380614" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			资源文件保护
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=168402" target="_blank"><font color="#6699FF">[招生]15PB软件安全培训开始接受第007期报名（05.05开课）！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380614" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380614" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380614" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380614" rel="nofollow" id="qr_1380614" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380614"></div>
+
+<!-- post 1380614 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380614_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">易难言</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=682415">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=682415" rel="nofollow">发送悄悄话给 易难言</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=682415" rel="nofollow">发送邮件给 易难言</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=682415" rel="nofollow">查找 易难言 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=682415&amp;starteronly=1" rel="nofollow">查找 易难言 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=682415">添加 易难言 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380614 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380614 --><!-- post #1380657 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380657" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380657" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380657">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=126874"><font color="#000099">zlphaoren</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:23小时 | 升级还需:9小时" border="0" title="级别:3 | 在线时长:23小时 | 升级还需:9小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:23小时 | 升级还需:9小时" border="0" title="级别:3 | 在线时长:23小时 | 升级还需:9小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:3 | 在线时长:23小时 | 升级还需:9小时" border="0" title="级别:3 | 在线时长:23小时 | 升级还需:9小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Oct 2007</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=126874" rel="nofollow">6</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="zlphaoren 品行端正" border="0" title="zlphaoren 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 200 Kx</div>
+ <!--积分 <div>资产: 200 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380657" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380657&amp;postcount=4" target="new" rel="nofollow" id="postcount1380657" name="4"><strong>4</strong></a>
+				<a name="post1380657"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-11, 11:35:51
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="zlphaoren 当前离线" border="0" title="zlphaoren 当前离线">
+
+
+				
+			<span id="reputationmenu_1380657"><a href="http://bbs.pediy.com/reputation.php?p=1380657" rel="nofollow" id="reputation_1380657"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 zlphaoren 的声望" border="0" title="添加 zlphaoren 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380657" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380657" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			很好很强大，顶起来
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380657" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380657" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380657" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380657" rel="nofollow" id="qr_1380657" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380657"></div>
+
+<!-- post 1380657 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380657_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">zlphaoren</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=126874">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=126874" rel="nofollow">发送悄悄话给 zlphaoren</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=126874" rel="nofollow">发送邮件给 zlphaoren</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=126874" rel="nofollow">查找 zlphaoren 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=126874&amp;starteronly=1" rel="nofollow">查找 zlphaoren 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=126874">添加 zlphaoren 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380657 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380657 --><!-- post #1380784 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380784" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380784" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380784">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=624400"><font color="#000099">sarsky</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:4 | 在线时长:44小时 | 升级还需:1小时" border="0" title="级别:4 | 在线时长:44小时 | 升级还需:1小时">
+			  </div>
+	  </div>
+
+			
+				<div class="smallfont" align="center">
+					<br><a href="http://bbs.pediy.com/member.php?u=624400"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/image(1).php" width="100" height="100" alt="sarsky 的头像" border="0" title="sarsky 的头像"></a>
+				</div>
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Mar 2014</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=624400" rel="nofollow">53</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="sarsky 品行端正" border="0" title="sarsky 品行端正">
+
+				</div>
+
+				 <!--积分 <div>积分:10</div> -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 17 Kx</div>
+ <!--积分 <div>资产: 17 Kx</div>-->
+
+ 
+	<div>致谢数: 6</div>
+	<div>
+		
+			
+				获感谢文章数：1<br>获会员感谢数：9
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380784" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380784&amp;postcount=5" target="new" rel="nofollow" id="postcount1380784" name="5"><strong>5</strong></a>
+				<a name="post1380784"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-12, 09:47:09
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="sarsky 当前离线" border="0" title="sarsky 当前离线">
+
+
+				
+			<span id="reputationmenu_1380784"><a href="http://bbs.pediy.com/reputation.php?p=1380784" rel="nofollow" id="reputation_1380784"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 sarsky 的声望" border="0" title="添加 sarsky 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380784" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380784" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			加精贴，前排留名
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380784" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380784" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380784" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380784" rel="nofollow" id="qr_1380784" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380784"></div>
+
+<!-- post 1380784 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380784_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">sarsky</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=624400">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=624400" rel="nofollow">发送悄悄话给 sarsky</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=624400" rel="nofollow">发送邮件给 sarsky</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=624400" rel="nofollow">查找 sarsky 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=624400&amp;starteronly=1" rel="nofollow">查找 sarsky 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=624400">添加 sarsky 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380784 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380784 --><!-- post #1380858 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380858" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380858" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380858">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=377240"><font color="#000099">wangzehua</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:8 | 在线时长:101小时 | 升级还需:16小时" border="0" title="级别:8 | 在线时长:101小时 | 升级还需:16小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:8 | 在线时长:101小时 | 升级还需:16小时" border="0" title="级别:8 | 在线时长:101小时 | 升级还需:16小时">
+			  </div>
+	  </div>
+
+			
+				<div class="smallfont" align="center">
+					<br><a href="http://bbs.pediy.com/member.php?u=377240"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/image(2).php" width="100" height="74" alt="wangzehua 的头像" border="0" title="wangzehua 的头像"></a>
+				</div>
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Oct 2010</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=377240" rel="nofollow">13</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="wangzehua 品行端正" border="0" title="wangzehua 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 20 Kx</div>
+ <!--积分 <div>资产: 20 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380858" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380858&amp;postcount=6" target="new" rel="nofollow" id="postcount1380858" name="6"><strong>6</strong></a>
+				<a name="post1380858"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-12, 17:45:43
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="wangzehua 当前离线" border="0" title="wangzehua 当前离线">
+
+
+				
+			<span id="reputationmenu_1380858"><a href="http://bbs.pediy.com/reputation.php?p=1380858" rel="nofollow" id="reputation_1380858"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 wangzehua 的声望" border="0" title="添加 wangzehua 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380858" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380858" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			这个不错
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=142155" target="_blank"><font color="#6699FF">[培训]"麦洛克菲"内核底层开发培训，看雪会员报名减免200元！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380858" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380858" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380858" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380858" rel="nofollow" id="qr_1380858" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380858"></div>
+
+<!-- post 1380858 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380858_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">wangzehua</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=377240">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=377240" rel="nofollow">发送悄悄话给 wangzehua</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=377240" rel="nofollow">发送邮件给 wangzehua</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=377240" rel="nofollow">查找 wangzehua 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=377240&amp;starteronly=1" rel="nofollow">查找 wangzehua 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=377240">添加 wangzehua 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380858 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380858 --><!-- post #1380859 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380859" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380859" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380859">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=384790"><font color="#000099">善良屠夫</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:14 | 在线时长:274小时 | 升级还需:11小时" border="0" title="级别:14 | 在线时长:274小时 | 升级还需:11小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:14 | 在线时长:274小时 | 升级还需:11小时" border="0" title="级别:14 | 在线时长:274小时 | 升级还需:11小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:14 | 在线时长:274小时 | 升级还需:11小时" border="0" title="级别:14 | 在线时长:274小时 | 升级还需:11小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:14 | 在线时长:274小时 | 升级还需:11小时" border="0" title="级别:14 | 在线时长:274小时 | 升级还需:11小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:14 | 在线时长:274小时 | 升级还需:11小时" border="0" title="级别:14 | 在线时长:274小时 | 升级还需:11小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Nov 2010</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=384790" rel="nofollow">154</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="善良屠夫 品行端正" border="0" title="善良屠夫 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 1 Kx</div>
+ <!--积分 <div>资产: 1 Kx</div>-->
+
+ 
+	<div>致谢数: 11</div>
+	<div>
+		
+			
+				获感谢文章数：2<br>获会员感谢数：2
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380859" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380859&amp;postcount=7" target="new" rel="nofollow" id="postcount1380859" name="7"><strong>7</strong></a>
+				<a name="post1380859"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-12, 17:48:31
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#" onclick="imwindow('qq', '384790',  500, 450); return false;"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/im_qq.gif" alt="发送 QQ 消息给 善良屠夫" border="0" title="发送 QQ 消息给 善良屠夫"></a> <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="善良屠夫 当前离线" border="0" title="善良屠夫 当前离线">
+
+
+				
+			<span id="reputationmenu_1380859"><a href="http://bbs.pediy.com/reputation.php?p=1380859" rel="nofollow" id="reputation_1380859"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 善良屠夫 的声望" border="0" title="添加 善良屠夫 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380859" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380859" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			感谢楼主,mark一下
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=142155" target="_blank"><font color="#6699FF">[培训]"麦洛克菲"内核底层开发培训，看雪会员报名减免200元！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380859" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380859" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380859" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380859" rel="nofollow" id="qr_1380859" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380859"></div>
+
+<!-- post 1380859 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380859_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">善良屠夫</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=384790">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=384790" rel="nofollow">发送悄悄话给 善良屠夫</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=384790" rel="nofollow">发送邮件给 善良屠夫</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=384790" rel="nofollow">查找 善良屠夫 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=384790&amp;starteronly=1" rel="nofollow">查找 善良屠夫 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=384790">添加 善良屠夫 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380859 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380859 --><!-- post #1380942 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1380942" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1380942" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1380942">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=301400"><font color="#000099">LOVEZ</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level3.gif" alt="级别:19 | 在线时长:452小时 | 升级还需:28小时" border="0" title="级别:19 | 在线时长:452小时 | 升级还需:28小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:19 | 在线时长:452小时 | 升级还需:28小时" border="0" title="级别:19 | 在线时长:452小时 | 升级还需:28小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:19 | 在线时长:452小时 | 升级还需:28小时" border="0" title="级别:19 | 在线时长:452小时 | 升级还需:28小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:19 | 在线时长:452小时 | 升级还需:28小时" border="0" title="级别:19 | 在线时长:452小时 | 升级还需:28小时">
+			  </div>
+	  </div>
+
+			
+				<div class="smallfont" align="center">
+					<br><a href="http://bbs.pediy.com/member.php?u=301400"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/image(3).php" width="100" height="100" alt="LOVEZ 的头像" border="0" title="LOVEZ 的头像"></a>
+				</div>
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Nov 2009</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=301400" rel="nofollow">83</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="LOVEZ 品行端正" border="0" title="LOVEZ 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 47 Kx</div>
+ <!--积分 <div>资产: 47 Kx</div>-->
+
+ 
+	<div>致谢数: 8</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1380942" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1380942&amp;postcount=8" target="new" rel="nofollow" id="postcount1380942" name="8"><strong>8</strong></a>
+				<a name="post1380942"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-13, 10:05:40
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="LOVEZ 当前离线" border="0" title="LOVEZ 当前离线">
+
+
+				
+			<span id="reputationmenu_1380942"><a href="http://bbs.pediy.com/reputation.php?p=1380942" rel="nofollow" id="reputation_1380942"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 LOVEZ 的声望" border="0" title="添加 LOVEZ 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1380942" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1380942" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			感谢LZ无私奉献&nbsp;MARK下
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380942" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380942" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1380942" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1380942" rel="nofollow" id="qr_1380942" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1380942"></div>
+
+<!-- post 1380942 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1380942_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">LOVEZ</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=301400">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=301400" rel="nofollow">发送悄悄话给 LOVEZ</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=301400" rel="nofollow">发送邮件给 LOVEZ</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=301400" rel="nofollow">查找 LOVEZ 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=301400&amp;starteronly=1" rel="nofollow">查找 LOVEZ 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=301400">添加 LOVEZ 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1380942 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1380942 --><!-- post #1381316 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1381316" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1381316" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1381316">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=625701"><font color="#000099">binlanone</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:9 | 在线时长:121小时 | 升级还需:19小时" border="0" title="级别:9 | 在线时长:121小时 | 升级还需:19小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:9 | 在线时长:121小时 | 升级还需:19小时" border="0" title="级别:9 | 在线时长:121小时 | 升级还需:19小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:9 | 在线时长:121小时 | 升级还需:19小时" border="0" title="级别:9 | 在线时长:121小时 | 升级还需:19小时">
+			  </div>
+	  </div>
+
+			
+				<div class="smallfont" align="center">
+					<br><a href="http://bbs.pediy.com/member.php?u=625701"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/image(4).php" width="100" height="79" alt="binlanone 的头像" border="0" title="binlanone 的头像"></a>
+				</div>
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Mar 2014</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=625701" rel="nofollow">29</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="binlanone 品行端正" border="0" title="binlanone 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 3 Kx</div>
+ <!--积分 <div>资产: 3 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1381316" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1381316&amp;postcount=9" target="new" rel="nofollow" id="postcount1381316" name="9"><strong>9</strong></a>
+				<a name="post1381316"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-15, 09:05:38
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="binlanone 当前离线" border="0" title="binlanone 当前离线">
+
+
+				
+			<span id="reputationmenu_1381316"><a href="http://bbs.pediy.com/reputation.php?p=1381316" rel="nofollow" id="reputation_1381316"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 binlanone 的声望" border="0" title="添加 binlanone 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1381316" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1381316" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			分析的不错。顶你
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=71978" rel="nofollow"><font color="#999999">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381316" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381316" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1381316" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381316" rel="nofollow" id="qr_1381316" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1381316"></div>
+
+<!-- post 1381316 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1381316_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">binlanone</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=625701">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=625701" rel="nofollow">发送悄悄话给 binlanone</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=625701" rel="nofollow">发送邮件给 binlanone</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=625701" rel="nofollow">查找 binlanone 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=625701&amp;starteronly=1" rel="nofollow">查找 binlanone 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=625701">添加 binlanone 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1381316 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1381316 --><!-- post #1381320 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1381320" style="padding:0px 0px 1px 0px">
+	<!-- this is not the last post shown on the page -->
+
+
+
+<table id="post1381320" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1381320">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=2665"><font color="#000099">tigerwood</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:4 | 在线时长:39小时 | 升级还需:6小时" border="0" title="级别:4 | 在线时长:39小时 | 升级还需:6小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: May 2004</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=2665" rel="nofollow">153</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="tigerwood 品行端正" border="0" title="tigerwood 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 164 Kx</div>
+ <!--积分 <div>资产: 164 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1381320" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1381320&amp;postcount=10" target="new" rel="nofollow" id="postcount1381320" name="10"><strong>10</strong></a>
+				<a name="post1381320"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-15, 09:24:24
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="tigerwood 当前离线" border="0" title="tigerwood 当前离线">
+
+
+				
+			<span id="reputationmenu_1381320"><a href="http://bbs.pediy.com/reputation.php?p=1381320" rel="nofollow" id="reputation_1381320"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 tigerwood 的声望" border="0" title="添加 tigerwood 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1381320" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1381320" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			精品来了，持续更新，长久支持，赞
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=142155" target="_blank"><font color="#6699FF">[培训]"麦洛克菲"内核底层开发培训，看雪会员报名减免200元！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381320" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381320" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1381320" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381320" rel="nofollow" id="qr_1381320" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1381320"></div>
+
+<!-- post 1381320 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1381320_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">tigerwood</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=2665">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=2665" rel="nofollow">发送悄悄话给 tigerwood</a></td></tr>
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/sendmessage.php?do=mailmember&amp;u=2665" rel="nofollow">发送邮件给 tigerwood</a></td></tr>
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=2665" rel="nofollow">查找 tigerwood 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=2665&amp;starteronly=1" rel="nofollow">查找 tigerwood 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=2665">添加 tigerwood 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1381320 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1381320 --><!-- post #1381391 -->
+
+	<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+	<div id="edit1381391" style="padding:0px 0px 1px 0px">
+	
+
+
+
+<table id="post1381391" class="tborder" cellpadding="6" cellspacing="0" border="0" width="100%" align="center">
+
+	
+
+<tbody><tr valign="top">
+	<td class="ccf" width="175" style="border: 0px solid #FFFFFF; border-top: 0px; border-bottom: 0px" rowspan="3">
+
+			<div id="postmenu_1381391">
+				
+				<a class="bigusername" href="http://bbs.pediy.com/member.php?u=673760"><font color="#000099">aqqb</font></a>
+				
+				
+				<div class="smallfont" align="left">
+				     <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level3.gif" alt="级别:38 | 在线时长:1623小时 | 升级还需:54小时" border="0" title="级别:38 | 在线时长:1623小时 | 升级还需:54小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level3.gif" alt="级别:38 | 在线时长:1623小时 | 升级还需:54小时" border="0" title="级别:38 | 在线时长:1623小时 | 升级还需:54小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level2.gif" alt="级别:38 | 在线时长:1623小时 | 升级还需:54小时" border="0" title="级别:38 | 在线时长:1623小时 | 升级还需:54小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:38 | 在线时长:1623小时 | 升级还需:54小时" border="0" title="级别:38 | 在线时长:1623小时 | 升级还需:54小时"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/level1.gif" alt="级别:38 | 在线时长:1623小时 | 升级还需:54小时" border="0" title="级别:38 | 在线时长:1623小时 | 升级还需:54小时">
+			  </div>
+	  </div>
+
+			
+			<br>
+			   <div class="smallfont" align="center"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/stars01.gif" border="0" alt="初级会员" title="初级会员"></div>
+            
+          
+			<div class="smallfont" align="center">初级会员</div>
+			
+						
+			
+			
+			 <br>
+
+			<div class="smallfont">
+			<fieldset><legend>资　料:</legend>
+				
+				<div>注册日期: Mar 2015</div>
+				<div>
+					帖子: <a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=673760" rel="nofollow">2</a> 
+					  <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation_pos.gif" alt="aqqb 品行端正" border="0" title="aqqb 品行端正">
+
+				</div>
+
+				 <!--积分  -->
+
+<div>精华: 0</div>  
+          
+
+
+<div>现金: 55 Kx</div>
+ <!--积分 <div>资产: 55 Kx</div>-->
+
+ 
+	<div>致谢数: 0</div>
+	<div>
+		
+			
+				获感谢文章数：0<br>获会员感谢数：0
+			
+		
+	</div>
+
+				
+				
+				
+			  </fieldset>
+			</div>
+
+	</td>
+	
+    <!-- 横线是这里.alt这个样式中有border-bottom.使他归零就可以了..by Jessica -->
+	<td class="alt1" id="td_post_1381391" style="border-right: 1px solid #FFFFFF; border-bottom:0;">
+	
+		
+		
+			<!-- icon and title -->
+			<table border="0" width="100%" id="table1" cellspacing="0" cellpadding="0">
+			<tbody><tr><td>
+			<div class="smallfont">
+			<!--悬赏系统 By Aoron -->
+
+<!--结束 -->
+
+				<a href="http://bbs.pediy.com/showpost.php?p=1381391&amp;postcount=11" target="new" rel="nofollow" id="postcount1381391" name="11"><strong>11</strong></a>
+				<a name="post1381391"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/post_new.gif" alt="未读" border="0" title="未读"></a>
+				2015-07-15, 13:45:32
+				
+				<img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/icon1.gif" alt="默认" border="0" title="默认">
+				
+			</div>
+			</td>
+	<td align="right"><div>
+		      <img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/user_offline.gif" alt="aqqb 当前离线" border="0" title="aqqb 当前离线">
+
+
+				
+			<span id="reputationmenu_1381391"><a href="http://bbs.pediy.com/reputation.php?p=1381391" rel="nofollow" id="reputation_1381391"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reputation.gif" alt="添加 aqqb 的声望" border="0" title="添加 aqqb 的声望"></a></span>
+			
+		
+		
+		<a href="http://bbs.pediy.com/report.php?p=1381391" rel="nofollow"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/report.gif" alt="反映此帖" border="0" title="反映此帖"></a>
+		
+		
+				</div>
+			</td></tr>
+			</tbody></table>
+			<hr>
+			<!-- / icon and title -->
+		
+
+		<!-- message -->
+			<!--Joey 修改防止撑破表格 -->
+			<div class="tb">
+		<div id="post_message_1381391" style="overflow-x: hidden;line-height:1.62">
+			<div id="wrap">
+			
+			 
+                         
+			<!-- google_ad_section_start  -->
+		        
+			马克..值得学习一下，感谢楼主
+			<!-- google_ad_section_end  -->
+			
+                        <br>
+                        
+			
+                          
+			</div></div></div>
+			<!--/Joey 修改防止撑破表格 -->		
+		<!-- / message -->
+
+		
+
+		
+		
+
+		
+
+
+
+	</td>
+</tr>
+<!--Joey 修改签名位置 -->
+<!-- 判断要放在外面.防止出现白条 by Jessica -->
+
+	
+ 
+<tr>
+	
+	
+	 <!--临时 -->
+	 <td class="alt1" valign="bottom" style=" border-bottom:0;">
+
+        </td>
+   <!--临时 -->
+
+   
+</tr>
+
+
+<!--Joey 修改签名位置 -->
+<tr>	
+
+
+
+	<td class="alt1" align="right" valign="bottom" style="border: 1px solid #FFFFFF; border-left: 0px; border-top: 0px">
+	
+	
+
+			<!--收藏 -->
+	
+<div style="float:left">
+ 
+</div>
+<br>
+		
+<!--收藏 -->
+
+		<!-- controls -->
+<!-- 编辑 -->
+			
+	<!-- 编辑 -->	
+	
+
+<!--临时 -->				
+		 		<div class="smallfont" align="left">
+<img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/line.gif" border="0"><br> 
+<a href="http://bbs.pediy.com/showthread.php?t=142155" target="_blank"><font color="#6699FF">[培训]"麦洛克菲"内核底层开发培训，看雪会员报名减免200元！</font> </a>
+</div>
+<!--临时 -->
+
+<!-- Joey修改奖惩 -->
+
+<div style="float:left"><!-- PHPForce - Joey修改奖励惩罚 声望-->
+<div style="float:left">
+	
+
+			
+			
+
+
+</div></div>
+<!-- /Joey修改奖惩 -->
+
+
+
+
+		
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381391" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote.gif" alt="回复时引用此帖" border="0" title="回复时引用此帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381391" rel="nofollow" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/multiquote_off.gif" alt="多重引用本帖" border="0" id="mq_1381391" title="多重引用本帖"></a>
+		
+		
+			<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;p=1381391" rel="nofollow" id="qr_1381391" onclick="return false"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quickreply.gif" alt="快速回复此帖" border="0" title="快速回复此帖"></a>
+		
+
+		
+		
+		
+		
+			
+		
+
+		
+		     <a href="http://bbs.pediy.com/showthread.php?t=202303#top" rel="nofollow" onclick="self.scrollTo(0, 0); return false;"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/top.gif" alt="返回顶端" border="0" title="返回顶端"></a>
+		<!-- / controls -->
+	</td>
+</tr>
+</tbody></table>
+ <div id="post_thanks_box_1381391"></div>
+
+<!-- post 1381391 popup menu -->
+<div class="vbmenu_popup" id="postmenu_1381391_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">aqqb</td>
+	</tr>
+
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/member.php?u=673760">查看公开信息</a></td></tr>
+	
+	
+  
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/private.php?do=newpm&amp;u=673760" rel="nofollow">发送悄悄话给 aqqb</a></td></tr>
+	
+	
+	
+	
+	
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=673760" rel="nofollow">查找 aqqb 发表的帖子</a></td></tr>
+	
+		
+		<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?do=finduser&amp;u=673760&amp;starteronly=1" rel="nofollow">查找 aqqb 发表的所有主题</a></td></tr>
+	
+
+	
+	
+	
+	<tr><td class="vbmenu_option"><a href="http://bbs.pediy.com/profile.php?do=addlist&amp;userlist=buddy&amp;u=673760">添加 aqqb 到联系人列表</a></td></tr>
+	
+	
+	</tbody></table>
+</div>
+<!-- / post 1381391 popup menu -->
+
+
+	</div>
+	
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+
+<!-- / post #1381391 --><div id="lastpost"></div></div>
+
+<!-- start content table -->
+<!-- open content container -->
+
+<div align="center">
+	<div class="page" style="width:98%; text-align:left">
+		<div style="padding:0px 7px 0px 7px" align="left">
+
+<!-- / start content table -->
+
+<!-- controls below postbits -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:-3px">
+<tbody><tr valign="top">
+	
+		<td class="smallfont">
+<!-- PHPForce - Joey修改新贴按钮  -->
+	<a href="http://bbs.pediy.com/newthread.php?do=newthread&amp;f=161" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/newthread.gif" alt="发表新主题" border="0" title="发表新主题"></a>
+<!-- /PHPForce - Joey修改新贴按钮 -->
+<a href="http://bbs.pediy.com/newreply.php?do=newreply&amp;noquote=1&amp;p=1381391" rel="nofollow"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/reply.gif" alt="回复" border="0" title="回复"></a></td>
+	
+	
+</tr>
+</tbody></table>
+<!-- / controls below postbits -->
+
+
+
+
+<!-- social bookmarking links -->
+	<br>
+	<table cellpadding="6" cellspacing="1" border="0" width="100%" class="tborder" align="center">
+	<tbody><tr>
+		<td class="thead">添加到书签</td>
+	</tr>
+	<tr>
+		<td class="alt2" style="padding-top:0px"><div style="clear:both"></div><ul style="list-style-type:none; margin:0px; padding:0px"><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://digg.com/submit?phrase=2&amp;url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_digg.gif" border="0" alt="提交主题到 Digg" class="inlineimg" title="提交主题到 Digg"></a>
+	
+	<a href="http://digg.com/submit?phrase=2&amp;url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark" style="text-decoration:none">Digg</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://del.icio.us/post?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_delicious.gif" border="0" alt="提交主题到 del.icio.us" class="inlineimg" title="提交主题到 del.icio.us"></a>
+	
+	<a href="http://del.icio.us/post?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark" style="text-decoration:none">del.icio.us</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_stumbleupon.gif" border="0" alt="提交主题到 StumbleUpon" class="inlineimg" title="提交主题到 StumbleUpon"></a>
+	
+	<a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark" style="text-decoration:none">StumbleUpon</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_google.gif" border="0" alt="提交主题到 Google" class="inlineimg" title="提交主题到 Google"></a>
+	
+	<a href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark" style="text-decoration:none">Google</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://cang.baidu.com/do/add?it=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F&amp;iu=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;dc=&amp;fr=ien#nw=1" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_baidu.gif" border="0" alt="提交主题到 百度搜藏" class="inlineimg" title="提交主题到 百度搜藏"></a>
+	
+	<a href="http://cang.baidu.com/do/add?it=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F&amp;iu=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;dc=&amp;fr=ien#nw=1" target="socialbookmark" style="text-decoration:none">百度搜藏</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://shuqian.qq.com/post?from=3&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F&amp;uri=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;jumpback=2&amp;noui=1" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_qq.gif" border="0" alt="提交主题到 QQ 书签" class="inlineimg" title="提交主题到 QQ 书签"></a>
+	
+	<a href="http://shuqian.qq.com/post?from=3&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F&amp;uri=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;jumpback=2&amp;noui=1" target="socialbookmark" style="text-decoration:none">QQ 书签</a>
+</li><li class="smallfont" style="width:20%; min-width:120px; float:left; margin-top:6px">
+	
+		<a href="http://myweb.cn.yahoo.com/popadd.html?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bookmarksite_yahoo.gif" border="0" alt="提交主题到 雅虎收藏" class="inlineimg" title="提交主题到 雅虎收藏"></a>
+	
+	<a href="http://myweb.cn.yahoo.com/popadd.html?url=http%3A%2F%2Fbbs.pediy.com%2Fshowthread.php%3Ft%3D202303&amp;title=%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E3%80%90%E5%8E%9F%E5%88%9B%E3%80%91%E5%BE%AE%E4%BF%A1%E7%B3%BB%E5%88%97%E7%A0%94%E7%A9%B6%E4%B9%8B-----%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%B0%8F%E6%8A%8A%E6%88%8F" target="socialbookmark" style="text-decoration:none">雅虎收藏</a>
+</li></ul><div style="clear:both"></div></td>
+	</tr>
+	</tbody></table>
+<!-- / social bookmarking links -->
+
+
+
+<!-- thread tags -->
+	<br>
+	<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+	<tbody><tr>
+		<td class="thead">
+			
+			<a name="taglist"></a>
+			<a href="http://bbs.pediy.com/tags.php">标签</a>
+		</td>
+	</tr>
+	<tr>
+		<td class="alt1 smallfont" id="tag_list_cell"><a href="http://bbs.pediy.com/tags.php?tag=%E5%BE%AE%E4%BF%A1">微信</a> <img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/11x11progress.gif" id="tag_form_progress" class="inlineimg" style="display:none" alt=""></td>
+	</tr>
+	</tbody></table>
+
+	
+		
+<!-- / thread tags -->
+
+
+
+
+
+<!-- lightbox scripts -->
+	
+	
+<!-- / lightbox scripts -->
+
+
+
+<!-- multiquote scripts -->
+	
+	
+<!-- / multiquote scripts -->
+
+
+
+<!-- ajax errors table -->
+	<table class="tborder" cellpadding="6" cellspacing="1" border="0" style="display:none; position:absolute" id="ajax_post_errors">
+	<tbody><tr>
+		<td class="thead">
+			<span style="float:right"><input type="button" class="button" value=" X " onclick="vB_QuickEditor.hide_errors()" id="ajax_post_errors_closebtn"></span>
+			vBulletin 信息
+		</td>
+	</tr>
+	<tr>
+		<td class="alt2" colspan="2" id="ajax_post_errors_message">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="tfoot" colspan="2" align="center"><a href="http://bbs.pediy.com/showthread.php?t=202303#" onclick="vB_QuickEditor.abort(); return false;">取消更改</a></td>
+	</tr>
+	</tbody></table>
+<!-- / ajax errors table -->
+
+<!-- scripts for quick reply and quick edit -->
+	<!-- Editor Scripts -->
+
+
+<!-- / Editor Scripts -->
+	
+		
+		
+	
+<!-- / scripts for quick reply and quick edit -->
+
+
+
+
+
+
+<!-- quick reply -->
+	<br>
+	
+	<form action="http://bbs.pediy.com/newreply.php?do=postreply&amp;t=202303" method="post" name="vbform" onsubmit="return qr_prepare_submit(this, 4);" id="qrform">
+	<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
+	<thead>
+		<tr>
+			<td class="tcat" colspan="2">
+				<a style="float:right" href="http://bbs.pediy.com/showthread.php?t=202303#top" onclick="return toggle_collapse('quickreply');"><img id="collapseimg_quickreply" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/collapse_tcat.gif" alt="" border="0"></a>
+				快速回复
+			</td>
+		</tr>
+	</thead>
+	<tbody id="qr_error_tbody" style="display:none">
+	<tr>
+		<td class="thead">信息提交时发生如下错误</td>
+	</tr>
+	<tr>
+		<td class="alt1" id="qr_error_td"></td>
+	</tr>
+	<tr>
+		<td class="tfoot" align="center"><span class="smallfont"><a href="http://bbs.pediy.com/showthread.php?t=202303#" onclick="return qr_hide_errors()">确定</a></span></td>
+	</tr>
+	</tbody>
+	<tbody id="collapseobj_quickreply" style="">
+	<tr>
+		<td class="panelsurround" align="center">
+			<div class="panel">
+				<div align="left" style="max-width:640px; width:auto !important; width:640px">
+					<div class="smallfont">信息:</div>
+					<div id="vB_Editor_QR" class="vBulletin_editor">
+		
+		
+<div id="vB_Editor_QR_controls" class="controlbar">
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<tbody><tr>
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_removeformat"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/removeformat.gif" width="21" height="20" alt="清除文本格式" title="清除文本格式"></div></td>
+	
+		<td><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/separator.gif" width="6" height="20" alt=""></td>
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_bold"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/bold.gif" width="21" height="20" alt="粗体" title="粗体"></div></td>
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_italic"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/italic.gif" width="21" height="20" alt="斜体" title="斜体"></div></td>
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_underline"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/underline.gif" width="21" height="20" alt="下划线" title="下划线"></div></td>
+	
+	
+		<td><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/separator.gif" width="6" height="20" alt=""></td>
+		<td><div class="imagebutton" id="vB_Editor_QR_popup_forecolor" title="[颜色]">
+			<table cellpadding="0" cellspacing="0" border="0">
+			<tbody><tr>
+				<td id="vB_Editor_QR_color_out"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/color.gif" width="21" height="16" alt=""><br><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/clear.gif" id="vB_Editor_QR_color_bar" alt="" style="background-color:black" width="21" height="4"></td>
+				<td class="alt_pickbutton"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/menupop.gif" alt="" width="11" height="16"></td>
+			</tr>
+			</tbody></table>
+		</div></td>
+	
+	
+		<td><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/separator.gif" width="6" height="20" alt=""></td>
+	
+	
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_createlink"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/createlink.gif" width="21" height="20" alt="插入链接" title="插入链接"></div></td>
+	
+	
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_insertimage"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/insertimage.gif" width="21" height="20" alt="插入图片" title="插入图片"></div></td>
+	
+	
+		<td><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/separator.gif" width="6" height="20" alt=""></td>
+		<td><div class="imagebutton" id="vB_Editor_QR_cmd_wrap0_quote"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/quote(1).gif" width="21" height="20" alt="在选择的文本前后插入 [QUOTE] (引用) 标签" title="在选择的文本前后插入 [QUOTE] (引用) 标签"></div></td>
+	
+	<td width="100%">&nbsp;</td>
+	<!--  -->
+		<td>
+			<div class="imagebutton" id="vB_Editor_QR_cmd_resize_0_99"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/resize_0.gif" width="21" height="9" alt="收缩编辑框" title="收缩编辑框"></div>
+			<div class="imagebutton" id="vB_Editor_QR_cmd_resize_1_99"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/resize_1.gif" width="21" height="9" alt="扩展编辑框" title="扩展编辑框"></div>
+		</td>
+	
+	</tr>
+	</tbody></table>
+</div>
+
+<div class="controlbar" style="padding-right:8px">
+	<fieldset style="border:0px; padding:0px; margin:0px">
+	
+	<textarea name="message" id="vB_Editor_QR_textarea" rows="10" cols="60" style="width:100%; height:100px" tabindex="1" dir="ltr"></textarea>
+	
+	</fieldset>
+	<!--width:540px-->
+</div>
+
+<input type="hidden" name="wysiwyg" id="vB_Editor_QR_mode" value="0">
+<input type="hidden" name="styleid" value="0">
+
+
+	</div>
+
+					<fieldset class="fieldset" style="margin:3px 0px 0px 0px">
+						<legend>选项</legend>
+						<div style="padding:3px">
+						<!--	
+						 -->	
+							<label for="qr_quickreply"><input type="checkbox" name="quickreply" value="1" id="qr_quickreply" accesskey="w" tabindex="4" disabled="">回复中引用原信息</label>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+
+			<div style="margin-top:6px">
+				<input type="hidden" name="fromquickreply" value="1">
+				<input type="hidden" name="s" value="">
+				<input type="hidden" name="securitytoken" value="1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34">
+				<input type="hidden" name="do" value="postreply">
+				<input type="hidden" name="t" value="202303" id="qr_threadid">
+				<input type="hidden" name="p" value="who cares" id="qr_postid">
+				<input type="hidden" name="specifiedpost" value="0" id="qr_specifiedpost">
+				<input type="hidden" name="parseurl" value="0">
+				<input type="hidden" name="loggedinuser" value="554506">
+				<input type="submit" class="button" value="快速回复帖子" accesskey="s" title="(Alt + S)" name="sbutton" tabindex="2" id="qr_submit" onclick="clickedelm = this.value">
+				<input type="submit" class="button" value="进入高级模式" accesskey="x" title="(Alt + X)" name="preview" tabindex="3" id="qr_preview" onclick="clickedelm = this.value">
+			</div>
+
+			<div align="center" id="qr_posting_msg" style="display:none; margin-top:6px">
+				<img style="vertical-align: middle;" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/progress.gif" alt="正在发表快速回复 - 请等待" title="正在发表快速回复 - 请等待">&nbsp;<strong>正在发表快速回复 - 请等待</strong>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+	</table>
+	</form>
+
+	
+		<!-- Mozilla work around for focusing on QR in WYSIWYG mode -->
+		<div id="qr_scroll"></div>
+	
+
+	
+<!-- / quick reply -->
+
+
+
+<!-- next / previous links -->
+	<br>
+	<div class="smallfont" align="center">
+		<strong>«</strong>
+			<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;goto=nextoldest" rel="nofollow">上一主题</a>
+			|
+			<a href="http://bbs.pediy.com/showthread.php?t=202303&amp;goto=nextnewest" rel="nofollow">下一主题</a>
+		<strong>»</strong>
+	</div>
+<!-- / next / previous links -->
+
+
+
+
+
+
+
+<!-- popup menu contents -->
+<br>
+
+<!-- thread tools menu -->
+<div class="vbmenu_popup" id="threadtools_menu" style="display:none">
+<form action="http://bbs.pediy.com/postings.php?t=202303&amp;pollid=" method="post" name="threadadminform">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">主题工具<a name="goto_threadtools"></a></td>
+	</tr>
+	<tr>
+		<td class="vbmenu_option"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/printer.gif" alt="显示可打印版本" title="显示可打印版本"> <a href="http://bbs.pediy.com/printthread.php?t=202303" accesskey="3" rel="nofollow">显示可打印版本</a></td>
+	</tr>
+	
+	<tr>
+		<td class="vbmenu_option"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/sendtofriend.gif" alt="邮寄本页给好友" title="邮寄本页给好友"> <a href="http://bbs.pediy.com/sendmessage.php?do=sendtofriend&amp;t=202303" rel="nofollow">邮寄本页给好友</a></td>
+	</tr>
+	
+	
+	<tr>
+		<td class="vbmenu_option"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/subscribe.gif" alt="订阅" title="订阅">
+		
+			<a href="http://bbs.pediy.com/subscription.php?do=addsubscription&amp;t=202303" rel="nofollow">订阅收藏此主题</a>
+		
+		</td>
+	</tr>
+	
+	
+	
+	</tbody></table>
+</form>
+</div>
+<!-- / thread tools menu -->
+
+<!-- **************************************************** -->
+
+<!-- thread display mode menu -->
+<div class="vbmenu_popup" id="displaymodes_menu" style="display:none">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">显示模式<a name="goto_displaymodes"></a></td>
+	</tr>
+	<tr>
+	
+		<td class="vbmenu_option" title="nohilite"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/mode_linear.gif" alt="平板模式" title="平板模式"> <strong>平板模式</strong></td>
+	
+	</tr>
+	<tr>
+	
+		<td class="vbmenu_option"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/mode_hybrid.gif" alt="混合模式" title="混合模式"> <a href="http://bbs.pediy.com/showthread.php?mode=hybrid&amp;t=202303">切换到混合模式</a></td>
+	
+	</tr>
+	<tr>
+	
+		<td class="vbmenu_option"><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/mode_threaded.gif" alt="树形模式" title="树形模式"> <a href="http://bbs.pediy.com/showthread.php?p=1380591&amp;mode=threaded#post1380591">切换到树形模式</a></td>
+	
+	</tr>
+	</tbody></table>
+</div>
+<!-- / thread display mode menu -->
+
+<!-- **************************************************** -->
+
+
+<!-- thread search menu -->
+<div class="vbmenu_popup" id="threadsearch_menu" style="display:none">
+<form action="http://bbs.pediy.com/search.php?do=process&amp;searchthreadid=202303" method="post">
+	<table cellpadding="4" cellspacing="1" border="0">
+	<tbody><tr>
+		<td class="thead">搜索本主题<a name="goto_threadsearch"></a></td>
+	</tr>
+	<tr>
+		<td class="vbmenu_option" title="nohilite">
+			<input type="hidden" name="s" value="">
+			<input type="hidden" name="securitytoken" value="1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34">
+			<input type="hidden" name="do" value="process">
+			<input type="hidden" name="searchthreadid" value="202303">
+			<input type="text" class="bginput" name="query" size="25"><input type="submit" class="button" value="执行"><br>
+		</td>
+	</tr>
+	<tr>
+		<td class="vbmenu_option"><a href="http://bbs.pediy.com/search.php?searchthreadid=202303">高级搜索</a></td>
+	</tr>
+	</tbody></table>
+</form>
+</div>
+<!-- / thread search menu -->
+
+
+<!-- **************************************************** -->
+
+
+	<!-- thread rating menu -->
+	<div class="vbmenu_popup" id="threadrating_menu" style="display:none">
+	<form action="http://bbs.pediy.com/threadrate.php?t=202303" method="post" id="showthread_threadrate_form">
+		<table cellpadding="4" cellspacing="1" border="0">
+		<tbody><tr>
+			<td class="thead">对此主题评分<a name="goto_threadrating"></a></td>
+		</tr>
+		
+		<tr>
+			<td class="vbmenu_option" title="nohilite" id="threadrating_options">
+
+			<div><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/rating_5.gif" alt="精彩" title="精彩"><label for="vote5"><input type="radio" name="vote" id="vote5" value="5">精彩</label></div>
+			<div><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/rating_4.gif" alt="好帖" title="好帖"><label for="vote4"><input type="radio" name="vote" id="vote4" value="4">好帖</label></div>
+			<div><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/rating_3.gif" alt="一般" title="一般"><label for="vote3"><input type="radio" name="vote" id="vote3" value="3">一般</label></div>
+			<div><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/rating_2.gif" alt="不好" title="不好"><label for="vote2"><input type="radio" name="vote" id="vote2" value="2">不好</label></div>
+			<div><img class="inlineimg" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/rating_1.gif" alt="极差" title="极差"><label for="vote1"><input type="radio" name="vote" id="vote1" value="1">极差</label></div>
+			</td>
+		</tr>
+		<tr id="threadrating_submit">
+			<td class="vbmenu_option" title="nohilite" align="center">
+				<input type="hidden" name="s" value="">
+				<input type="hidden" name="securitytoken" value="1437221049-38a8ddab6bd0b49a61c8c6c3de2cefb0276d4e34">
+				<input type="hidden" name="t" value="202303">
+				<input type="hidden" name="pp" value="15">
+				<input type="hidden" name="page" value="1">
+				<input type="button" class="button" value="现在投票">
+			</td>
+		</tr>
+		
+		</tbody></table>
+	</form>
+	</div>
+	<!-- / thread rating menu -->
+
+	
+	
+
+
+<!-- / popup menu contents -->
+
+
+<!-- forum rules and admin links -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+<tbody><tr valign="bottom">
+	<td width="100%" valign="top">
+		<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="210">
+<thead>
+<tr>
+	<td colspan="2" class="thead">
+		<a style="float:right" href="http://bbs.pediy.com/showthread.php?t=202303#top" onclick="return toggle_collapse('forumrules')"><img id="collapseimg_forumrules" src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/collapse_thead.gif" alt="" border="0"></a>
+		发帖规则
+	</td>
+</tr>
+</thead>
+<tbody id="collapseobj_forumrules" style="">
+<tr>
+	<td class="alt1" nowrap="nowrap"><div class="smallfont">
+		
+		<div>您<strong>可以</strong>发表主题</div>
+		<div>您<strong>可以</strong>回复帖子</div>
+		<div>您<strong>可以</strong>上传附件</div>
+		<div>您<strong>可以</strong>编辑自己的帖子</div>
+				
+		<div></div>
+		</div></td>
+<td class="alt1" nowrap="nowrap"><div>论坛论坛<strong>启用</strong> <a href="http://bbs.pediy.com/misc.php?do=bbcode" target="_blank">vB 代码</a></div>
+  <div>论坛<strong>启用</strong> <a href="http://bbs.pediy.com/misc.php?do=showsmilies" target="_blank">表情图标</a></div>
+  <div>论坛<strong>启用</strong> <a href="http://bbs.pediy.com/misc.php?do=bbcode#imgcode" target="_blank">[IMG] 代码</a>
+    <div><phrase 1="禁用"></phrase></div>
+    <div><phrase 1="misc.php?do=showrules"><a href="http://bbs.pediy.com/misc.php?do=bbcode#imgcode" target="_blank">论坛规则</a></phrase></div>
+  </div>
+  <div></div></td>
+</tr>
+</tbody>
+</table>
+
+	</td>
+	<td class="smallfont" align="right">
+		<table cellpadding="0" cellspacing="0" border="0">
+		
+		<tbody><tr>
+			<td>
+			<div class="smallfont" style="text-align:left; white-space:nowrap">
+	<form action="http://bbs.pediy.com/forumdisplay.php" method="get">
+	<input type="hidden" name="s" value="">
+	<input type="hidden" name="daysprune" value="">
+	<!-- <strong>论坛跳转</strong><br /> -->
+	<select name="f" onchange="this.form.submit();">
+		<optgroup label="论坛功能">
+			<option value="cp">用户控制面板</option>
+			<option value="pm">悄悄话</option>
+			<option value="subs">收藏夹</option>
+			<option value="wol">会员在线状态</option>
+			<option value="search">搜索论坛</option>
+			<option value="home">论坛首页</option>
+		</optgroup>
+		
+		<optgroup label="论坛">
+		<option value="116" class="fjdpth0"> 初学者园地</option>
+<option value="20" class="fjdpth1">&nbsp; &nbsp;  『求助问答』</option>
+<option value="69" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『经典问答』</option>
+<option value="117" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『资料导航』</option>
+<option value="131" class="fjdpth1">&nbsp; &nbsp;  『临时会员版』</option>
+<option value="3" class="fjdpth0"> Windows</option>
+<option value="4" class="fjdpth1">&nbsp; &nbsp;  『软件调试逆向』</option>
+<option value="41" class="fjdpth1">&nbsp; &nbsp;  『编程技术』</option>
+<option value="156" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『C32Asm』</option>
+<option value="165" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『MDebug』</option>
+<option value="35" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『安全工具开发』</option>
+<option value="88" class="fjdpth1">&nbsp; &nbsp;  『加壳与脱壳』</option>
+<option value="37" class="fjdpth1">&nbsp; &nbsp;  『CrackMe&amp;ReverseMe』</option>
+<option value="158" class="fjdpth0"> 移动平台</option>
+<option value="159" class="fjdpth1">&nbsp; &nbsp;  『Android 开发』</option>
+<option value="161" class="fjsel" selected="selected">&nbsp; &nbsp;  『Android 安全』</option>
+<option value="166" class="fjdpth1">&nbsp; &nbsp;  『iOS安全』</option>
+<option value="167" class="fjdpth1">&nbsp; &nbsp;  『Windows Phone安全』</option>
+<option value="108" class="fjdpth0"> 信息安全</option>
+<option value="132" class="fjdpth1">&nbsp; &nbsp;  『密码学』</option>
+<option value="146" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  学术会议版</option>
+<option value="135" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  密码学小组</option>
+<option value="134" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『小组提交区』</option>
+<option value="151" class="fjdpth1">&nbsp; &nbsp;  『WEB安全』</option>
+<option value="150" class="fjdpth1">&nbsp; &nbsp;  『漏洞分析』</option>
+<option value="162" class="fjdpth1">&nbsp; &nbsp;  『云计算安全』</option>
+<option value="32" class="fjdpth1">&nbsp; &nbsp;  『外文翻译』</option>
+<option value="10" class="fjdpth1">&nbsp; &nbsp;  『资源下载』</option>
+<option value="136" class="fjdpth0"> 职场风云</option>
+<option value="47" class="fjdpth1">&nbsp; &nbsp;  『招聘专区』</option>
+<option value="137" class="fjdpth1">&nbsp; &nbsp;  『职业生涯』</option>
+<option value="169" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  『15PB培训专区』</option>
+<option value="154" class="fjdpth0"> 论坛生活</option>
+<option value="45" class="fjdpth1">&nbsp; &nbsp;  『茶余饭后』</option>
+<option value="61" class="fjdpth1">&nbsp; &nbsp;  『安全资讯』</option>
+<option value="109" class="fjdpth1">&nbsp; &nbsp;  『论坛活动』</option>
+<option value="140" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  6)PEDIY Crackme竞赛2009</option>
+<option value="144" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  7)看雪十周年专版</option>
+<option value="155" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  8)腾讯公司2010软件安全竞赛</option>
+<option value="157" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  9)2011 Exploit Me竞赛</option>
+<option value="122" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  12)提交区（关闭）</option>
+<option value="65" class="fjdpth1">&nbsp; &nbsp;  『图书项目版』</option>
+<option value="99" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  《加密与解密(第三版)》</option>
+<option value="163" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  《C++反汇编与逆向分析技术揭秘》</option>
+<option value="168" class="fjdpth2">&nbsp; &nbsp; &nbsp; &nbsp;  《Android软件安全与逆向分析》</option>
+<option value="1" class="fjdpth0"> 站务管理</option>
+<option value="2" class="fjdpth1">&nbsp; &nbsp;  『论坛版务』</option>
+
+		</optgroup>
+		
+	</select><input type="submit" class="button" value="执行">
+	</form>
+</div>
+			</td>
+		</tr>
+		</tbody></table>
+	</td>
+</tr>
+</tbody></table>
+<!-- /forum rules and admin links -->
+
+<br>
+
+
+
+
+
+
+<div align="center"></div>
+
+
+
+		</div>
+	</div>
+</div>
+
+<!-- / close content container -->
+<!-- /content area table -->
+
+<form action="http://bbs.pediy.com/index.php" method="get" style="clear:left">
+
+<br><div class="smallfont" align="center">所有时间均为<strong>北京时间</strong>, 现在的时间是 <span class="time">20:04:09</span>.</div><br><table cellpadding="6" cellspacing="0" border="0" width="99%" class="page" align="center">
+
+
+
+<tbody><tr>
+	
+		<td class="tfoot">
+			<select name="styleid" onchange="switch_id(this, 'style')">
+				<optgroup label="快速选择风格">
+					<option value="7" class="" selected="selected">-- VBB3</option>
+<option value="8" class="">-- Wap</option>
+<option value="10" class="">-- 大字体</option>
+
+				</optgroup>
+			</select>
+		</td>
+	
+	
+		<td class="tfoot">
+			<select name="langid" onchange="switch_id(this, 'lang')">
+				<optgroup label="快速选择语言">
+					<option value="3" class="">-- English</option>
+<option value="1" class="" selected="selected">-- 简体中文</option>
+<option value="2" class="">-- 繁體中文</option>
+
+				</optgroup>
+			</select>
+		</td>
+	
+	<td class="tfoot" align="right" width="100%">
+		<div class="smallfont">
+			<strong>
+				<a href="http://bbs.pediy.com/sendmessage.php" rel="nofollow" accesskey="9">联系我们</a> -
+				<a href="http://www.pediy.com/">看雪学院</a> -
+				
+				
+				<a href="http://bbs.pediy.com/archive/index.php">文字模式</a> -
+				
+				
+				
+				<a href="http://bbs.pediy.com/showthread.php?t=202303#top" onclick="self.scrollTo(0, 0); return false;">返回顶端</a>
+			</strong>
+		</div>
+	</td>
+</tr>
+</tbody></table>
+
+<br>
+
+<div align="center">
+	<div class="smallfont" align="center">
+	<!-- Do not remove this copyright notice -->
+	<div class="smallfont" align="center"><font color="#333333" class="en">&nbsp;&nbsp;©2000-2015 看雪学院(<a href="http://www.pediy.com/"><b><font color="#000000">PE</font><font color="#ff6000">diy</font><font color="#000000">.com</font></b></a>)  |<a href="http://www.pediy.com/team.htm">关于我们</a></font> | <a href="http://www.miitbeian.gov.cn/" target="_blank">京ICP备10040895号-17</a> | <a href="http://www.knownsec.com/" target="_blank">知道创宇</a>提供带宽资源  |&nbsp;微信公众帐号：<a href="http://bbs.pediy.com/showpost.php?p=1193897&amp;postcount=1"><font color="#ff6000"><strong>i</strong>kanxue</font></a>  &nbsp; 手机客户端：  <a href="http://bbs.pediy.com/showthread.php?t=162413" target="_blank"><img src="【原创】【原创】微信系列研究之-----资源文件保护的小把戏 - 看雪安全论坛_files/android.gif" width="16" height="19" border="0" align="absmiddle"></a><br>
+</div>
+
+	<!-- Do not remove this copyright notice -->
+	</div>
+
+	<div class="smallfont" align="center">
+	<!-- Do not remove cronimage or your scheduled tasks will cease to function -->
+	
+	<!-- Do not remove cronimage or your scheduled tasks will cease to function -->
+
+	
+	</div>
+</div>
+
+</form>
+
+
+
+
+
+
+<!-- google-->
+
+
+
+<!-- temp -->
+<div style="display:none">
+	<!-- thread rate -->
+	
+		<!-- thread ratings form here -->
+	
+	<!-- / thread rate -->
+</div>
+
+
+</div></body></html>
